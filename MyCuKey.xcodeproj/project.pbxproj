@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CB1143622F896A0D009F9FA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,13 +25,52 @@
 			remoteGlobalIDString = CB1143532F896A0B009F9FA2;
 			remoteInfo = MyCuKey;
 		};
+		CB1143872F896DDF009F9FA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB11434C2F896A0B009F9FA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB1143812F896DDF009F9FA2;
+			remoteInfo = KeyboardExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CB11438E2F896DDF009F9FA2 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CB1143542F896A0B009F9FA2 /* MyCuKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCuKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB11436B2F896A0D009F9FA2 /* MyCuKeyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CB11438A2F896DDF009F9FA2 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CB1143812F896DDF009F9FA2 /* KeyboardExtension */;
+		};
+		CB1143A02F899D42009F9FA2 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				KeyboardViewController.swift,
+			);
+			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CB1143562F896A0B009F9FA2 /* MyCuKey */ = {
@@ -43,6 +86,15 @@
 		CB11436E2F896A0D009F9FA2 /* MyCuKeyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyCuKeyUITests;
+			sourceTree = "<group>";
+		};
+		CB1143832F896DDF009F9FA2 /* KeyboardExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CB1143A02F899D42009F9FA2 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */,
+				CB11438A2F896DDF009F9FA2 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */,
+			);
+			path = KeyboardExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -69,6 +121,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB11437F2F896DDF009F9FA2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -78,6 +137,7 @@
 				CB1143562F896A0B009F9FA2 /* MyCuKey */,
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB11436E2F896A0D009F9FA2 /* MyCuKeyUITests */,
+				CB1143832F896DDF009F9FA2 /* KeyboardExtension */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,6 +148,7 @@
 				CB1143542F896A0B009F9FA2 /* MyCuKey.app */,
 				CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */,
 				CB11436B2F896A0D009F9FA2 /* MyCuKeyUITests.xctest */,
+				CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,10 +163,12 @@
 				CB1143502F896A0B009F9FA2 /* Sources */,
 				CB1143512F896A0B009F9FA2 /* Frameworks */,
 				CB1143522F896A0B009F9FA2 /* Resources */,
+				CB11438E2F896DDF009F9FA2 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CB1143882F896DDF009F9FA2 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CB1143562F896A0B009F9FA2 /* MyCuKey */,
@@ -163,6 +226,28 @@
 			productReference = CB11436B2F896A0D009F9FA2 /* MyCuKeyUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CB1143812F896DDF009F9FA2 /* KeyboardExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB11438B2F896DDF009F9FA2 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */;
+			buildPhases = (
+				CB11437E2F896DDF009F9FA2 /* Sources */,
+				CB11437F2F896DDF009F9FA2 /* Frameworks */,
+				CB1143802F896DDF009F9FA2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CB1143832F896DDF009F9FA2 /* KeyboardExtension */,
+			);
+			name = KeyboardExtension;
+			packageProductDependencies = (
+			);
+			productName = KeyboardExtension;
+			productReference = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,6 +269,9 @@
 						CreatedOnToolsVersion = 26.4;
 						TestTargetID = CB1143532F896A0B009F9FA2;
 					};
+					CB1143812F896DDF009F9FA2 = {
+						CreatedOnToolsVersion = 26.4;
+					};
 				};
 			};
 			buildConfigurationList = CB11434F2F896A0B009F9FA2 /* Build configuration list for PBXProject "MyCuKey" */;
@@ -203,6 +291,7 @@
 				CB1143532F896A0B009F9FA2 /* MyCuKey */,
 				CB1143602F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB11436A2F896A0D009F9FA2 /* MyCuKeyUITests */,
+				CB1143812F896DDF009F9FA2 /* KeyboardExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -223,6 +312,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CB1143692F896A0D009F9FA2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB1143802F896DDF009F9FA2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,6 +349,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB11437E2F896DDF009F9FA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -265,6 +368,11 @@
 			isa = PBXTargetDependency;
 			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
 			targetProxy = CB11436C2F896A0D009F9FA2 /* PBXContainerItemProxy */;
+		};
+		CB1143882F896DDF009F9FA2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB1143812F896DDF009F9FA2 /* KeyboardExtension */;
+			targetProxy = CB1143872F896DDF009F9FA2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -322,7 +430,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -380,7 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -462,7 +570,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -484,7 +592,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -538,6 +646,62 @@
 			};
 			name = Release;
 		};
+		CB11438C2F896DDF009F9FA2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q8T2W5DK59;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CB11438D2F896DDF009F9FA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q8T2W5DK59;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey.KeyboardExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -573,6 +737,15 @@
 			buildConfigurations = (
 				CB11437C2F896A0D009F9FA2 /* Debug */,
 				CB11437D2F896A0D009F9FA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CB11438B2F896DDF009F9FA2 /* Build configuration list for PBXNativeTarget "KeyboardExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB11438C2F896DDF009F9FA2 /* Debug */,
+				CB11438D2F896DDF009F9FA2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

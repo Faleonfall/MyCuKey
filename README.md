@@ -23,14 +23,21 @@ To use the custom keyboard on your device or simulator:
 5. Tap on the newly added keyboard and toggle **Allow Full Access** (if your keyboard features require it).
 6. Open any app with a text field (e.g. Messages, Notes) and tap the globe icon on the default keyboard to switch to MyCuKey.
 
+## Current Features
+- Modern, dynamic SwiftUI interface rendered atop standard `UIInputViewController` constraints
+- Support for Light and Dark modes
+- Automatic Auto-capitalization based on sentence context (periods, line breaks, empty text)
+- Built-in "Globe" switch for transitioning to native keyboards
+- Minimalist standard keyboard view leveraging SF Symbols
+
 ## Roadmap
 
-- Set up custom SwiftUI view for the keyboard UI
-- Connect keyboard logic to InputViewController
-- Add styling, animations, and sound effects
+- Implement advanced haptics for key presses
+- Add settings in the `MyCuKey` host app to configure themes
+- Support international layouts beyond QWERTY
 
 ## Requirements
 
-- iOS 16.0+ (or as specified in the project build settings)
+- iOS 26.0+ (minimum deployment)
 - Xcode 15.0+
 - Swift 5+
