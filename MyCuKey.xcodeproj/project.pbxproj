@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CB1143AD2F89A672009F9FA2 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143A72F89A672009F9FA2 /* ActionKeyView.swift */; };
+		CB1143AE2F89A672009F9FA2 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143A92F89A672009F9FA2 /* KeyboardActionHandler.swift */; };
+		CB1143AF2F89A672009F9FA2 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AA2F89A672009F9FA2 /* KeyboardView.swift */; };
+		CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
+		CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
+		CB1143B32F89A691009F9FA2 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143A72F89A672009F9FA2 /* ActionKeyView.swift */; };
+		CB1143B42F89A695009F9FA2 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143A92F89A672009F9FA2 /* KeyboardActionHandler.swift */; };
+		CB1143B52F89A699009F9FA2 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AA2F89A672009F9FA2 /* KeyboardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,24 +61,12 @@
 		CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB11436B2F896A0D009F9FA2 /* MyCuKeyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB1143A72F89A672009F9FA2 /* ActionKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionKeyView.swift; sourceTree = "<group>"; };
+		CB1143A82F89A672009F9FA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CB1143A92F89A672009F9FA2 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
+		CB1143AA2F89A672009F9FA2 /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
+		CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CB11438A2F896DDF009F9FA2 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = CB1143812F896DDF009F9FA2 /* KeyboardExtension */;
-		};
-		CB1143A02F899D42009F9FA2 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				KeyboardViewController.swift,
-			);
-			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CB1143562F896A0B009F9FA2 /* MyCuKey */ = {
@@ -86,15 +82,6 @@
 		CB11436E2F896A0D009F9FA2 /* MyCuKeyUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyCuKeyUITests;
-			sourceTree = "<group>";
-		};
-		CB1143832F896DDF009F9FA2 /* KeyboardExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CB1143A02F899D42009F9FA2 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */,
-				CB11438A2F896DDF009F9FA2 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */,
-			);
-			path = KeyboardExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -137,7 +124,7 @@
 				CB1143562F896A0B009F9FA2 /* MyCuKey */,
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB11436E2F896A0D009F9FA2 /* MyCuKeyUITests */,
-				CB1143832F896DDF009F9FA2 /* KeyboardExtension */,
+				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -151,6 +138,18 @@
 				CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CB1143AC2F89A672009F9FA2 /* KeyboardExtension */ = {
+			isa = PBXGroup;
+			children = (
+				CB1143A82F89A672009F9FA2 /* Info.plist */,
+				CB1143A72F89A672009F9FA2 /* ActionKeyView.swift */,
+				CB1143A92F89A672009F9FA2 /* KeyboardActionHandler.swift */,
+				CB1143AA2F89A672009F9FA2 /* KeyboardView.swift */,
+				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
+			);
+			path = KeyboardExtension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,9 +236,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				CB1143832F896DDF009F9FA2 /* KeyboardExtension */,
 			);
 			name = KeyboardExtension;
 			packageProductDependencies = (
@@ -332,6 +328,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB1143B42F89A695009F9FA2 /* KeyboardActionHandler.swift in Sources */,
+				CB1143B32F89A691009F9FA2 /* ActionKeyView.swift in Sources */,
+				CB1143B52F89A699009F9FA2 /* KeyboardView.swift in Sources */,
+				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +353,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB1143AD2F89A672009F9FA2 /* ActionKeyView.swift in Sources */,
+				CB1143AE2F89A672009F9FA2 /* KeyboardActionHandler.swift in Sources */,
+				CB1143AF2F89A672009F9FA2 /* KeyboardView.swift in Sources */,
+				CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
