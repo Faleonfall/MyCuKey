@@ -6,61 +6,59 @@ struct AlphabeticKeyboardView: View {
     var controller: UIInputViewController
     var letterKeyBg: Color
     var actionKeyBg: Color
-    
-    let topRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"]
-    let middleRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L"]
-    let bottomRow = ["Z", "X", "C", "V", "B", "N", "M"]
-    
+
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                ForEach(topRow, id: \.self) { key in
-                    let letter = actionHandler.isShiftEnabled ? key : key.lowercased()
-                    ActionKeyView(title: letter, backgroundColor: letterKeyBg) {
-                        actionHandler.typeLetter(letter)
-                    }
-                }
-            }.frame(height: 53)
-            
-            HStack(spacing: 0) {
-                Spacer(minLength: 16)
-                ForEach(middleRow, id: \.self) { key in
-                    let letter = actionHandler.isShiftEnabled ? key : key.lowercased()
-                    ActionKeyView(title: letter, backgroundColor: letterKeyBg) {
-                        actionHandler.typeLetter(letter)
-                    }
-                }
-                Spacer(minLength: 16)
-            }.frame(height: 53)
-            
+            KeyboardRow(
+                keys: KeyboardLayout.alphabeticTopRow,
+                backgroundColor: letterKeyBg,
+                keyTitle: displayedLetter(for:)
+            ) { letter in
+                actionHandler.typeLetter(letter)
+            }
+
+            KeyboardRow(
+                keys: KeyboardLayout.alphabeticMiddleRow,
+                backgroundColor: letterKeyBg,
+                leadingInset: KeyboardMetrics.bottomRowInset,
+                trailingInset: KeyboardMetrics.bottomRowInset,
+                keyTitle: displayedLetter(for:)
+            ) { letter in
+                actionHandler.typeLetter(letter)
+            }
+
             HStack(spacing: 0) {
                 let shiftBg = actionHandler.isShiftEnabled ? letterKeyBg : actionKeyBg
                 let shiftIcon = actionHandler.isCapsLocked ? "capslock.fill" : (actionHandler.isShiftEnabled ? "shift.fill" : "shift")
-                
-                ActionKeyView(title: "Shift", systemImage: shiftIcon, backgroundColor: shiftBg) { 
+
+                ActionKeyView(title: "Shift", systemImage: shiftIcon, backgroundColor: shiftBg) {
                     actionHandler.handleShiftPress()
-                }.frame(width: 44)
-                
-                ForEach(bottomRow, id: \.self) { key in
-                    let letter = actionHandler.isShiftEnabled ? key : key.lowercased()
+                }
+                .frame(width: KeyboardMetrics.sideKeyWidth)
+
+                ForEach(KeyboardLayout.alphabeticBottomRow, id: \.self) { key in
+                    let letter = displayedLetter(for: key)
                     ActionKeyView(title: letter, backgroundColor: letterKeyBg) {
                         actionHandler.typeLetter(letter)
                     }
                 }
-                
-                ActionKeyView(title: "Delete", systemImage: "delete.left", backgroundColor: actionKeyBg, isRepeatable: true, suppressRepeatHaptic: true, acceleratedAction: { actionHandler.deleteWordBackward() }) {
-                    actionHandler.deleteBackward()
-                }.frame(width: 44)
-            }.frame(height: 53)
+
+                KeyboardDeleteKey(actionHandler: actionHandler, backgroundColor: actionKeyBg)
+            }
+            .frame(height: KeyboardMetrics.rowHeight)
             
             SpaceRowView(
-                actionHandler: actionHandler, 
-                needsInputModeSwitchKey: needsInputModeSwitchKey, 
-                controller: controller, 
+                actionHandler: actionHandler,
+                needsInputModeSwitchKey: needsInputModeSwitchKey,
+                controller: controller,
                 mode: .alphabetic,
                 letterKeyBg: letterKeyBg,
                 actionKeyBg: actionKeyBg
             )
         }
+    }
+
+    private func displayedLetter(for key: String) -> String {
+        actionHandler.isShiftEnabled ? key : key.lowercased()
     }
 }

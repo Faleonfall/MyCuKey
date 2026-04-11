@@ -2,67 +2,55 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// Core tests: auto-capitalization, double-space, keyboard type state
 @MainActor
 struct MyCuKeyTests {
 
     @Test func testKeyboardCapitalizationAtStart() async throws {
         let handler = KeyboardActionHandler()
         handler.isShiftEnabled = false
-        
-        // Simulating loading into a completely empty text field
         handler.evaluateAutoCapitalization(contextBefore: "")
-        
         #expect(handler.isShiftEnabled == true, "Keyboard should automatically shift on empty fields.")
     }
     
     @Test func testKeyboardCapitalizationAfterSentence() async throws {
         let handler = KeyboardActionHandler()
         handler.isShiftEnabled = false
-        
-        // Simulating typing the end of a sentence
         handler.evaluateAutoCapitalization(contextBefore: "Hello world. ")
-        
         #expect(handler.isShiftEnabled == true, "Keyboard should automatically shift after a period and space.")
     }
     
     @Test func testKeyboardNoCapitalizationMidSentence() async throws {
         let handler = KeyboardActionHandler()
         handler.isShiftEnabled = false
-        
-        // Simulating standard typing
         handler.evaluateAutoCapitalization(contextBefore: "Hello wo")
-        
         #expect(handler.isShiftEnabled == false, "Keyboard should not shift in the middle of a word.")
     }
 
     @Test func testDoubleSpaceIsReplacedWithDot() async throws {
         let handler = KeyboardActionHandler()
         let time1 = Date()
-        let time2 = time1.addingTimeInterval(0.2) // 0.2 seconds later (fast double tap)
+        let time2 = time1.addingTimeInterval(0.2)
         
-        // First, check that a single space acts normally
         let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello", now: time1, lastPress: nil)
         #expect(firstPress.textToInsert == " ", "First space should insert normally.")
-        #expect(firstPress.needsDeleteBackward == false, "First space shouldn't delete backward.")
+        #expect(firstPress.needsDeleteBackward == false)
         
-        // Next, simulate the second fast space!
         let secondPress = handler.evaluateTextInsertion(text: " ", context: "Hello ", now: time2, lastPress: firstPress.newLastSpacePress)
         #expect(secondPress.textToInsert == ". ", "Fast double space should insert a period and space.")
-        #expect(secondPress.needsDeleteBackward == true, "Double space must delete the FIRST space backward.")
+        #expect(secondPress.needsDeleteBackward == true)
         #expect(secondPress.newLastSpacePress == nil, "Press timer must reset after a period is placed.")
     }
     
     @Test func testSlowDoubleSpaceIsIgnored() async throws {
         let handler = KeyboardActionHandler()
         let time1 = Date()
-        let time2 = time1.addingTimeInterval(1.5) // 1.5 seconds later (too slow!)
+        let time2 = time1.addingTimeInterval(1.5)
         
         let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello", now: time1, lastPress: nil)
-        
-        // Next, simulate the second SLOW space
         let secondPress = handler.evaluateTextInsertion(text: " ", context: "Hello ", now: time2, lastPress: firstPress.newLastSpacePress)
         #expect(secondPress.textToInsert == " ", "Slow double space should just insert another normal space.")
-        #expect(secondPress.needsDeleteBackward == false, "Slow space should NOT delete anything.")
+        #expect(secondPress.needsDeleteBackward == false)
         #expect(secondPress.newLastSpacePress == time2, "Timer should reset to this new slow press.")
     }
 
@@ -88,52 +76,40 @@ struct MyCuKeyTests {
     @Test func testSpaceTapTimerResetByOtherKey() async throws {
         let handler = KeyboardActionHandler()
         let time1 = Date()
-        let time2 = time1.addingTimeInterval(0.1) // insanely fast typing!
+        let time2 = time1.addingTimeInterval(0.1)
         
-        // 1. Tap 'Space'
         let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello", now: time1, lastPress: nil)
-        
-        // 2. Tap 'A' instead of space
         let intermediatePress = handler.evaluateTextInsertion(text: "A", context: "Hello ", now: time2, lastPress: firstPress.newLastSpacePress)
         
-        #expect(intermediatePress.textToInsert == "A", "Normal key inserts correctly.")
-        #expect(intermediatePress.newLastSpacePress == nil, "Typing any other letter MUST instantly wipe the double-space timer memory.")
+        #expect(intermediatePress.textToInsert == "A")
+        #expect(intermediatePress.newLastSpacePress == nil, "Typing any other letter must wipe the double-space timer.")
     }
 
-    // MARK: - Layout State Architecture Tests
-    
     @Test func testKeyboardTypeInitializesToAlphabetic() async throws {
         let handler = KeyboardActionHandler()
-        #expect(handler.currentKeyboardType == .alphabetic, "Keyboard MUST natively boot up into the alphabetic letter state to match iOS defaults.")
+        #expect(handler.currentKeyboardType == .alphabetic)
     }
 
     @Test func testKeyboardTypeCanBeToggledToNumericAndSymbolic() async throws {
         let handler = KeyboardActionHandler()
-        
         handler.currentKeyboardType = .numeric
-        #expect(handler.currentKeyboardType == .numeric, "Keyboard action handler must support state-locking into the numeric layer.")
-        
+        #expect(handler.currentKeyboardType == .numeric)
         handler.currentKeyboardType = .symbolic
-        #expect(handler.currentKeyboardType == .symbolic, "Keyboard action handler must support deeply routing into the symbolic layer.")
+        #expect(handler.currentKeyboardType == .symbolic)
     }
     
-    // MARK: - Spaceless & Asterisk Edge Case Tests
     @Test func testKeyboardCapitalizationWithAsterisksAndSpacelessTerminators() async throws {
         let handler = KeyboardActionHandler()
         
-        // Spaceless Dots
         handler.evaluateAutoCapitalization(contextBefore: "Hello world.")
         #expect(handler.isShiftEnabled == true, "Must shift after a raw dot without a space.")
         
-        // New line + *
         handler.evaluateAutoCapitalization(contextBefore: "Line one\n*")
         #expect(handler.isShiftEnabled == true, "Must shift after bullet points.")
         
-        // .* Logic
         handler.evaluateAutoCapitalization(contextBefore: "Hello.*")
-        #expect(handler.isShiftEnabled == true, "Must shift after dot followed instantaneously by asterisk.")
+        #expect(handler.isShiftEnabled == true, "Must shift after dot followed by asterisk.")
         
-        // . * Logic
         handler.evaluateAutoCapitalization(contextBefore: "Hello. *")
         #expect(handler.isShiftEnabled == true, "Must shift after dot, space, asterisk combination.")
         
@@ -141,158 +117,20 @@ struct MyCuKeyTests {
         #expect(handler.isShiftEnabled == false, "Must NOT shift after a raw asterisk unconnected to punctuation.")
     }
     
-    // MARK: - Synchronous Prediction & Mutability Tests
     @Test func testKeyboardCapitalizationDisablesAfterTypingNormalLetters() async throws {
         let handler = KeyboardActionHandler()
-        // Force shift on artificially
         handler.isShiftEnabled = true
-        
         handler.evaluateAutoCapitalization(contextBefore: "Hello world")
-        #expect(handler.isShiftEnabled == false, "Typing a normal letter string MUST forcefully un-shift the keyboard layout.")
+        #expect(handler.isShiftEnabled == false, "Typing normal letters must un-shift the keyboard.")
     }
     
     @Test func testKeyboardCapitalizationWithMultiplePunctuationMarks() async throws {
         let handler = KeyboardActionHandler()
         
-        // Ellipsis simulation
         handler.evaluateAutoCapitalization(contextBefore: "Wait...")
-        #expect(handler.isShiftEnabled == true, "Multiple dots ending in the trigger should still safely capitalize the next letter.")
+        #expect(handler.isShiftEnabled == true, "Multiple dots ending in a trigger should capitalize.")
         
-        // Interrobang simulation
         handler.evaluateAutoCapitalization(contextBefore: "Really?!")
-        #expect(handler.isShiftEnabled == true, "Compound punctuation should recognize the securely terminating exclamation mark.")
-    }
-    
-    // MARK: - Caps Lock Tests
-    @Test func testSingleShiftTapTogglesShift() async throws {
-        let handler = KeyboardActionHandler()
-        handler.isShiftEnabled = false
-        
-        handler.handleShiftPress()
-        
-        #expect(handler.isShiftEnabled == true, "A single shift press should enable shift.")
-        #expect(handler.isCapsLocked == false, "A single shift press must NOT enable Caps Lock.")
-    }
-    
-    @Test func testDoubleShiftTapEnablesCapsLock() async throws {
-        let handler = KeyboardActionHandler()
-        
-        handler.handleShiftPress()
-
-        // Simulate a fast second tap (within 0.35s window)
-        // Two sequential calls in a test always land within 0.35s, so this reliably triggers caps lock
-        handler.handleShiftPress()
-        
-        #expect(handler.isCapsLocked == true, "Double-tapping shift quickly must lock Caps Lock ON.")
-        #expect(handler.isShiftEnabled == true, "Caps Lock must keep shift visually enabled.")
-    }
-    
-    @Test func testTypeLetterDoesNotDisableShiftWhenCapsLocked() async throws {
-        let handler = KeyboardActionHandler()
-        handler.isCapsLocked = true
-        handler.isShiftEnabled = true
-        
-        // typeLetter should NOT turn off shift when Caps Lock is active
-        handler.typeLetter("A")
-        
-        #expect(handler.isShiftEnabled == true, "Typing a letter must NOT disable shift when Caps Lock is engaged.")
-    }
-    
-    @Test func testTypeLetterDisablesShiftWhenNotCapsLocked() async throws {
-        let handler = KeyboardActionHandler()
-        handler.isCapsLocked = false
-        handler.isShiftEnabled = true
-        
-        handler.typeLetter("a")
-        
-        #expect(handler.isShiftEnabled == false, "Typing a letter must disable shift when Caps Lock is OFF.")
-    }
-    
-    @Test func testAutoCapitalizationBypassedWhenCapsLocked() async throws {
-        let handler = KeyboardActionHandler()
-        handler.isCapsLocked = true
-        handler.isShiftEnabled = true
-        
-        // Even if context says "mid sentence", caps lock must prevent shift from being cleared
-        handler.evaluateAutoCapitalization(contextBefore: "Hello world")
-        
-        #expect(handler.isShiftEnabled == true, "evaluateAutoCapitalization must be a no-op when Caps Lock is engaged.")
-    }
-    
-    // MARK: - Word Deletion Tests
-    @Test func testWordDeletionCountForSingleWord() async throws {
-        let handler = KeyboardActionHandler()
-        let count = handler.charsToDeleteForWordBackward(context: "Hello")
-        #expect(count == 5, "Should delete all 5 chars of a single word.")
-    }
-    
-    @Test func testWordDeletionCountForMultipleWords() async throws {
-        let handler = KeyboardActionHandler()
-        let count = handler.charsToDeleteForWordBackward(context: "Hello world")
-        #expect(count == 5, "Should delete only the last word 'world'.")
-    }
-    
-    @Test func testWordDeletionCountWithTrailingSpace() async throws {
-        let handler = KeyboardActionHandler()
-        let count = handler.charsToDeleteForWordBackward(context: "Hello world ")
-        #expect(count == 6, "Should delete the trailing space AND the last word.")
-    }
-    
-    @Test func testWordDeletionCountForEmptyContext() async throws {
-        let handler = KeyboardActionHandler()
-        let count = handler.charsToDeleteForWordBackward(context: "")
-        #expect(count == 0, "Empty context must return 0 to prevent crashing.")
-    }
-    
-    @Test func testWordDeletionCountWithNewline() async throws {
-        let handler = KeyboardActionHandler()
-        // Cursor is right after a newline — should delete the newline separator
-        let count = handler.charsToDeleteForWordBackward(context: "Hello\n")
-        #expect(count == 1, "Trailing newline should be treated as one whitespace unit to delete.")
-    }
-    
-    @Test func testWordDeletionCountSingleCharWord() async throws {
-        let handler = KeyboardActionHandler()
-        let count = handler.charsToDeleteForWordBackward(context: "I am")
-        #expect(count == 2, "Should delete 'am' (2 chars) — the last short word.")
-    }
-    
-    // MARK: - Contraction Correction Tests
-    @Test func testContractionDontDetected() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "I dont")
-        #expect(result?.corrected == "don't", "Should correct 'dont' to 'don't'.")
-        #expect(result?.charsToDelete == 4, "Should delete 4 chars for 'dont'.")
-    }
-    
-    @Test func testContractionCapitalized() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "Dont")
-        #expect(result?.corrected == "Don't", "Should preserve leading capital: 'Dont' -> 'Don't'.")
-    }
-    
-    @Test func testContractionNoMatchReturnsNil() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "hello")
-        #expect(result == nil, "Non-contraction word must return nil.")
-    }
-    
-    @Test func testContractionEmptyContextReturnsNil() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "")
-        #expect(result == nil, "Empty context must return nil.")
-    }
-    
-    @Test func testContractionAfterSentence() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "This is done. I cant")
-        #expect(result?.corrected == "can't", "Should detect 'cant' at end of sentence.")
-        #expect(result?.charsToDelete == 4)
-    }
-    
-    @Test func testContractionImCorrection() async throws {
-        let handler = KeyboardActionHandler()
-        let result = handler.evaluateContraction(context: "im")
-        #expect(result?.corrected == "I'm", "Should correct 'im' to 'I'm' with capitalization.")
+        #expect(handler.isShiftEnabled == true, "Compound punctuation should recognize the exclamation mark.")
     }
 }

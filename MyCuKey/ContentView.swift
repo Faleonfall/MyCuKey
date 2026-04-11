@@ -28,7 +28,7 @@ struct InstructionRow: View {
     let text: String
     
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .center, spacing: 16) {
             ZStack {
                 Circle()
                     .fill(Color.blue)
@@ -41,7 +41,6 @@ struct InstructionRow: View {
             
             Text(text)
                 .font(.body)
-                .padding(.top, 3)
         }
         .padding(.vertical, 4)
     }

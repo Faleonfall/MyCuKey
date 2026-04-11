@@ -14,40 +14,48 @@ struct KeyboardButtonStyle: ButtonStyle {
     let trackpadAction: ((Int) -> Void)?
     let action: () -> Void
     
+    @Environment(\.colorScheme) var colorScheme
     @State private var repeatTask: Task<Void, Never>?
     @State private var isLongPressing = false
     @State private var dragStartOffset: CGFloat = 0
     @State private var isDragging = false
     @State private var isVisuallyPressed = false  // Decoupled from isPressed — guaranteed min 80ms display
+
+    private var keyFaceColor: Color {
+        colorScheme == .light ? Color.white : Color(white: 0.35)
+    }
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label // The massive invisible touch target box
             .overlay(
                 ZStack {
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(backgroundColor)
-                        .animation(nil, value: backgroundColor)
+                    // Solid Brighter Key Background
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(keyFaceColor)
                     
                     if let systemImage = systemImage {
                         Image(systemName: systemImage)
                             .font(.system(size: 20, weight: .regular))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.primary.opacity(0.85))
                             .animation(nil, value: systemImage)
                     } else {
                         Text(title)
                             .font(.system(size: fontSize, weight: .regular))
-                            .foregroundColor(.primary)
+                            // Shift lowercase letters up slightly for optical centering
+                            .baselineOffset(title.count == 1 && title == title.lowercased() ? 1.5 : 0)
+                            .foregroundColor(.primary.opacity(0.85))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             .animation(nil, value: title)
                     }
                     
-                    // Dark overlay: driven by isVisuallyPressed, NOT configuration.isPressed
+                    // Highlight on press
                     if isVisuallyPressed {
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .fill(Color.black.opacity(0.3))
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.white.opacity(0.15))
                     }
                 }
-                .padding(.horizontal, 3)
-                .padding(.vertical, 4)
+                .padding(.horizontal, 3)   // Slightly tighter key spacing
+                .padding(.vertical, 5)     // Increased from 4
                 .scaleEffect(isVisuallyPressed && !isLongPressing ? 0.95 : 1.0)
                 .animation(.interactiveSpring(response: 0.06, dampingFraction: 0.7, blendDuration: 0.03), value: isVisuallyPressed)
             )
@@ -56,8 +64,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                     if isLongPressing, let popupTitle = longPressTitle {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(backgroundColor)
-                                .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 4)
+                                .fill(keyFaceColor)
                             
                             Text(popupTitle)
                                 .font(.system(size: 32, weight: .regular))
@@ -86,7 +93,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                         // Deferred action required for popup keys
                         HapticFeedback.playLight()
                         repeatTask = Task {
-                            try? await Task.sleep(nanoseconds: 350_000_000)
+                            try? await Task.sleep(nanoseconds: 300_000_000)
                             if !Task.isCancelled {
                                 await MainActor.run {
                                     withAnimation(.spring(response: 0.2, dampingFraction: 0.7)) {
