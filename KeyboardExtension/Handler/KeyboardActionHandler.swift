@@ -12,8 +12,10 @@ enum KeyboardType {
 class KeyboardActionHandler: ObservableObject {
     weak var controller: UIInputViewController?
     @Published var isShiftEnabled: Bool = false
+    @Published var isCapsLocked: Bool = false
     @Published var currentKeyboardType: KeyboardType = .alphabetic
     private var lastSpacePressTime: Date?
+    private var lastShiftPressTime: Date?
     
     // Pure function extracting the double-space logic, making it fully unit-testable!
     func evaluateTextInsertion(text: String, context: String?, now: Date, lastPress: Date?) -> (textToInsert: String, needsDeleteBackward: Bool, newLastSpacePress: Date?) {
@@ -64,7 +66,33 @@ class KeyboardActionHandler: ObservableObject {
         }
     }
     
+    // MARK: - Dedicated Input Handlers
+    
+    func typeLetter(_ letter: String) {
+        insertText(letter)
+        if !isCapsLocked {
+            // Turn off manual shift after a regular letter is typed, unless we are caps locked
+            isShiftEnabled = false
+        }
+    }
+    
+    func handleShiftPress() {
+        let now = Date()
+        if let last = lastShiftPressTime, now.timeIntervalSince(last) < 0.35 {
+            // Double tap!
+            isCapsLocked = true
+            isShiftEnabled = true
+        } else {
+            // Normal tap
+            isCapsLocked = false
+            isShiftEnabled.toggle()
+        }
+        lastShiftPressTime = now
+    }
+    
     func evaluateAutoCapitalization(contextBefore: String?) {
+        if isCapsLocked { return } // Aggressively bypass auto-evaluation if mechanically locked!
+        
         let text = contextBefore ?? ""
         if text.isEmpty {
             self.isShiftEnabled = true

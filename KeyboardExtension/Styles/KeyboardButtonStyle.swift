@@ -1,52 +1,5 @@
 import SwiftUI
 
-// MARK: - Keyboard Action Key
-struct ActionKeyView: View {
-    let title: String
-    let systemImage: String?
-    let action: () -> Void
-    let backgroundColor: Color
-    let fontSize: CGFloat
-    let isRepeatable: Bool
-    let longPressTitle: String?
-    let longPressAction: (() -> Void)?
-    let isTrackpadEnabled: Bool
-    let trackpadAction: ((Int) -> Void)?
-    
-    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false, trackpadAction: ((Int) -> Void)? = nil, action: @escaping () -> Void) {
-        self.title = title
-        self.systemImage = systemImage
-        self.backgroundColor = backgroundColor
-        self.fontSize = fontSize
-        self.isRepeatable = isRepeatable
-        self.longPressTitle = longPressTitle
-        self.longPressAction = longPressAction
-        self.isTrackpadEnabled = isTrackpadEnabled
-        self.trackpadAction = trackpadAction
-        self.action = action
-    }
-    
-    var body: some View {
-        Button(action: {}) { // Empty action! Style handles execution instantly on press.
-            Color.white.opacity(0.001) // Massive invisible touch target that completely fills padding gaps!
-        }
-        .buttonStyle(KeyboardButtonStyle(
-            title: title, 
-            systemImage: systemImage, 
-            backgroundColor: backgroundColor, 
-            fontSize: fontSize,
-            isRepeatable: isRepeatable,
-            longPressTitle: longPressTitle,
-            longPressAction: longPressAction,
-            isTrackpadEnabled: isTrackpadEnabled,
-            trackpadAction: trackpadAction,
-            action: action
-        ))
-        .frame(minWidth: 26, maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-// MARK: - Custom Highly Responsive Button Style
 struct KeyboardButtonStyle: ButtonStyle {
     let title: String
     let systemImage: String?
@@ -180,55 +133,5 @@ struct KeyboardButtonStyle: ButtonStyle {
                     }
                 }
             }
-    }
-}
-
-// MARK: - Gesture Extension
-extension View {
-    @ViewBuilder
-    func trackpadGesture(isEnabled: Bool, trackpadAction: ((Int)->Void)?, isDragging: Binding<Bool>, dragStartOffset: Binding<CGFloat>) -> some View {
-        if isEnabled {
-            self.highPriorityGesture(
-                DragGesture(minimumDistance: 5)
-                    .onChanged { value in
-                        if !isDragging.wrappedValue {
-                            isDragging.wrappedValue = true
-                            dragStartOffset.wrappedValue = value.translation.width
-                            HapticFeedback.playMedium() // Trackpad initiate haptic
-                        }
-                        
-                        let translation = value.translation.width
-                        let threshold = 12.0 // Pixels per character slice
-                        let steps = Int((translation - dragStartOffset.wrappedValue) / threshold)
-                        
-                        if steps != 0 {
-                            trackpadAction?(steps)
-                            dragStartOffset.wrappedValue += CGFloat(steps) * threshold
-                        }
-                    }
-                    .onEnded { _ in
-                        isDragging.wrappedValue = false
-                        dragStartOffset.wrappedValue = 0
-                    }
-            )
-        } else {
-            self
-        }
-    }
-}
-
-// MARK: - Haptic Manager
-struct HapticFeedback {
-    static let light = UIImpactFeedbackGenerator(style: .light)
-    static let medium = UIImpactFeedbackGenerator(style: .medium)
-    
-    static func playLight() {
-        light.prepare()
-        light.impactOccurred()
-    }
-    
-    static func playMedium() {
-        medium.prepare()
-        medium.impactOccurred()
     }
 }
