@@ -64,6 +64,11 @@ struct SpaceRowView: View {
                 action: { actionHandler.insertText(",") }
             )
             .frame(width: 45)
+            
+            ActionKeyView(title: "", systemImage: "return", backgroundColor: actionKeyBg) {
+                actionHandler.insertText("\n")
+            }
+            .frame(width: 45)
         }
         .frame(height: 53)
     }

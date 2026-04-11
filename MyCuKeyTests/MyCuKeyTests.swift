@@ -218,4 +218,42 @@ struct MyCuKeyTests {
         
         #expect(handler.isShiftEnabled == true, "evaluateAutoCapitalization must be a no-op when Caps Lock is engaged.")
     }
+    
+    // MARK: - Word Deletion Tests
+    @Test func testWordDeletionCountForSingleWord() async throws {
+        let handler = KeyboardActionHandler()
+        let count = handler.charsToDeleteForWordBackward(context: "Hello")
+        #expect(count == 5, "Should delete all 5 chars of a single word.")
+    }
+    
+    @Test func testWordDeletionCountForMultipleWords() async throws {
+        let handler = KeyboardActionHandler()
+        let count = handler.charsToDeleteForWordBackward(context: "Hello world")
+        #expect(count == 5, "Should delete only the last word 'world'.")
+    }
+    
+    @Test func testWordDeletionCountWithTrailingSpace() async throws {
+        let handler = KeyboardActionHandler()
+        let count = handler.charsToDeleteForWordBackward(context: "Hello world ")
+        #expect(count == 6, "Should delete the trailing space AND the last word.")
+    }
+    
+    @Test func testWordDeletionCountForEmptyContext() async throws {
+        let handler = KeyboardActionHandler()
+        let count = handler.charsToDeleteForWordBackward(context: "")
+        #expect(count == 0, "Empty context must return 0 to prevent crashing.")
+    }
+    
+    @Test func testWordDeletionCountWithNewline() async throws {
+        let handler = KeyboardActionHandler()
+        // Cursor is right after a newline — should delete the newline separator
+        let count = handler.charsToDeleteForWordBackward(context: "Hello\n")
+        #expect(count == 1, "Trailing newline should be treated as one whitespace unit to delete.")
+    }
+    
+    @Test func testWordDeletionCountSingleCharWord() async throws {
+        let handler = KeyboardActionHandler()
+        let count = handler.charsToDeleteForWordBackward(context: "I am")
+        #expect(count == 2, "Should delete 'am' (2 chars) — the last short word.")
+    }
 }

@@ -56,13 +56,52 @@ class KeyboardActionHandler: ObservableObject {
     }
     
     func deleteBackward() {
+        guard controller?.textDocumentProxy.hasText == true else { return }
         controller?.textDocumentProxy.deleteBackward()
+        HapticFeedback.playLight()
         
         // Also manually evaluate on deletion using the proxy (which updates slightly faster on delete, but we should force a check)
         // Note: For deletion, context might still lag, but a slight delay is standard.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             let context = self.controller?.textDocumentProxy.documentContextBeforeInput
             self.evaluateAutoCapitalization(contextBefore: context)
+        }
+    }
+    
+    // Pure function: counts how many characters to delete to remove the last word + trailing whitespace.
+    // Extracted for full unit testability.
+    func charsToDeleteForWordBackward(context: String) -> Int {
+        guard !context.isEmpty else { return 0 }
+        
+        var count = 0
+        var hitNonWhitespace = false
+        
+        for char in context.reversed() {
+            let isWhitespace = char == " " || char == "\n"
+            if isWhitespace {
+                // Consume leading whitespace before the word, then stop once we hit the word
+                if hitNonWhitespace { break }
+            } else {
+                hitNonWhitespace = true
+            }
+            count += 1
+        }
+        return count
+    }
+    
+    func deleteWordBackward() {
+        guard let context = controller?.textDocumentProxy.documentContextBeforeInput,
+              !context.isEmpty else { return }
+        
+        let count = charsToDeleteForWordBackward(context: context)
+        for _ in 0..<count {
+            controller?.textDocumentProxy.deleteBackward()
+        }
+        HapticFeedback.playMedium() // Stronger haptic to signal word-level deletion
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            let ctx = self.controller?.textDocumentProxy.documentContextBeforeInput
+            self.evaluateAutoCapitalization(contextBefore: ctx)
         }
     }
     

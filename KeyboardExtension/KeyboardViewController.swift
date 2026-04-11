@@ -7,6 +7,7 @@ import Combine
 class KeyboardViewController: UIInputViewController {
     
     let actionHandler = KeyboardActionHandler()
+    private var hostingController: UIHostingController<KeyboardView>?
 
     override func updateViewConstraints() {
         super.updateViewConstraints()
@@ -24,20 +25,34 @@ class KeyboardViewController: UIInputViewController {
         )
         
         // Wrap the SwiftUI view inside a Hosting Controller
-        let hostingController = UIHostingController(rootView: keyboardView)
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingController.view.backgroundColor = .clear
+        let hc = UIHostingController(rootView: keyboardView)
+        hc.view.translatesAutoresizingMaskIntoConstraints = false
+        hc.view.backgroundColor = .clear
         
-        self.addChild(hostingController)
-        self.view.addSubview(hostingController.view)
-        hostingController.didMove(toParent: self)
+        // Pre-seed the correct color scheme BEFORE the view is added to the hierarchy.
+        // This kills the flash — the first render already uses the right colors.
+        hc.overrideUserInterfaceStyle = traitCollection.userInterfaceStyle
+        
+        self.addChild(hc)
+        self.view.addSubview(hc.view)
+        hc.didMove(toParent: self)
         
         NSLayoutConstraint.activate([
-            hostingController.view.leftAnchor.constraint(equalTo: view.leftAnchor),
-            hostingController.view.rightAnchor.constraint(equalTo: view.rightAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            hc.view.leftAnchor.constraint(equalTo: view.leftAnchor),
+            hc.view.rightAnchor.constraint(equalTo: view.rightAnchor),
+            hc.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        
+        self.hostingController = hc
+        
+        // Modern iOS 17+ trait change API — replaces deprecated traitCollectionDidChange
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (_: KeyboardViewController, _: UITraitCollection) in
+            guard let self else { return }
+            UIView.animate(withDuration: 0.2) {
+                self.hostingController?.overrideUserInterfaceStyle = self.traitCollection.userInterfaceStyle
+            }
+        }
     }
     
     // Maintain properties during dark / light mode switch

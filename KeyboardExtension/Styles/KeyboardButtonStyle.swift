@@ -6,6 +6,8 @@ struct KeyboardButtonStyle: ButtonStyle {
     let backgroundColor: Color
     let fontSize: CGFloat
     let isRepeatable: Bool
+    let suppressRepeatHaptic: Bool
+    let acceleratedAction: (() -> Void)?  // Called instead of action after ~1s of holding
     let longPressTitle: String?
     let longPressAction: (() -> Void)?
     let isTrackpadEnabled: Bool
@@ -100,9 +102,16 @@ struct KeyboardButtonStyle: ButtonStyle {
                             repeatTask = Task {
                                 // Initial holding delay before rapid-fire starts (0.35s)
                                 try? await Task.sleep(nanoseconds: 350_000_000)
+                                var ticks = 0
                                 while !Task.isCancelled {
-                                    action()
-                                    HapticFeedback.playLight()
+                                    ticks += 1
+                                    // After 10 ticks (~1s), switch to accelerated word-level action
+                                    if ticks > 10, let accelerated = acceleratedAction {
+                                        accelerated()
+                                    } else {
+                                        action()
+                                    }
+                                    if !suppressRepeatHaptic { HapticFeedback.playLight() }
                                     try? await Task.sleep(nanoseconds: 100_000_000) // fire every 0.1s
                                 }
                             }

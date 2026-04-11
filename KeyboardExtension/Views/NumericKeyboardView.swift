@@ -36,7 +36,7 @@ struct NumericKeyboardView: View {
                 }
                 Spacer(minLength: 16)
                 
-                ActionKeyView(title: "Delete", systemImage: "delete.left", backgroundColor: actionKeyBg, isRepeatable: true) {
+                ActionKeyView(title: "Delete", systemImage: "delete.left", backgroundColor: actionKeyBg, isRepeatable: true, suppressRepeatHaptic: true, acceleratedAction: { actionHandler.deleteWordBackward() }) {
                     actionHandler.deleteBackward()
                 }.frame(width: 44)
             }.frame(height: 53)

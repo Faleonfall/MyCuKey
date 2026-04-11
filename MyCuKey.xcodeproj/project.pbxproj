@@ -18,7 +18,6 @@
 		CB9BF3412F8A1567001FCAA8 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */; };
 		CB9BF3422F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */; };
 		CB9BF3432F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */; };
-		CB9BF3442F8A1567001FCAA8 /* TrackpadGestureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3332F8A1567001FCAA8 /* TrackpadGestureExtension.swift */; };
 		CB9BF3452F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
 		CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
 		CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
@@ -28,8 +27,9 @@
 		CB9BF34B2F8A1567001FCAA8 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */; };
 		CB9BF34C2F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */; };
 		CB9BF34D2F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */; };
-		CB9BF34E2F8A1567001FCAA8 /* TrackpadGestureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3332F8A1567001FCAA8 /* TrackpadGestureExtension.swift */; };
 		CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
+		CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
+		CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,13 +80,13 @@
 		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
 		CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButtonStyle.swift; sourceTree = "<group>"; };
 		CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
-		CB9BF3332F8A1567001FCAA8 /* TrackpadGestureExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGestureExtension.swift; sourceTree = "<group>"; };
 		CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionKeyView.swift; sourceTree = "<group>"; };
 		CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphabeticKeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericKeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceRowView.swift; sourceTree = "<group>"; };
 		CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicKeyboardView.swift; sourceTree = "<group>"; };
+		CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGesture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -194,7 +194,7 @@
 			isa = PBXGroup;
 			children = (
 				CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */,
-				CB9BF3332F8A1567001FCAA8 /* TrackpadGestureExtension.swift */,
+				CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -389,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
+				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
 				CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
 				CB9BF3482F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */,
@@ -397,7 +398,6 @@
 				CB9BF34B2F8A1567001FCAA8 /* ActionKeyView.swift in Sources */,
 				CB9BF34C2F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */,
 				CB9BF34D2F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */,
-				CB9BF34E2F8A1567001FCAA8 /* TrackpadGestureExtension.swift in Sources */,
 				CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -425,10 +425,10 @@
 				CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */,
 				CB9BF33F2F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */,
 				CB9BF3402F8A1567001FCAA8 /* HapticFeedback.swift in Sources */,
+				CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
 				CB9BF3412F8A1567001FCAA8 /* ActionKeyView.swift in Sources */,
 				CB9BF3422F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */,
 				CB9BF3432F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */,
-				CB9BF3442F8A1567001FCAA8 /* TrackpadGestureExtension.swift in Sources */,
 				CB9BF3452F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
 				CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 			);
