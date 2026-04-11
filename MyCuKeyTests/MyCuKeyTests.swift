@@ -54,6 +54,39 @@ struct MyCuKeyTests {
         #expect(secondPress.newLastSpacePress == time2, "Timer should reset to this new slow press.")
     }
 
+    @Test func testDoubleSpaceBoundaryAtExactlyPoint25SecondsIsIgnored() async throws {
+        let handler = KeyboardActionHandler()
+        let time1 = Date()
+        let time2 = time1.addingTimeInterval(0.25)
+
+        let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello", now: time1, lastPress: nil)
+        let secondPress = handler.evaluateTextInsertion(text: " ", context: "Hello ", now: time2, lastPress: firstPress.newLastSpacePress)
+        #expect(secondPress.textToInsert == " ", "At exactly 0.25s, replacement should not trigger because threshold is strict (< 0.25).")
+        #expect(secondPress.needsDeleteBackward == false)
+    }
+
+    @Test func testDoubleSpaceBoundaryJustBelowPoint25SecondsTriggersPeriod() async throws {
+        let handler = KeyboardActionHandler()
+        let time1 = Date()
+        let time2 = time1.addingTimeInterval(0.249)
+
+        let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello", now: time1, lastPress: nil)
+        let secondPress = handler.evaluateTextInsertion(text: " ", context: "Hello ", now: time2, lastPress: firstPress.newLastSpacePress)
+        #expect(secondPress.textToInsert == ". ")
+        #expect(secondPress.needsDeleteBackward == true)
+    }
+
+    @Test func testDoubleSpaceDoesNotTriggerAfterTwoSpacesAlreadyPresent() async throws {
+        let handler = KeyboardActionHandler()
+        let time1 = Date()
+        let time2 = time1.addingTimeInterval(0.1)
+
+        let firstPress = handler.evaluateTextInsertion(text: " ", context: "Hello ", now: time1, lastPress: nil)
+        let secondPress = handler.evaluateTextInsertion(text: " ", context: "Hello  ", now: time2, lastPress: firstPress.newLastSpacePress)
+        #expect(secondPress.textToInsert == " ")
+        #expect(secondPress.needsDeleteBackward == false)
+    }
+
     @Test func testKeyboardCapitalizationAfterExclamationAndQuestionMark() async throws {
         let handler = KeyboardActionHandler()
         
@@ -132,5 +165,23 @@ struct MyCuKeyTests {
         
         handler.evaluateAutoCapitalization(contextBefore: "Really?!")
         #expect(handler.isShiftEnabled == true, "Compound punctuation should recognize the exclamation mark.")
+    }
+
+    @Test func testCorrectionSuffixIncludesPunctuationTriggers() async throws {
+        let handler = KeyboardActionHandler()
+        #expect(handler.correctionSuffix(for: " ") == " ")
+        #expect(handler.correctionSuffix(for: ".") == ".")
+        #expect(handler.correctionSuffix(for: ",") == ",")
+        #expect(handler.correctionSuffix(for: "!") == "!")
+        #expect(handler.correctionSuffix(for: "?") == "?")
+        #expect(handler.correctionSuffix(for: "*") == "*")
+        #expect(handler.correctionSuffix(for: "\n") == "\n")
+    }
+
+    @Test func testCorrectionSuffixSkipsRegularLetters() async throws {
+        let handler = KeyboardActionHandler()
+        #expect(handler.correctionSuffix(for: "a") == nil)
+        #expect(handler.correctionSuffix(for: "Z") == nil)
+        #expect(handler.correctionSuffix(for: "1") == nil)
     }
 }

@@ -164,6 +164,7 @@ struct KeyboardView: View {
                 )
             }
         }
+        .padding(.horizontal, 2)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: actionHandler.currentKeyboardType)
     }
 }

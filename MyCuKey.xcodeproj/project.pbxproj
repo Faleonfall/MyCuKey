@@ -44,13 +44,6 @@
 			remoteGlobalIDString = CB1143532F896A0B009F9FA2;
 			remoteInfo = MyCuKey;
 		};
-		CB11436C2F896A0D009F9FA2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CB11434C2F896A0B009F9FA2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CB1143532F896A0B009F9FA2;
-			remoteInfo = MyCuKey;
-		};
 		CB1143872F896DDF009F9FA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CB11434C2F896A0B009F9FA2 /* Project object */;
@@ -116,13 +109,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CB11435E2F896A0D009F9FA2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CB1143682F896A0D009F9FA2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -339,13 +325,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB1143692F896A0D009F9FA2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CB1143802F896DDF009F9FA2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -383,13 +362,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB1143672F896A0D009F9FA2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CB11437E2F896DDF009F9FA2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -417,11 +389,6 @@
 			isa = PBXTargetDependency;
 			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
 			targetProxy = CB1143622F896A0D009F9FA2 /* PBXContainerItemProxy */;
-		};
-		CB11436D2F896A0D009F9FA2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
-			targetProxy = CB11436C2F896A0D009F9FA2 /* PBXContainerItemProxy */;
 		};
 		CB1143882F896DDF009F9FA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

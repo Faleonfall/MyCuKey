@@ -17,6 +17,8 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         self.actionHandler.controller = self
+        self.view.clipsToBounds = false
+        self.inputView?.clipsToBounds = false
         
         let keyboardView = KeyboardView(
              actionHandler: actionHandler,
@@ -28,6 +30,7 @@ class KeyboardViewController: UIInputViewController {
         let hc = UIHostingController(rootView: keyboardView)
         hc.view.translatesAutoresizingMaskIntoConstraints = false
         hc.view.backgroundColor = .clear
+        hc.view.clipsToBounds = false
         
         // Pre-seed the correct color scheme BEFORE the view is added to the hierarchy.
         // This kills the flash — the first render already uses the right colors.

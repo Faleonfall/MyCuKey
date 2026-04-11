@@ -19,6 +19,7 @@ class KeyboardActionHandler: ObservableObject {
     
     let contractionEngine = ContractionEngine()
     let autocorrectionEngine = AutocorrectionEngine()
+    let correctionTriggerInputs: Set<String> = [" ", ".", ",", "!", "?", "*", "\n"]
     
     // MARK: - Text Insertion
     
@@ -38,16 +39,17 @@ class KeyboardActionHandler: ObservableObject {
 
     func insertText(_ text: String) {
         let context = controller?.textDocumentProxy.documentContextBeforeInput
+        let correctionSuffix = correctionSuffix(for: text)
         
         // Priority 1: contraction correction (dont → don't)
-        if text == " ", let ctx = context, let fix = contractionEngine.evaluate(context: ctx) {
-            applyReplacement(fix, originalContext: ctx)
+        if let suffix = correctionSuffix, let ctx = context, let fix = contractionEngine.evaluate(context: ctx) {
+            applyReplacement(fix, originalContext: ctx, trailingInput: suffix)
             return
         }
         
         // Priority 2: lightweight autocorrection (single-typo UITextChecker)
-        if text == " ", let ctx = context, let fix = autocorrectionEngine.evaluate(context: ctx) {
-            applyReplacement(fix, originalContext: ctx)
+        if let suffix = correctionSuffix, let ctx = context, let fix = autocorrectionEngine.evaluate(context: ctx) {
+            applyReplacement(fix, originalContext: ctx, trailingInput: suffix)
             return
         }
         
@@ -70,7 +72,7 @@ class KeyboardActionHandler: ObservableObject {
     
     // Shared replacement apply — uses Diff logic to minimize flicker.
     // Instead of deleting the whole word, it only deletes the suffix that changed.
-    private func applyReplacement(_ fix: (charsToDelete: Int, corrected: String), originalContext: String) {
+    private func applyReplacement(_ fix: (charsToDelete: Int, corrected: String), originalContext: String, trailingInput: String) {
         let oldWord = String(originalContext.suffix(fix.charsToDelete))
         let newWord = fix.corrected
         
@@ -79,8 +81,8 @@ class KeyboardActionHandler: ObservableObject {
         // Number of characters to delete (the part of the old word that doesn't match the new word)
         let deleteCount = oldWord.count - prefixLen
         
-        // Part of the new word that needs to be inserted + trailing space
-        let insertSuffix = String(newWord.dropFirst(prefixLen)) + " "
+        // Part of the new word that needs to be inserted + trailing input (" ", ".", "!", etc.)
+        let insertSuffix = String(newWord.dropFirst(prefixLen)) + trailingInput
         
         for _ in 0..<deleteCount {
             controller?.textDocumentProxy.deleteBackward()
@@ -88,8 +90,12 @@ class KeyboardActionHandler: ObservableObject {
         
         controller?.textDocumentProxy.insertText(insertSuffix)
         
-        evaluateAutoCapitalization(contextBefore: originalContext + fix.corrected + " ")
+        evaluateAutoCapitalization(contextBefore: originalContext + fix.corrected + trailingInput)
         lastSpacePressTime = nil
+    }
+
+    func correctionSuffix(for input: String) -> String? {
+        correctionTriggerInputs.contains(input) ? input : nil
     }
     
     private func commonPrefixLength(_ a: String, _ b: String) -> Int {

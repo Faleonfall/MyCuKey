@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct KeyboardButtonStyle: ButtonStyle {
+    static let longPressPopupDelayNanoseconds: UInt64 = 300_000_000
+    static let popupAppearDuration: Double = 0.08
+    static let popupDisappearDuration: Double = 0.08
     let title: String
     let systemImage: String?
     let backgroundColor: Color
@@ -20,13 +23,65 @@ struct KeyboardButtonStyle: ButtonStyle {
     @State private var dragStartOffset: CGFloat = 0
     @State private var isDragging = false
     @State private var isVisuallyPressed = false  // Decoupled from isPressed — guaranteed min 80ms display
+    @State private var pressedPreviewTitle: String?
+    @State private var keyFrameInGlobal: CGRect = .zero
 
     private var keyFaceColor: Color {
         colorScheme == .light ? Color.white : Color(white: 0.35)
     }
+
+    private var popupHorizontalOffset: CGFloat {
+        // Default behavior requested: show popup to the left of the key.
+        let defaultOffset: CGFloat = -30
+        let oppositeOffset: CGFloat = 30
+        let edgePadding: CGFloat = 16
+        guard keyFrameInGlobal.width > 0 else { return defaultOffset }
+
+        if keyFrameInGlobal.minX <= edgePadding {
+            return oppositeOffset
+        }
+        return defaultOffset
+    }
+
+    private var defaultPreviewTitle: String? {
+        Self.defaultPreviewTitle(
+            title: title,
+            systemImage: systemImage,
+            isTrackpadEnabled: isTrackpadEnabled
+        )
+    }
+
+    static func defaultPreviewTitle(title: String, systemImage: String?, isTrackpadEnabled: Bool) -> String? {
+        guard systemImage == nil else { return nil }
+        guard !title.isEmpty else { return nil }
+        guard !isTrackpadEnabled else { return nil }
+        // Keep previews to character-like keys; skip wider action labels (?123, ABC, Shift, etc.).
+        guard title.count <= 2 else { return nil }
+        return title
+    }
+
+    static func popupTitle(
+        isLongPressing: Bool,
+        longPressTitle: String?,
+        defaultPreviewTitle: String?,
+        pressedPreviewTitle: String?
+    ) -> String? {
+        isLongPressing ? longPressTitle : (pressedPreviewTitle ?? defaultPreviewTitle)
+    }
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label // The massive invisible touch target box
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear {
+                            keyFrameInGlobal = proxy.frame(in: .global)
+                        }
+                        .onChange(of: proxy.frame(in: .global)) { _, newValue in
+                            keyFrameInGlobal = newValue
+                        }
+                }
+            )
             .overlay(
                 ZStack {
                     // Solid Brighter Key Background
@@ -61,7 +116,13 @@ struct KeyboardButtonStyle: ButtonStyle {
             )
             .overlay(
                 Group {
-                    if isLongPressing, let popupTitle = longPressTitle {
+                    if let popupTitle = Self.popupTitle(
+                        isLongPressing: isLongPressing,
+                        longPressTitle: longPressTitle,
+                        defaultPreviewTitle: defaultPreviewTitle,
+                        pressedPreviewTitle: pressedPreviewTitle
+                    ),
+                       (configuration.isPressed || isLongPressing) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 10, style: .continuous)
                                 .fill(keyFaceColor)
@@ -70,8 +131,20 @@ struct KeyboardButtonStyle: ButtonStyle {
                                 .font(.system(size: 32, weight: .regular))
                                 .foregroundColor(.primary)
                         }
-                        .frame(width: 50, height: 60)
-                        .offset(y: -50)
+                        .frame(width: 50, height: 58)
+                        .offset(x: popupHorizontalOffset, y: 0)
+                        .transition(.asymmetric(
+                            insertion: .scale(scale: 0.95).combined(with: .opacity),
+                            removal: .scale(scale: 0.98).combined(with: .opacity)
+                        ))
+                        .animation(
+                            .easeOut(duration: configuration.isPressed ? Self.popupAppearDuration : Self.popupDisappearDuration),
+                            value: isLongPressing
+                        )
+                        .animation(
+                            .easeOut(duration: configuration.isPressed ? Self.popupAppearDuration : Self.popupDisappearDuration),
+                            value: configuration.isPressed
+                        )
                     }
                 }
             )
@@ -85,6 +158,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                 if newValue {
                     // Guaranteed minimum visual feedback — shows even on fastest taps
                     isVisuallyPressed = true
+                    pressedPreviewTitle = defaultPreviewTitle
                     
                     if isTrackpadEnabled {
                         // Trackpad mode executes primarily on touch UP, so do NOTHING on touch DOWN.
@@ -93,10 +167,10 @@ struct KeyboardButtonStyle: ButtonStyle {
                         // Deferred action required for popup keys
                         HapticFeedback.playLight()
                         repeatTask = Task {
-                            try? await Task.sleep(nanoseconds: 300_000_000)
+                            try? await Task.sleep(nanoseconds: Self.longPressPopupDelayNanoseconds)
                             if !Task.isCancelled {
                                 await MainActor.run {
-                                    withAnimation(.spring(response: 0.2, dampingFraction: 0.7)) {
+                                    withAnimation(.easeOut(duration: Self.popupAppearDuration)) {
                                         isLongPressing = true
                                     }
                                     HapticFeedback.playMedium()
@@ -148,7 +222,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                         if isLongPressing {
                             // Commit the long press action
                             longPressAction?()
-                            withAnimation(.easeOut(duration: 0.15)) {
+                            withAnimation(.easeOut(duration: Self.popupDisappearDuration)) {
                                 isLongPressing = false
                             }
                         } else {
@@ -156,6 +230,8 @@ struct KeyboardButtonStyle: ButtonStyle {
                             action()
                         }
                     }
+
+                    pressedPreviewTitle = nil
                 }
             }
     }
