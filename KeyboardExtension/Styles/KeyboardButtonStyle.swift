@@ -18,6 +18,7 @@ struct KeyboardButtonStyle: ButtonStyle {
     @State private var isLongPressing = false
     @State private var dragStartOffset: CGFloat = 0
     @State private var isDragging = false
+    @State private var isVisuallyPressed = false  // Decoupled from isPressed — guaranteed min 80ms display
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label // The massive invisible touch target box
@@ -39,17 +40,16 @@ struct KeyboardButtonStyle: ButtonStyle {
                             .animation(nil, value: title)
                     }
                     
-                    // Dark overlay only covers the visual bounds!
-                    if configuration.isPressed {
+                    // Dark overlay: driven by isVisuallyPressed, NOT configuration.isPressed
+                    if isVisuallyPressed {
                         RoundedRectangle(cornerRadius: 6, style: .continuous)
                             .fill(Color.black.opacity(0.3))
                     }
                 }
-                // Shrinks the visual rectangle to create visual gaps
                 .padding(.horizontal, 3)
                 .padding(.vertical, 4)
-                .scaleEffect(configuration.isPressed && !isLongPressing ? 0.95 : 1.0)
-                .animation(.interactiveSpring(response: 0.15, dampingFraction: 0.6, blendDuration: 0.1), value: configuration.isPressed)
+                .scaleEffect(isVisuallyPressed && !isLongPressing ? 0.95 : 1.0)
+                .animation(.interactiveSpring(response: 0.06, dampingFraction: 0.7, blendDuration: 0.03), value: isVisuallyPressed)
             )
             .overlay(
                 Group {
@@ -76,6 +76,9 @@ struct KeyboardButtonStyle: ButtonStyle {
             )
             .onChange(of: configuration.isPressed) { oldValue, newValue in
                 if newValue {
+                    // Guaranteed minimum visual feedback — shows even on fastest taps
+                    isVisuallyPressed = true
+                    
                     if isTrackpadEnabled {
                         // Trackpad mode executes primarily on touch UP, so do NOTHING on touch DOWN.
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -121,6 +124,12 @@ struct KeyboardButtonStyle: ButtonStyle {
                     // Touch released
                     repeatTask?.cancel()
                     repeatTask = nil
+                    
+                    // Guarantee visual press is visible for at least 80ms even on fastest taps
+                    Task {
+                        try? await Task.sleep(nanoseconds: 35_000_000) // 35ms minimum flash
+                        await MainActor.run { isVisuallyPressed = false }
+                    }
                     
                     if isTrackpadEnabled {
                         // If we didn't drag, it was a short tap, so we commit the action

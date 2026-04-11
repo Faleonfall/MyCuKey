@@ -70,7 +70,6 @@ struct KeyboardView: View {
             }
         }
         .padding(.horizontal, 4)
-        .padding(.vertical, 6)
         .animation(nil, value: actionHandler.isShiftEnabled)
     }
 }

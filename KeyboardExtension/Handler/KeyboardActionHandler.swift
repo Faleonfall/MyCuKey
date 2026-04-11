@@ -17,6 +17,54 @@ class KeyboardActionHandler: ObservableObject {
     private var lastSpacePressTime: Date?
     private var lastShiftPressTime: Date?
     
+    // MARK: - Contraction Map
+    private let contractionMap: [String: String] = [
+        "dont"     : "don't",
+        "cant"     : "can't",
+        "wont"     : "won't",
+        "isnt"     : "isn't",
+        "arent"    : "aren't",
+        "wasnt"    : "wasn't",
+        "didnt"    : "didn't",
+        "doesnt"   : "doesn't",
+        "havent"   : "haven't",
+        "wouldnt"  : "wouldn't",
+        "shouldnt" : "shouldn't",
+        "couldnt"  : "couldn't",
+        "youre"    : "you're",
+        "theyre"   : "they're",
+        "weve"     : "we've",
+        "thats"    : "that's",
+        "whats"    : "what's",
+        "hes"      : "he's",
+        "shes"     : "she's",
+        "im"       : "I'm",
+        "ive"      : "I've",
+    ]
+    
+    // Pure function: checks if the last word in context is an uncorrected contraction.
+    // Returns (charsToDelete, correctedWord) if a match is found.
+    func evaluateContraction(context: String) -> (charsToDelete: Int, corrected: String)? {
+        // Extract last word (stop at whitespace/newline)
+        var lastWord = ""
+        for char in context.reversed() {
+            guard char != " ", char != "\n" else { break }
+            lastWord = String(char) + lastWord
+        }
+        guard !lastWord.isEmpty else { return nil }
+        
+        let lower = lastWord.lowercased()
+        guard let corrected = contractionMap[lower] else { return nil }
+        
+        // Preserve leading capital if user typed e.g. "Dont" → "Don't"
+        let isCapitalized = lastWord.first?.isUppercase == true
+        let finalCorrected = isCapitalized
+            ? corrected.prefix(1).uppercased() + corrected.dropFirst()
+            : corrected
+        
+        return (charsToDelete: lastWord.count, corrected: finalCorrected)
+    }
+    
     // Pure function extracting the double-space logic, making it fully unit-testable!
     func evaluateTextInsertion(text: String, context: String?, now: Date, lastPress: Date?) -> (textToInsert: String, needsDeleteBackward: Bool, newLastSpacePress: Date?) {
         if text == " " {
@@ -38,6 +86,18 @@ class KeyboardActionHandler: ObservableObject {
 
     func insertText(_ text: String) {
         let context = controller?.textDocumentProxy.documentContextBeforeInput
+        
+        // On space: check for contraction correction BEFORE double-space-to-period logic
+        if text == " ", let ctx = context, let fix = evaluateContraction(context: ctx) {
+            for _ in 0..<fix.charsToDelete {
+                controller?.textDocumentProxy.deleteBackward()
+            }
+            controller?.textDocumentProxy.insertText(fix.corrected + " ")
+            evaluateAutoCapitalization(contextBefore: ctx + fix.corrected + " ")
+            lastSpacePressTime = nil // Reset double-space timer after correction
+            return
+        }
+        
         let result = evaluateTextInsertion(text: text, context: context, now: Date(), lastPress: lastSpacePressTime)
         
         lastSpacePressTime = result.newLastSpacePress
@@ -72,6 +132,8 @@ class KeyboardActionHandler: ObservableObject {
     // Extracted for full unit testability.
     func charsToDeleteForWordBackward(context: String) -> Int {
         guard !context.isEmpty else { return 0 }
+        
+        if context.last == "\n" { return 1 }
         
         var count = 0
         var hitNonWhitespace = false
