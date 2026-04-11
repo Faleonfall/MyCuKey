@@ -1,10 +1,18 @@
 import UIKit
 import Combine
 
+// MARK: - Keyboard Types
+enum KeyboardType {
+    case alphabetic
+    case numeric
+    case symbolic
+}
+
 // MARK: - Keyboard Action Handler
 class KeyboardActionHandler: ObservableObject {
     weak var controller: UIInputViewController?
     @Published var isShiftEnabled: Bool = false
+    @Published var currentKeyboardType: KeyboardType = .alphabetic
     private var lastSpacePressTime: Date?
     
     // Pure function extracting the double-space logic, making it fully unit-testable!

@@ -100,4 +100,20 @@ struct MyCuKeyTests {
         #expect(intermediatePress.newLastSpacePress == nil, "Typing any other letter MUST instantly wipe the double-space timer memory.")
     }
 
+    // MARK: - Layout State Architecture Tests
+    
+    @Test func testKeyboardTypeInitializesToAlphabetic() async throws {
+        let handler = KeyboardActionHandler()
+        #expect(handler.currentKeyboardType == .alphabetic, "Keyboard MUST natively boot up into the alphabetic letter state to match iOS defaults.")
+    }
+
+    @Test func testKeyboardTypeCanBeToggledToNumericAndSymbolic() async throws {
+        let handler = KeyboardActionHandler()
+        
+        handler.currentKeyboardType = .numeric
+        #expect(handler.currentKeyboardType == .numeric, "Keyboard action handler must support state-locking into the numeric layer.")
+        
+        handler.currentKeyboardType = .symbolic
+        #expect(handler.currentKeyboardType == .symbolic, "Keyboard action handler must support deeply routing into the symbolic layer.")
+    }
 }
