@@ -10,8 +10,10 @@ struct ActionKeyView: View {
     let isRepeatable: Bool
     let longPressTitle: String?
     let longPressAction: (() -> Void)?
+    let isTrackpadEnabled: Bool
+    let trackpadAction: ((Int) -> Void)?
     
-    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, action: @escaping () -> Void) {
+    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false, trackpadAction: ((Int) -> Void)? = nil, action: @escaping () -> Void) {
         self.title = title
         self.systemImage = systemImage
         self.backgroundColor = backgroundColor
@@ -19,6 +21,8 @@ struct ActionKeyView: View {
         self.isRepeatable = isRepeatable
         self.longPressTitle = longPressTitle
         self.longPressAction = longPressAction
+        self.isTrackpadEnabled = isTrackpadEnabled
+        self.trackpadAction = trackpadAction
         self.action = action
     }
     
@@ -34,6 +38,8 @@ struct ActionKeyView: View {
             isRepeatable: isRepeatable,
             longPressTitle: longPressTitle,
             longPressAction: longPressAction,
+            isTrackpadEnabled: isTrackpadEnabled,
+            trackpadAction: trackpadAction,
             action: action
         ))
         .frame(minWidth: 26, maxWidth: .infinity, maxHeight: .infinity)
@@ -49,10 +55,14 @@ struct KeyboardButtonStyle: ButtonStyle {
     let isRepeatable: Bool
     let longPressTitle: String?
     let longPressAction: (() -> Void)?
+    let isTrackpadEnabled: Bool
+    let trackpadAction: ((Int) -> Void)?
     let action: () -> Void
     
     @State private var repeatTask: Task<Void, Never>?
     @State private var isLongPressing = false
+    @State private var dragStartOffset: CGFloat = 0
+    @State private var isDragging = false
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label // The massive invisible touch target box
@@ -103,9 +113,18 @@ struct KeyboardButtonStyle: ButtonStyle {
                     }
                 }
             )
+            .trackpadGesture(
+                isEnabled: isTrackpadEnabled,
+                trackpadAction: trackpadAction,
+                isDragging: $isDragging,
+                dragStartOffset: $dragStartOffset
+            )
             .onChange(of: configuration.isPressed) { oldValue, newValue in
                 if newValue {
-                    if longPressTitle != nil {
+                    if isTrackpadEnabled {
+                        // Trackpad mode executes primarily on touch UP, so do NOTHING on touch DOWN.
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    } else if longPressTitle != nil {
                         // Deferred action required for popup keys
                         HapticFeedback.playLight()
                         repeatTask = Task {
@@ -141,7 +160,13 @@ struct KeyboardButtonStyle: ButtonStyle {
                     repeatTask?.cancel()
                     repeatTask = nil
                     
-                    if longPressTitle != nil {
+                    if isTrackpadEnabled {
+                        // If we didn't drag, it was a short tap, so we commit the action
+                        if !isDragging {
+                            action()
+                        }
+                        // DO NOT reset isDragging here. .highPriorityGesture's .onEnded natively resets it!
+                    } else if longPressTitle != nil {
                         if isLongPressing {
                             // Commit the long press action
                             longPressAction?()
@@ -155,6 +180,40 @@ struct KeyboardButtonStyle: ButtonStyle {
                     }
                 }
             }
+    }
+}
+
+// MARK: - Gesture Extension
+extension View {
+    @ViewBuilder
+    func trackpadGesture(isEnabled: Bool, trackpadAction: ((Int)->Void)?, isDragging: Binding<Bool>, dragStartOffset: Binding<CGFloat>) -> some View {
+        if isEnabled {
+            self.highPriorityGesture(
+                DragGesture(minimumDistance: 5)
+                    .onChanged { value in
+                        if !isDragging.wrappedValue {
+                            isDragging.wrappedValue = true
+                            dragStartOffset.wrappedValue = value.translation.width
+                            HapticFeedback.playMedium() // Trackpad initiate haptic
+                        }
+                        
+                        let translation = value.translation.width
+                        let threshold = 12.0 // Pixels per character slice
+                        let steps = Int((translation - dragStartOffset.wrappedValue) / threshold)
+                        
+                        if steps != 0 {
+                            trackpadAction?(steps)
+                            dragStartOffset.wrappedValue += CGFloat(steps) * threshold
+                        }
+                    }
+                    .onEnded { _ in
+                        isDragging.wrappedValue = false
+                        dragStartOffset.wrappedValue = 0
+                    }
+            )
+        } else {
+            self
+        }
     }
 }
 

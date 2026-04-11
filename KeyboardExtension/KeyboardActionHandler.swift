@@ -44,18 +44,53 @@ class KeyboardActionHandler: ObservableObject {
             controller?.textDocumentProxy.deleteBackward()
         }
         controller?.textDocumentProxy.insertText(result.textToInsert)
+        
+        // **SYNCHRONOUS PREDICTION FIX**
+        // The iOS textDocumentProxy lags slightly behind inserts during the IPC bridge delay.
+        // We MUST manually calculate the resulting context string to check auto-capitalization exactly when the key is hit!
+        let originalContext = context ?? ""
+        let newContext = result.needsDeleteBackward ? String(originalContext.dropLast()) + result.textToInsert : originalContext + result.textToInsert
+        evaluateAutoCapitalization(contextBefore: newContext)
     }
     
     func deleteBackward() {
         controller?.textDocumentProxy.deleteBackward()
+        
+        // Also manually evaluate on deletion using the proxy (which updates slightly faster on delete, but we should force a check)
+        // Note: For deletion, context might still lag, but a slight delay is standard.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            let context = self.controller?.textDocumentProxy.documentContextBeforeInput
+            self.evaluateAutoCapitalization(contextBefore: context)
+        }
     }
     
     func evaluateAutoCapitalization(contextBefore: String?) {
         let text = contextBefore ?? ""
         if text.isEmpty {
             self.isShiftEnabled = true
-        } else if text.hasSuffix(". ") || text.hasSuffix("! ") || text.hasSuffix("? ") || text.hasSuffix("\n") {
-            self.isShiftEnabled = true
+            return
+        }
+        
+        let triggerEndings = [
+            // Standard sentence terminators (with and without space)
+            ".", ". ",
+            "!", "! ",
+            "?", "? ",
+            "\n",
+            
+            // Custom asterisk rules
+            "\n*", "\n* ", // New line + *
+            ".*", ".* ",   // Dot + *
+            ". *", ". * "  // Dot + space + *
+        ]
+        
+        // Disable shift unless it explicitly hits a trigger terminating token
+        self.isShiftEnabled = false
+        for ending in triggerEndings {
+            if text.hasSuffix(ending) {
+                self.isShiftEnabled = true
+                break
+            }
         }
     }
 }

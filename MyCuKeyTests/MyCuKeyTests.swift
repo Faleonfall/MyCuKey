@@ -116,4 +116,50 @@ struct MyCuKeyTests {
         handler.currentKeyboardType = .symbolic
         #expect(handler.currentKeyboardType == .symbolic, "Keyboard action handler must support deeply routing into the symbolic layer.")
     }
+    
+    // MARK: - Spaceless & Asterisk Edge Case Tests
+    @Test func testKeyboardCapitalizationWithAsterisksAndSpacelessTerminators() async throws {
+        let handler = KeyboardActionHandler()
+        
+        // Spaceless Dots
+        handler.evaluateAutoCapitalization(contextBefore: "Hello world.")
+        #expect(handler.isShiftEnabled == true, "Must shift after a raw dot without a space.")
+        
+        // New line + *
+        handler.evaluateAutoCapitalization(contextBefore: "Line one\n*")
+        #expect(handler.isShiftEnabled == true, "Must shift after bullet points.")
+        
+        // .* Logic
+        handler.evaluateAutoCapitalization(contextBefore: "Hello.*")
+        #expect(handler.isShiftEnabled == true, "Must shift after dot followed instantaneously by asterisk.")
+        
+        // . * Logic
+        handler.evaluateAutoCapitalization(contextBefore: "Hello. *")
+        #expect(handler.isShiftEnabled == true, "Must shift after dot, space, asterisk combination.")
+        
+        handler.evaluateAutoCapitalization(contextBefore: "Hello *")
+        #expect(handler.isShiftEnabled == false, "Must NOT shift after a raw asterisk unconnected to punctuation.")
+    }
+    
+    // MARK: - Synchronous Prediction & Mutability Tests
+    @Test func testKeyboardCapitalizationDisablesAfterTypingNormalLetters() async throws {
+        let handler = KeyboardActionHandler()
+        // Force shift on artificially
+        handler.isShiftEnabled = true
+        
+        handler.evaluateAutoCapitalization(contextBefore: "Hello world")
+        #expect(handler.isShiftEnabled == false, "Typing a normal letter string MUST forcefully un-shift the keyboard layout.")
+    }
+    
+    @Test func testKeyboardCapitalizationWithMultiplePunctuationMarks() async throws {
+        let handler = KeyboardActionHandler()
+        
+        // Ellipsis simulation
+        handler.evaluateAutoCapitalization(contextBefore: "Wait...")
+        #expect(handler.isShiftEnabled == true, "Multiple dots ending in the trigger should still safely capitalize the next letter.")
+        
+        // Interrobang simulation
+        handler.evaluateAutoCapitalization(contextBefore: "Really?!")
+        #expect(handler.isShiftEnabled == true, "Compound punctuation should recognize the securely terminating exclamation mark.")
+    }
 }
