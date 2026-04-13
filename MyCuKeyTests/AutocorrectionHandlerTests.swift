@@ -6,7 +6,7 @@ import UIKit
 struct AutocorrectionHandlerTests {
 
     @Test func testHandlerPreservesQuestionMarkAfterAutocorrection() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
         handler.controller = controller
 
@@ -16,7 +16,7 @@ struct AutocorrectionHandlerTests {
     }
 
     @Test func testHandlerUsesContractionBeforeGenericAutocorrection() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "im")
         handler.controller = controller
 
@@ -26,7 +26,7 @@ struct AutocorrectionHandlerTests {
     }
 
     @Test func testHandlerLeavesWeakGuessAlone() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "usr")
         handler.controller = controller
 
@@ -36,7 +36,7 @@ struct AutocorrectionHandlerTests {
     }
 
     @Test func testDeleteRevertsLastAutocorrectionWithSpace() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
         handler.controller = controller
 
@@ -48,7 +48,7 @@ struct AutocorrectionHandlerTests {
     }
 
     @Test func testDeleteRevertsLastAutocorrectionWithPunctuation() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
         handler.controller = controller
 
@@ -60,7 +60,7 @@ struct AutocorrectionHandlerTests {
     }
 
     @Test func testDeleteDoesNormalDeleteAfterContinuingTyping() async throws {
-        let handler = KeyboardActionHandler()
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
         handler.controller = controller
 
@@ -71,6 +71,46 @@ struct AutocorrectionHandlerTests {
         handler.deleteBackward()
         #expect(controller.mockProxy.documentContextBeforeInput == "the ")
     }
+
+    @Test func testLearnedWordSuppressesFutureAutocorrection() async throws {
+        let service = makeIsolatedService()
+        _ = service.addWord("teh")
+
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
+    }
+
+    @Test func testWordLearnsAfterSecondCorrectionRevert() async throws {
+        let service = makeIsolatedService()
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+
+        let firstController = MockKeyboardController(beforeInput: "teh")
+        handler.controller = firstController
+        handler.insertText(" ")
+        handler.deleteBackward()
+        #expect(service.containsLearnedWord("teh") == false)
+        #expect(service.revertCount(for: "teh") == 1)
+
+        let secondController = MockKeyboardController(beforeInput: "teh")
+        handler.controller = secondController
+        handler.insertText(" ")
+        handler.deleteBackward()
+
+        #expect(service.containsLearnedWord("teh"))
+        #expect(service.revertCount(for: "teh") == 0)
+    }
+}
+
+private func makeIsolatedService() -> PersonalDictionaryService {
+    let suiteName = "test.personal-dictionary.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: suiteName)!
+    defaults.removePersistentDomain(forName: suiteName)
+    return PersonalDictionaryService(defaults: defaults)
 }
 
 private final class MockKeyboardController: UIInputViewController {

@@ -17,6 +17,15 @@ struct ContentView: View {
                     InstructionRow(step: "7", text: "Tap and hold the 🌐 Globe button located at the bottom left of your standard Apple Keyboard.")
                     InstructionRow(step: "8", text: "Select MyCuKey from the menu to start typing!")
                 }
+
+                Section(header: Text("Personal Dictionary")) {
+                    NavigationLink("Manage Learned Words") {
+                        PersonalDictionaryManagerView()
+                    }
+                    Text("Words you add here, or words the keyboard learns after repeated correction reverts, will stop being autocorrected.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .navigationTitle("Setup Guide")
         }

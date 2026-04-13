@@ -10,12 +10,10 @@
 		CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
 		CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
-		CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
 		CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
 		CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
-		CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
 		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
 		CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
 		CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
@@ -36,6 +34,10 @@
 		CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
 		CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
 		CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
+		CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
+		CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
+		CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
+		CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +77,6 @@
 		CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143A82F89A672009F9FA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
-		CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWordLexicon.swift; sourceTree = "<group>"; };
 		CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionEngine.swift; sourceTree = "<group>"; };
 		CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractionEngine.swift; sourceTree = "<group>"; };
 		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
@@ -88,6 +89,8 @@
 		CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceRowView.swift; sourceTree = "<group>"; };
 		CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicKeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGesture.swift; sourceTree = "<group>"; };
+		CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWordLexicon.swift; sourceTree = "<group>"; };
+		CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -167,6 +170,7 @@
 				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
 				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
 				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
+				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
 				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
 			);
 			path = Handler;
@@ -346,6 +350,7 @@
 				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 				CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
 				CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */,
+				CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
 				CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
@@ -374,6 +379,7 @@
 				CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
 				CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */,
+				CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
 				CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */,
@@ -530,6 +536,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -562,6 +569,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -636,6 +644,7 @@
 		CB11438C2F896DDF009F9FA2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -664,6 +673,7 @@
 		CB11438D2F896DDF009F9FA2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;

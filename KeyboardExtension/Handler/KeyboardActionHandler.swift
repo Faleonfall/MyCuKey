@@ -23,10 +23,19 @@ class KeyboardActionHandler: ObservableObject {
     private var lastSpacePressTime: Date?
     private var lastShiftPressTime: Date?
     private var pendingCorrectionRevert: PendingCorrectionRevert?
+    private let personalDictionaryService: PersonalDictionaryService
     
     let contractionEngine = ContractionEngine()
     let autocorrectionEngine = AutocorrectionEngine()
     let correctionTriggerInputs: Set<String> = [" ", ".", ",", "!", "?", "*", "\n"]
+
+    init(personalDictionaryService: PersonalDictionaryService) {
+        self.personalDictionaryService = personalDictionaryService
+    }
+
+    convenience init() {
+        self.init(personalDictionaryService: .shared)
+    }
     
     // MARK: - Text Insertion
     
@@ -48,15 +57,16 @@ class KeyboardActionHandler: ObservableObject {
         clearPendingCorrectionIfNeeded(for: text)
         let context = controller?.textDocumentProxy.documentContextBeforeInput
         let correctionSuffix = correctionSuffix(for: text)
+        let shouldSkipCorrections = context.map { shouldSuppressCorrections(for: $0) } ?? false
         
         // Priority 1: contraction correction (dont → don't)
-        if let suffix = correctionSuffix, let ctx = context, let fix = contractionEngine.evaluate(context: ctx) {
+        if !shouldSkipCorrections, let suffix = correctionSuffix, let ctx = context, let fix = contractionEngine.evaluate(context: ctx) {
             applyReplacement(fix, originalContext: ctx, trailingInput: suffix)
             return
         }
         
         // Priority 2: lightweight autocorrection (single-typo UITextChecker)
-        if let suffix = correctionSuffix, let ctx = context, let fix = autocorrectionEngine.evaluate(context: ctx) {
+        if !shouldSkipCorrections, let suffix = correctionSuffix, let ctx = context, let fix = autocorrectionEngine.evaluate(context: ctx) {
             applyReplacement(fix, originalContext: ctx, trailingInput: suffix)
             return
         }
@@ -256,8 +266,14 @@ class KeyboardActionHandler: ObservableObject {
             controller?.textDocumentProxy.deleteBackward()
         }
         controller?.textDocumentProxy.insertText(pending.originalWord + pending.trailingInput)
+        personalDictionaryService.recordRevertedCorrection(originalWord: pending.originalWord)
         pendingCorrectionRevert = nil
         lastSpacePressTime = nil
         return true
+    }
+
+    private func shouldSuppressCorrections(for context: String) -> Bool {
+        guard let token = AutocorrectionEngine.lastToken(in: context) else { return false }
+        return personalDictionaryService.containsLearnedWord(token.original)
     }
 }
