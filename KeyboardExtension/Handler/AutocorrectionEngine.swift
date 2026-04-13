@@ -181,6 +181,7 @@ struct AutocorrectionEngine {
         return distance == 2
             && input.count >= 5
             && abs(input.count - candidate.count) <= 1
+            && hasSameOuterLetters(input, candidate)
             && CommonWordLexicon.contains(candidate)
     }
 
@@ -216,13 +217,24 @@ struct AutocorrectionEngine {
         candidate.contains("'") && candidate.replacingOccurrences(of: "'", with: "") == input
     }
 
-    private func rank(_ candidate: String, against input: String) -> (Int, Int, Int, Int) {
+    private func rank(_ candidate: String, against input: String) -> (Int, Int, Int, Int, Int) {
         let distance = damerauLevenshteinDistance(input, candidate)
         let lexiconBonus = CommonWordLexicon.contains(candidate) ? 0 : 1
         let subsequenceBonus = isSubsequence(input, of: candidate) || isSubsequence(candidate, of: input) ? 0 : 1
+        let outerLetterPenalty = hasSameOuterLetters(input, candidate) ? 0 : 1
         let prefixScore = commonPrefixLength(input, candidate)
         let lengthDelta = abs(input.count - candidate.count)
-        return (distance, lexiconBonus, subsequenceBonus, -prefixScore + lengthDelta)
+        return (distance, lexiconBonus, outerLetterPenalty, subsequenceBonus, -prefixScore + lengthDelta)
+    }
+
+    private func hasSameOuterLetters(_ input: String, _ candidate: String) -> Bool {
+        guard let inputFirst = input.first,
+              let inputLast = input.last,
+              let candidateFirst = candidate.first,
+              let candidateLast = candidate.last else {
+            return false
+        }
+        return inputFirst == candidateFirst && inputLast == candidateLast
     }
 
     private func commonPrefixLength(_ a: String, _ b: String) -> Int {

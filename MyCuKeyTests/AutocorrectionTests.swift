@@ -95,4 +95,9 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "ill") == nil)
         #expect(engine.evaluate(context: "usr") == nil)
     }
+
+    @Test func testDistanceTwoStillAcceptsLikelyWordShape() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "becase")?.corrected == "because")
+    }
 }

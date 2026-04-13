@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+@MainActor
 struct PersonalDictionaryServiceTests {
 
     @Test func testAddWordIsPersistedAndNormalized() async throws {
