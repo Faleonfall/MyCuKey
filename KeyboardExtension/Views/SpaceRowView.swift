@@ -25,46 +25,42 @@ struct SpaceRowView: View {
                 }
                 .frame(width: 60)
             }
-            
+
+            ActionKeyView(title: "*", backgroundColor: actionKeyBg) { actionHandler.insertText("*") }
+                .frame(width: 45)
+
             ActionKeyView(
-                title: "", 
+                title: "",
                 backgroundColor: letterKeyBg,
                 isTrackpadEnabled: true,
                 trackpadAction: { steps in
                     let proxy = actionHandler.controller?.textDocumentProxy
-                    
-                    // Kill movement if field is perfectly empty
+
                     guard proxy?.hasText == true else { return }
-                    
-                    // Stop left-bound bleeding
+
                     if steps < 0 && (proxy?.documentContextBeforeInput?.isEmpty ?? true) {
                         return
                     }
-                    
-                    // Stop right-bound bleeding
+
                     if steps > 0 && (proxy?.documentContextAfterInput?.isEmpty ?? true) {
                         return
                     }
-                    
-                    // Authorized physically bounded transaction!
+
                     proxy?.adjustTextPosition(byCharacterOffset: steps)
                     HapticFeedback.playLight()
                 },
                 action: { actionHandler.insertText(" ") }
             )
-            
-            ActionKeyView(title: "*", backgroundColor: actionKeyBg) { actionHandler.insertText("*") }
-            .frame(width: 45)
-            
+
             ActionKeyView(
-                title: ",", 
+                title: ",",
                 backgroundColor: actionKeyBg,
                 longPressTitle: "?",
                 longPressAction: { actionHandler.insertText("?") },
                 action: { actionHandler.insertText(",") }
             )
             .frame(width: 45)
-            
+
             ActionKeyView(title: "", systemImage: "return", backgroundColor: actionKeyBg) {
                 actionHandler.insertText("\n")
             }

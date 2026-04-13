@@ -8,6 +8,12 @@ enum KeyboardType {
     case symbolic
 }
 
+struct PendingCorrectionRevert {
+    let originalWord: String
+    let correctedWord: String
+    let trailingInput: String
+}
+
 // MARK: - Keyboard Action Handler
 class KeyboardActionHandler: ObservableObject {
     weak var controller: UIInputViewController?
@@ -16,6 +22,7 @@ class KeyboardActionHandler: ObservableObject {
     @Published var currentKeyboardType: KeyboardType = .alphabetic
     private var lastSpacePressTime: Date?
     private var lastShiftPressTime: Date?
+    private var pendingCorrectionRevert: PendingCorrectionRevert?
     
     let contractionEngine = ContractionEngine()
     let autocorrectionEngine = AutocorrectionEngine()
@@ -38,6 +45,7 @@ class KeyboardActionHandler: ObservableObject {
     }
 
     func insertText(_ text: String) {
+        clearPendingCorrectionIfNeeded(for: text)
         let context = controller?.textDocumentProxy.documentContextBeforeInput
         let correctionSuffix = correctionSuffix(for: text)
         
@@ -72,7 +80,7 @@ class KeyboardActionHandler: ObservableObject {
     
     // Shared replacement apply — uses Diff logic to minimize flicker.
     // Instead of deleting the whole word, it only deletes the suffix that changed.
-    private func applyReplacement(_ fix: (charsToDelete: Int, corrected: String), originalContext: String, trailingInput: String) {
+    private func applyReplacement(_ fix: AutocorrectionResult, originalContext: String, trailingInput: String) {
         let oldWord = String(originalContext.suffix(fix.charsToDelete))
         let newWord = fix.corrected
         
@@ -89,6 +97,11 @@ class KeyboardActionHandler: ObservableObject {
         }
         
         controller?.textDocumentProxy.insertText(insertSuffix)
+        pendingCorrectionRevert = PendingCorrectionRevert(
+            originalWord: oldWord,
+            correctedWord: newWord,
+            trailingInput: trailingInput
+        )
         
         evaluateAutoCapitalization(contextBefore: originalContext + fix.corrected + trailingInput)
         lastSpacePressTime = nil
@@ -111,8 +124,15 @@ class KeyboardActionHandler: ObservableObject {
     // MARK: - Delete
     
     func deleteBackward() {
+        if revertLastCorrectionIfPossible() {
+            HapticFeedback.playLight()
+            refreshAutoCapitalizationAfterDelete()
+            return
+        }
+
         guard controller?.textDocumentProxy.hasText == true else { return }
         controller?.textDocumentProxy.deleteBackward()
+        pendingCorrectionRevert = nil
         HapticFeedback.playLight()
 
         refreshAutoCapitalizationAfterDelete()
@@ -142,6 +162,7 @@ class KeyboardActionHandler: ObservableObject {
         guard let context = controller?.textDocumentProxy.documentContextBeforeInput,
               !context.isEmpty else { return }
         
+        pendingCorrectionRevert = nil
         let count = charsToDeleteForWordBackward(context: context)
         for _ in 0..<count {
             controller?.textDocumentProxy.deleteBackward()
@@ -207,5 +228,36 @@ class KeyboardActionHandler: ObservableObject {
             let context = self.controller?.textDocumentProxy.documentContextBeforeInput
             self.evaluateAutoCapitalization(contextBefore: context)
         }
+    }
+
+    private func clearPendingCorrectionIfNeeded(for input: String) {
+        if pendingCorrectionRevert == nil {
+            return
+        }
+
+        if correctionSuffix(for: input) == nil {
+            pendingCorrectionRevert = nil
+        }
+    }
+
+    private func revertLastCorrectionIfPossible() -> Bool {
+        guard let pending = pendingCorrectionRevert,
+              let context = controller?.textDocumentProxy.documentContextBeforeInput else {
+            return false
+        }
+
+        let expectedSuffix = pending.correctedWord + pending.trailingInput
+        guard context.hasSuffix(expectedSuffix) else {
+            pendingCorrectionRevert = nil
+            return false
+        }
+
+        for _ in 0..<expectedSuffix.count {
+            controller?.textDocumentProxy.deleteBackward()
+        }
+        controller?.textDocumentProxy.insertText(pending.originalWord + pending.trailingInput)
+        pendingCorrectionRevert = nil
+        lastSpacePressTime = nil
+        return true
     }
 }

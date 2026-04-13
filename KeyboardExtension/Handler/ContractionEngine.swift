@@ -3,7 +3,6 @@ import Foundation
 // MARK: - Contraction Engine
 // Standalone struct — pure, stateless, zero dependencies.
 struct ContractionEngine {
-    
     private let contractionMap: [String: String] = [
         "dont"     : "don't",
         "cant"     : "can't",
@@ -26,26 +25,26 @@ struct ContractionEngine {
         "shes"     : "she's",
         "im"       : "I'm",
         "ive"      : "I've",
+        "id"       : "I'd",
+        "ill"      : "I'll",
+        "youve"    : "you've",
+        "youll"    : "you'll",
+        "lets"     : "let's",
+        "theres"   : "there's",
+        "heres"    : "here's",
+        "werent"   : "weren't",
+        "hasnt"    : "hasn't"
     ]
-    
-    // Checks if the last word in context is an uncorrected contraction.
-    // Returns (charsToDelete, correctedWord) if a match is found.
-    func evaluate(context: String) -> (charsToDelete: Int, corrected: String)? {
-        var lastWord = ""
-        for char in context.reversed() {
-            guard char != " ", char != "\n" else { break }
-            lastWord = String(char) + lastWord
-        }
-        guard !lastWord.isEmpty else { return nil }
-        
-        let lower = lastWord.lowercased()
-        guard let corrected = contractionMap[lower] else { return nil }
-        
-        // Preserve leading capital e.g. "Dont" → "Don't"
-        let finalCorrected = lastWord.first?.isUppercase == true
-            ? corrected.prefix(1).uppercased() + corrected.dropFirst()
-            : corrected
-        
-        return (charsToDelete: lastWord.count, corrected: finalCorrected)
+
+    func evaluate(context: String) -> AutocorrectionResult? {
+        guard let token = AutocorrectionEngine.lastToken(in: context) else { return nil }
+        guard let corrected = contractionMap[token.lowercased] else { return nil }
+
+        return AutocorrectionResult(
+            charsToDelete: token.original.count,
+            corrected: AutocorrectionEngine.applyCasePattern(from: token.original, to: corrected),
+            confidence: 1.0,
+            source: .contraction
+        )
     }
 }
