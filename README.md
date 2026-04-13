@@ -17,6 +17,7 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
 - **QWERTY / Numeric / Symbolic** layout switching
 - **Auto-capitalization** — sentence-aware, synchronous prediction bypassing iOS IPC lag
 - **Caps Lock** — double-tap shift within 0.35s to lock
+- **Correction triggers** — correction pass runs on `space`, `.`, `,`, `!`, `?`, `*`, and newline
 - **Double-space → period** — fast double space inserts `. ` and triggers capitalization
 - **Spacebar trackpad** — drag to move cursor with 3-zone acceleration (precise / medium / fast)
 - **Accelerated delete** — character-by-character for first ~1s, then word-by-word
@@ -24,11 +25,25 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
 - **Return key** — inserts newline
 - **Haptics** — light on key press, medium on caps lock / word delete, silent on empty field
 - **Personal dictionary memory**
-  - Learned words suppress future autocorrections
-  - Reverting the same correction twice promotes the original word
+  - Learned words suppress future contraction/autocorrection passes for matching normalized token
+  - Reverting the same correction twice promotes the original word (promotion threshold = `2`)
   - Manual dictionary manager in the app (add/search/delete/clear)
-- **Revert on delete** — immediate backspace after correction restores original typed word
+- **Revert on delete** — immediate backspace after correction restores original typed word + trigger suffix
 - **Dark/Light mode** — pre-seeded before first render, smooth 0.2s animated transitions
+
+## Personal Dictionary Rules
+
+- Storage: shared App Group `UserDefaults` suite `group.com.kvolodymyr.MyCuKey`
+- Learned word normalization: lowercase
+- Learnable token constraints:
+  - length `2...40`
+  - must contain at least one letter
+  - allows letters, digits, apostrophe `'`, hyphen `-`
+  - rejects whitespace-only, punctuation-only, or invalid-symbol tokens
+- Promotion behavior:
+  - each correction revert increments a counter for the original normalized word
+  - at count `2`, the word is added to learned words and the counter is cleared
+- Manual dictionary actions clear pending revert count for affected words
 
 ## Architecture
 
@@ -57,6 +72,11 @@ KeyboardExtension/
 MyCuKey/
 ├── ContentView.swift
 └── PersonalDictionaryManagerView.swift
+
+MyCuKeyTests/
+├── AutocorrectionTests.swift
+├── AutocorrectionHandlerTests.swift
+└── PersonalDictionaryServiceTests.swift
 ```
 
 ## Requirements

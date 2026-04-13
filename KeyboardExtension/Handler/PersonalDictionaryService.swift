@@ -21,6 +21,8 @@ final class PersonalDictionaryService {
     private let defaults: UserDefaults
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
+    private var learnedWordsCache: [LearnedWordEntry] = []
+    private var learnedWordSetCache: Set<String> = []
 
     init(defaults: UserDefaults? = nil) {
         if let defaults {
@@ -30,15 +32,16 @@ final class PersonalDictionaryService {
         } else {
             self.defaults = .standard
         }
+        reloadLearnedWordsCache()
     }
 
     func containsLearnedWord(_ word: String) -> Bool {
         guard let normalized = Self.normalizeLearnableWord(word) else { return false }
-        return loadLearnedWords().contains { $0.normalizedWord == normalized }
+        return learnedWordSetCache.contains(normalized)
     }
 
     func allWords() -> [LearnedWordEntry] {
-        loadLearnedWords()
+        learnedWordsCache
             .sorted { lhs, rhs in
                 if lhs.normalizedWord == rhs.normalizedWord {
                     return lhs.createdAt < rhs.createdAt
@@ -51,12 +54,13 @@ final class PersonalDictionaryService {
     func addWord(_ word: String) -> LearnedWordEntry? {
         guard let normalized = Self.normalizeLearnableWord(word) else { return nil }
 
-        var words = loadLearnedWords()
-        if let existing = words.first(where: { $0.normalizedWord == normalized }) {
+        if learnedWordSetCache.contains(normalized),
+           let existing = learnedWordsCache.first(where: { $0.normalizedWord == normalized }) {
             clearRevertCount(forNormalizedWord: normalized)
             return existing
         }
 
+        var words = learnedWordsCache
         let entry = LearnedWordEntry(normalizedWord: normalized, createdAt: Date())
         words.append(entry)
         saveLearnedWords(words)
@@ -66,7 +70,7 @@ final class PersonalDictionaryService {
 
     func removeWord(_ word: String) {
         guard let normalized = Self.normalizeLearnableWord(word) else { return }
-        let filtered = loadLearnedWords().filter { $0.normalizedWord != normalized }
+        let filtered = learnedWordsCache.filter { $0.normalizedWord != normalized }
         saveLearnedWords(filtered)
         clearRevertCount(forNormalizedWord: normalized)
     }
@@ -74,11 +78,13 @@ final class PersonalDictionaryService {
     func clearAll() {
         defaults.removeObject(forKey: PersonalDictionaryConfiguration.learnedWordsKey)
         defaults.removeObject(forKey: PersonalDictionaryConfiguration.revertCountsKey)
+        learnedWordsCache = []
+        learnedWordSetCache = []
     }
 
     func recordRevertedCorrection(originalWord: String) {
         guard let normalized = Self.normalizeLearnableWord(originalWord) else { return }
-        guard !containsLearnedWord(normalized) else { return }
+        guard !learnedWordSetCache.contains(normalized) else { return }
 
         var counts = loadRevertCounts()
         let nextCount = (counts[normalized] ?? 0) + 1
@@ -122,7 +128,7 @@ final class PersonalDictionaryService {
         return trimmed.lowercased()
     }
 
-    private func loadLearnedWords() -> [LearnedWordEntry] {
+    private func loadLearnedWordsFromStorage() -> [LearnedWordEntry] {
         guard let data = defaults.data(forKey: PersonalDictionaryConfiguration.learnedWordsKey),
               let words = try? decoder.decode([LearnedWordEntry].self, from: data) else {
             return []
@@ -131,8 +137,15 @@ final class PersonalDictionaryService {
     }
 
     private func saveLearnedWords(_ words: [LearnedWordEntry]) {
+        learnedWordsCache = words
+        learnedWordSetCache = Set(words.map(\.normalizedWord))
         guard let data = try? encoder.encode(words) else { return }
         defaults.set(data, forKey: PersonalDictionaryConfiguration.learnedWordsKey)
+    }
+
+    private func reloadLearnedWordsCache() {
+        learnedWordsCache = loadLearnedWordsFromStorage()
+        learnedWordSetCache = Set(learnedWordsCache.map(\.normalizedWord))
     }
 
     private func loadRevertCounts() -> [String: Int] {
