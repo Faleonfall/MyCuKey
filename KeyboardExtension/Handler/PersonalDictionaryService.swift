@@ -36,12 +36,14 @@ final class PersonalDictionaryService {
     }
 
     func containsLearnedWord(_ word: String) -> Bool {
+        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return false }
         return learnedWordSetCache.contains(normalized)
     }
 
     func allWords() -> [LearnedWordEntry] {
-        learnedWordsCache
+        reloadLearnedWordsCache()
+        return learnedWordsCache
             .sorted { lhs, rhs in
                 if lhs.normalizedWord == rhs.normalizedWord {
                     return lhs.createdAt < rhs.createdAt
@@ -52,6 +54,7 @@ final class PersonalDictionaryService {
 
     @discardableResult
     func addWord(_ word: String) -> LearnedWordEntry? {
+        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return nil }
 
         if learnedWordSetCache.contains(normalized),
@@ -69,6 +72,7 @@ final class PersonalDictionaryService {
     }
 
     func removeWord(_ word: String) {
+        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return }
         let filtered = learnedWordsCache.filter { $0.normalizedWord != normalized }
         saveLearnedWords(filtered)
@@ -83,6 +87,7 @@ final class PersonalDictionaryService {
     }
 
     func recordRevertedCorrection(originalWord: String) {
+        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(originalWord) else { return }
         guard !learnedWordSetCache.contains(normalized) else { return }
 

@@ -14,6 +14,15 @@ struct PendingCorrectionRevert {
     let trailingInput: String
 }
 
+struct PendingDictionaryLearningCandidate {
+    let originalWord: String
+    let restoredContextSuffix: String
+
+    var confirmedByTriggerInput: Bool {
+        true
+    }
+}
+
 // MARK: - Keyboard Action Handler
 class KeyboardActionHandler: ObservableObject {
     weak var controller: UIInputViewController?
@@ -23,6 +32,7 @@ class KeyboardActionHandler: ObservableObject {
     private var lastSpacePressTime: Date?
     private var lastShiftPressTime: Date?
     private var pendingCorrectionRevert: PendingCorrectionRevert?
+    private var pendingDictionaryLearningCandidate: PendingDictionaryLearningCandidate?
     private let personalDictionaryService: PersonalDictionaryService
     
     let contractionEngine = ContractionEngine()
@@ -55,9 +65,15 @@ class KeyboardActionHandler: ObservableObject {
 
     func insertText(_ text: String) {
         clearPendingCorrectionIfNeeded(for: text)
+        let confirmedPendingLearning = processPendingDictionaryLearningIfNeeded(forNextInput: text)
         let context = controller?.textDocumentProxy.documentContextBeforeInput
         let correctionSuffix = correctionSuffix(for: text)
-        let shouldSkipCorrections = context.map { shouldSuppressCorrections(for: $0) } ?? false
+        let shouldSkipCorrections = confirmedPendingLearning || (context.map { shouldSuppressCorrections(for: $0) } ?? false)
+
+        if let ctx = context, let standaloneIReplacement = standaloneLowercaseIReplacement(context: ctx, trailingInput: text) {
+            applyReplacement(standaloneIReplacement, originalContext: ctx, trailingInput: text)
+            return
+        }
         
         // Priority 1: contraction correction (dont → don't)
         if !shouldSkipCorrections, let suffix = correctionSuffix, let ctx = context, let fix = contractionEngine.evaluate(context: ctx) {
@@ -141,6 +157,7 @@ class KeyboardActionHandler: ObservableObject {
         }
 
         guard controller?.textDocumentProxy.hasText == true else { return }
+        pendingDictionaryLearningCandidate = nil
         controller?.textDocumentProxy.deleteBackward()
         pendingCorrectionRevert = nil
         HapticFeedback.playLight()
@@ -172,6 +189,7 @@ class KeyboardActionHandler: ObservableObject {
         guard let context = controller?.textDocumentProxy.documentContextBeforeInput,
               !context.isEmpty else { return }
         
+        pendingDictionaryLearningCandidate = nil
         pendingCorrectionRevert = nil
         let count = charsToDeleteForWordBackward(context: context)
         for _ in 0..<count {
@@ -265,8 +283,12 @@ class KeyboardActionHandler: ObservableObject {
         for _ in 0..<expectedSuffix.count {
             controller?.textDocumentProxy.deleteBackward()
         }
-        controller?.textDocumentProxy.insertText(pending.originalWord + pending.trailingInput)
-        personalDictionaryService.recordRevertedCorrection(originalWord: pending.originalWord)
+        let restoredText = pending.trailingInput == " " ? pending.originalWord : pending.originalWord + pending.trailingInput
+        controller?.textDocumentProxy.insertText(restoredText)
+        pendingDictionaryLearningCandidate = PendingDictionaryLearningCandidate(
+            originalWord: pending.originalWord,
+            restoredContextSuffix: restoredText
+        )
         pendingCorrectionRevert = nil
         lastSpacePressTime = nil
         return true
@@ -275,5 +297,42 @@ class KeyboardActionHandler: ObservableObject {
     private func shouldSuppressCorrections(for context: String) -> Bool {
         guard let token = AutocorrectionEngine.lastToken(in: context) else { return false }
         return personalDictionaryService.containsLearnedWord(token.original)
+    }
+
+    private func standaloneLowercaseIReplacement(context: String, trailingInput: String) -> AutocorrectionResult? {
+        guard trailingInput == " " else { return nil }
+        guard let token = AutocorrectionEngine.lastToken(in: context), token.original == "i" else { return nil }
+
+        let prefix = String(context.dropLast())
+        if let previous = prefix.last, previous != " ", previous != "\n", previous != "\t" {
+            return nil
+        }
+
+        return AutocorrectionResult(
+            charsToDelete: 1,
+            corrected: "I",
+            confidence: 1.0,
+            source: .deterministicRule
+        )
+    }
+
+    private func processPendingDictionaryLearningIfNeeded(forNextInput input: String) -> Bool {
+        guard let pending = pendingDictionaryLearningCandidate,
+              let context = controller?.textDocumentProxy.documentContextBeforeInput else {
+            return false
+        }
+
+        guard context.hasSuffix(pending.restoredContextSuffix) else {
+            pendingDictionaryLearningCandidate = nil
+            return false
+        }
+
+        if correctionSuffix(for: input) != nil {
+            personalDictionaryService.recordRevertedCorrection(originalWord: pending.originalWord)
+            pendingDictionaryLearningCandidate = nil
+            return true
+        }
+        pendingDictionaryLearningCandidate = nil
+        return false
     }
 }

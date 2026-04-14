@@ -35,6 +35,36 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "usr ")
     }
 
+    @Test func testStandaloneLowercaseIBecomesCapitalIWhenFollowedBySpace() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: " i")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == " I ")
+    }
+
+    @Test func testStandaloneLowercaseIAtStartBecomesCapitalIWhenFollowedBySpace() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "i")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "I ")
+    }
+
+    @Test func testEmbeddedLowercaseIDoesNotBecomeCapitalI() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "hi")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "hi ")
+    }
+
     @Test func testDeleteRevertsLastAutocorrectionWithSpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
@@ -44,7 +74,7 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "the ")
 
         handler.deleteBackward()
-        #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh")
     }
 
     @Test func testDeleteRevertsLastAutocorrectionWithPunctuation() async throws {
@@ -94,15 +124,60 @@ struct AutocorrectionHandlerTests {
         handler.insertText(" ")
         handler.deleteBackward()
         #expect(service.containsLearnedWord("teh") == false)
+        #expect(service.revertCount(for: "teh") == 0)
+
+        handler.insertText(" ")
+        #expect(firstController.mockProxy.documentContextBeforeInput == "teh ")
         #expect(service.revertCount(for: "teh") == 1)
 
         let secondController = MockKeyboardController(beforeInput: "teh")
         handler.controller = secondController
         handler.insertText(" ")
         handler.deleteBackward()
+        #expect(service.containsLearnedWord("teh") == false)
+        #expect(service.revertCount(for: "teh") == 1)
+
+        handler.insertText(" ")
 
         #expect(service.containsLearnedWord("teh"))
         #expect(service.revertCount(for: "teh") == 0)
+    }
+
+    @Test func testImmediateSpaceAfterRevertKeepsOriginalWordAndCountsLearning() async throws {
+        let service = makeIsolatedService()
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+
+        handler.insertText(" ")
+        #expect(controller.mockProxy.documentContextBeforeInput == "the ")
+
+        handler.deleteBackward()
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh")
+        #expect(service.revertCount(for: "teh") == 0)
+
+        handler.insertText(" ")
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
+        #expect(service.revertCount(for: "teh") == 1)
+        #expect(service.containsLearnedWord("teh") == false)
+    }
+
+    @Test func testEditingAfterRevertCancelsLearningCandidate() async throws {
+        let service = makeIsolatedService()
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+
+        handler.insertText(" ")
+        handler.deleteBackward()
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh")
+        #expect(service.revertCount(for: "teh") == 0)
+
+        handler.insertText("n")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "tehn")
+        #expect(service.revertCount(for: "teh") == 0)
+        #expect(service.containsLearnedWord("teh") == false)
     }
 }
 

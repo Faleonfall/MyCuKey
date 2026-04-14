@@ -23,7 +23,7 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
 - **Accelerated delete** — character-by-character for first ~1s, then word-by-word
 - **Long-press comma → ?** popup
 - **Return key** — inserts newline
-- **Haptics** — light on key press, medium on caps lock / word delete, silent on empty field
+- **Haptics** — light on key press, medium on word delete and long-press popup activation, silent on empty field
 - **Personal dictionary memory**
   - Learned words suppress future contraction/autocorrection passes for matching normalized token
   - Reverting the same correction twice promotes the original word (promotion threshold = `2`)
@@ -34,6 +34,7 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
 ## Personal Dictionary Rules
 
 - Storage: shared App Group `UserDefaults` suite `group.com.kvolodymyr.MyCuKey`
+- Cross-process sync: reads refresh from shared storage so app-side edits are visible to keyboard behavior without rebuilding
 - Learned word normalization: lowercase
 - Learnable token constraints:
   - length `2...40`
@@ -45,38 +46,45 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
   - at count `2`, the word is added to learned words and the counter is cleared
 - Manual dictionary actions clear pending revert count for affected words
 
-## Architecture
+## Request Flow
 
-```
-KeyboardExtension/
-├── KeyboardViewController.swift   # UIInputViewController entry point
-├── Handler/
-│   ├── KeyboardActionHandler.swift
-│   ├── AutocorrectionEngine.swift
-│   ├── ContractionEngine.swift
-│   ├── CommonWordLexicon.swift
-│   └── PersonalDictionaryService.swift
-├── Views/
-│   ├── KeyboardView.swift          # Layout router
-│   ├── AlphabeticKeyboardView.swift
-│   ├── NumericKeyboardView.swift
-│   ├── SymbolicKeyboardView.swift
-│   ├── SpaceRowView.swift
-│   └── ActionKeyView.swift
-├── Styles/
-│   └── KeyboardButtonStyle.swift   # Touch-down firing, repeat, long-press, accelerated action
-└── Utilities/
-    ├── HapticFeedback.swift
-    └── TrackpadGesture.swift
+Simplified overview of the main keyboard request/response loop.
 
-MyCuKey/
-├── ContentView.swift
-└── PersonalDictionaryManagerView.swift
+```mermaid
+flowchart TD
+    U[User key gesture] --> V[KeyboardView]
+    V --> S[ActionKeyView / KeyboardButtonStyle]
+    S --> H[KeyboardActionHandler]
 
-MyCuKeyTests/
-├── AutocorrectionTests.swift
-├── AutocorrectionHandlerTests.swift
-└── PersonalDictionaryServiceTests.swift
+    H --> D{Action}
+    D -->|shift or layout| T[Update keyboard state]
+    D -->|delete| R{Pending correction revert}
+    D -->|space or trigger punctuation| Q{Learned word suppresses correction}
+    D -->|regular character| P[textDocumentProxy]
+
+    Q -->|yes| N[Normal insert]
+    Q -->|no| C{Contraction or autocorrect match}
+    C -->|yes| A[Apply replacement and store revert]
+    C -->|no| N
+
+    R -->|yes| O[Restore original word]
+    R -->|no| B[deleteBackward]
+
+    A --> P
+    N --> P
+    O --> PD[PersonalDictionaryService]
+    O --> P
+    B --> P
+
+    P --> I[iOS text context]
+    I --> X[textDidChange]
+    X --> AC[Refresh auto-capitalization]
+    AC --> T
+    T --> V
+
+    APP[Host app] --> M[Dictionary manager]
+    M --> PD
+    PD --> G[Shared App Group defaults]
 ```
 
 ## Requirements
