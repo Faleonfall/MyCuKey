@@ -136,7 +136,7 @@ struct KeyboardView: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
-            
+
             switch actionHandler.currentKeyboardType {
             case .alphabetic:
                 AlphabeticKeyboardView(
@@ -164,7 +164,7 @@ struct KeyboardView: View {
                 )
             }
         }
-        .padding(.horizontal, 2)
+        .padding(.horizontal, 3)
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: actionHandler.currentKeyboardType)
     }
 }

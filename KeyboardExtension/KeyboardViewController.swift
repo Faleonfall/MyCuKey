@@ -8,10 +8,6 @@ class KeyboardViewController: UIInputViewController {
     
     let actionHandler = KeyboardActionHandler()
     private var hostingController: UIHostingController<KeyboardView>?
-
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,21 +15,17 @@ class KeyboardViewController: UIInputViewController {
         self.actionHandler.controller = self
         self.view.clipsToBounds = false
         self.inputView?.clipsToBounds = false
-        
+
         let keyboardView = KeyboardView(
              actionHandler: actionHandler,
              needsInputModeSwitchKey: self.needsInputModeSwitchKey,
              controller: self
         )
         
-        // Wrap the SwiftUI view inside a Hosting Controller
         let hc = UIHostingController(rootView: keyboardView)
         hc.view.translatesAutoresizingMaskIntoConstraints = false
         hc.view.backgroundColor = .clear
         hc.view.clipsToBounds = false
-        
-        // Pre-seed the correct color scheme BEFORE the view is added to the hierarchy.
-        // This kills the flash — the first render already uses the right colors.
         hc.overrideUserInterfaceStyle = traitCollection.userInterfaceStyle
         
         self.addChild(hc)
@@ -52,9 +44,7 @@ class KeyboardViewController: UIInputViewController {
         // Modern iOS 17+ trait change API — replaces deprecated traitCollectionDidChange
         registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (_: KeyboardViewController, _: UITraitCollection) in
             guard let self else { return }
-            UIView.animate(withDuration: 0.2) {
-                self.hostingController?.overrideUserInterfaceStyle = self.traitCollection.userInterfaceStyle
-            }
+            self.hostingController?.overrideUserInterfaceStyle = self.traitCollection.userInterfaceStyle
         }
     }
     

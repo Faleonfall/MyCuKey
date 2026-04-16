@@ -27,13 +27,13 @@ MyCuKey is built around one guiding goal: make this keyboard feel as fluent, rel
 - **Accelerated delete** — character-by-character for first ~1s, then word-by-word
 - **Long-press comma → ?** popup
 - **Return key** — inserts newline
-- **Haptics** — light on key press, medium on word delete and long-press popup activation, silent on empty field
+- **Haptics** — light on key press, soft on autocorrection apply, rigid on correction revert, medium on word delete and long-press popup activation, silent on empty field
 - **Personal dictionary memory**
   - Learned words suppress future contraction/autocorrection passes for matching normalized token
   - Reverting the same correction twice promotes the original word (promotion threshold = `2`)
   - Manual dictionary manager in the app (add/search/delete/clear)
 - **Revert on delete** — immediate backspace after correction restores original typed word + trigger suffix
-- **Dark/Light mode** — pre-seeded before first render, smooth 0.2s animated transitions
+- **Dark/Light mode** — follows system appearance
 
 ## Personal Dictionary Rules
 

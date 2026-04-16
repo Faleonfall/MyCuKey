@@ -111,8 +111,6 @@ struct KeyboardButtonStyle: ButtonStyle {
                 }
                 .padding(.horizontal, 3)   // Slightly tighter key spacing
                 .padding(.vertical, 5)     // Increased from 4
-                .scaleEffect(isVisuallyPressed && !isLongPressing ? 0.95 : 1.0)
-                .animation(.interactiveSpring(response: 0.06, dampingFraction: 0.7, blendDuration: 0.03), value: isVisuallyPressed)
             )
             .overlay(
                 Group {

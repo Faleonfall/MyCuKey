@@ -51,5 +51,3 @@ struct ActionKeyView: View {
         .frame(minWidth: 26, maxWidth: .infinity, maxHeight: .infinity)
     }
 }
-
-

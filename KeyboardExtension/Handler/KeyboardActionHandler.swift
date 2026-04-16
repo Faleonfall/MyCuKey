@@ -132,6 +132,7 @@ class KeyboardActionHandler: ObservableObject {
             correctedWord: newWord,
             trailingInput: trailingInput
         )
+        HapticFeedback.playSoft()
         
         evaluateAutoCapitalization(contextBefore: originalContext + fix.corrected + trailingInput)
         lastSpacePressTime = nil
@@ -155,7 +156,7 @@ class KeyboardActionHandler: ObservableObject {
     
     func deleteBackward() {
         if revertLastCorrectionIfPossible() {
-            HapticFeedback.playLight()
+            HapticFeedback.playRigid()
             refreshAutoCapitalizationAfterDelete()
             return
         }
