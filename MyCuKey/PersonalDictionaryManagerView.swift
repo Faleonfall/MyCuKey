@@ -29,6 +29,7 @@ final class PersonalDictionaryManagerViewModel: ObservableObject {
     }
 
     func reload() {
+        service.refreshFromStorage()
         learnedWords = service.allWords()
     }
 

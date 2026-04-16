@@ -41,6 +41,7 @@ class KeyboardActionHandler: ObservableObject {
 
     init(personalDictionaryService: PersonalDictionaryService) {
         self.personalDictionaryService = personalDictionaryService
+        self.personalDictionaryService.refreshFromStorage()
     }
 
     convenience init() {
@@ -68,6 +69,9 @@ class KeyboardActionHandler: ObservableObject {
         let confirmedPendingLearning = processPendingDictionaryLearningIfNeeded(forNextInput: text)
         let context = controller?.textDocumentProxy.documentContextBeforeInput
         let correctionSuffix = correctionSuffix(for: text)
+        if correctionSuffix != nil {
+            personalDictionaryService.refreshFromStorage()
+        }
         let shouldSkipCorrections = confirmedPendingLearning || (context.map { shouldSuppressCorrections(for: $0) } ?? false)
 
         if let ctx = context, let standaloneIReplacement = standaloneLowercaseIReplacement(context: ctx, trailingInput: text) {
@@ -301,10 +305,9 @@ class KeyboardActionHandler: ObservableObject {
 
     private func standaloneLowercaseIReplacement(context: String, trailingInput: String) -> AutocorrectionResult? {
         guard trailingInput == " " else { return nil }
-        guard let token = AutocorrectionEngine.lastToken(in: context), token.original == "i" else { return nil }
+        guard context.last == "i" else { return nil }
 
-        let prefix = String(context.dropLast())
-        if let previous = prefix.last, previous != " ", previous != "\n", previous != "\t" {
+        guard hasStandaloneIBoundary(before: context) else {
             return nil
         }
 
@@ -314,6 +317,17 @@ class KeyboardActionHandler: ObservableObject {
             confidence: 1.0,
             source: .deterministicRule
         )
+    }
+
+    private func hasStandaloneIBoundary(before context: String) -> Bool {
+        let prefix = String(context.dropLast())
+        guard let previous = prefix.last else { return true }
+
+        if previous.isLetter || previous.isNumber || previous == "'" || previous == "-" {
+            return false
+        }
+
+        return true
     }
 
     private func processPendingDictionaryLearningIfNeeded(forNextInput input: String) -> Bool {

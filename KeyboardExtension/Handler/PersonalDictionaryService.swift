@@ -32,17 +32,15 @@ final class PersonalDictionaryService {
         } else {
             self.defaults = .standard
         }
-        reloadLearnedWordsCache()
+        refreshFromStorage()
     }
 
     func containsLearnedWord(_ word: String) -> Bool {
-        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return false }
         return learnedWordSetCache.contains(normalized)
     }
 
     func allWords() -> [LearnedWordEntry] {
-        reloadLearnedWordsCache()
         return learnedWordsCache
             .sorted { lhs, rhs in
                 if lhs.normalizedWord == rhs.normalizedWord {
@@ -52,10 +50,14 @@ final class PersonalDictionaryService {
             }
     }
 
+    func refreshFromStorage() {
+        reloadLearnedWordsCache()
+    }
+
     @discardableResult
     func addWord(_ word: String) -> LearnedWordEntry? {
-        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return nil }
+        refreshFromStorage()
 
         if learnedWordSetCache.contains(normalized),
            let existing = learnedWordsCache.first(where: { $0.normalizedWord == normalized }) {
@@ -72,8 +74,8 @@ final class PersonalDictionaryService {
     }
 
     func removeWord(_ word: String) {
-        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(word) else { return }
+        refreshFromStorage()
         let filtered = learnedWordsCache.filter { $0.normalizedWord != normalized }
         saveLearnedWords(filtered)
         clearRevertCount(forNormalizedWord: normalized)
@@ -87,8 +89,8 @@ final class PersonalDictionaryService {
     }
 
     func recordRevertedCorrection(originalWord: String) {
-        reloadLearnedWordsCache()
         guard let normalized = Self.normalizeLearnableWord(originalWord) else { return }
+        refreshFromStorage()
         guard !learnedWordSetCache.contains(normalized) else { return }
 
         var counts = loadRevertCounts()

@@ -68,6 +68,49 @@ struct PersonalDictionaryServiceTests {
         #expect(service.allWords().isEmpty)
         #expect(service.revertCount(for: "beta") == 0)
     }
+
+    @Test func testRepeatedLookupsUseCachedStateUntilExplicitRefresh() async throws {
+        let suiteName = "test.personal-dictionary.cache.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+
+        let service = PersonalDictionaryService(defaults: defaults)
+        #expect(service.containsLearnedWord("alpha") == false)
+
+        let externalEntry = LearnedWordEntry(normalizedWord: "alpha", createdAt: Date())
+        let encoded = try JSONEncoder().encode([externalEntry])
+        defaults.set(encoded, forKey: PersonalDictionaryConfiguration.learnedWordsKey)
+
+        #expect(service.containsLearnedWord("alpha") == false)
+
+        service.refreshFromStorage()
+
+        #expect(service.containsLearnedWord("alpha"))
+    }
+
+    @Test func testLocalWritesUpdateCacheImmediately() async throws {
+        let service = makeIsolatedDictionaryService()
+
+        _ = service.addWord("alpha")
+        #expect(service.containsLearnedWord("alpha"))
+
+        service.removeWord("alpha")
+        #expect(service.containsLearnedWord("alpha") == false)
+    }
+
+    @Test func testAddWordMergesWithExternalStorageChanges() async throws {
+        let suiteName = "test.personal-dictionary.merge.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+
+        let service = PersonalDictionaryService(defaults: defaults)
+        let externalService = PersonalDictionaryService(defaults: defaults)
+
+        _ = externalService.addWord("alpha")
+        _ = service.addWord("beta")
+
+        #expect(Set(service.allWords().map(\.normalizedWord)) == ["alpha", "beta"])
+    }
 }
 
 private func makeIsolatedDictionaryService() -> PersonalDictionaryService {

@@ -2,6 +2,10 @@
 
 Custom iOS keyboard extension built with SwiftUI + UIKit.
 
+## Vision
+
+MyCuKey is built around one guiding goal: make this keyboard feel as fluent, reliable, and natural as possible. Apple-level feel is the benchmark. The project is not just about adding features; it is about shaping every interaction so typing feels fast, stable, predictable, and effortless in daily use.
+
 ## Setup
 
 1. Open `MyCuKey.xcodeproj` in Xcode.
@@ -32,6 +36,8 @@ Custom iOS keyboard extension built with SwiftUI + UIKit.
 - **Dark/Light mode** — pre-seeded before first render, smooth 0.2s animated transitions
 
 ## Personal Dictionary Rules
+
+The personal dictionary is not meant to replace a strong autocorrection engine. Its job is to protect typing trust: names, slang, intentional spellings, and custom words should stop being "fixed" once the user has clearly shown that the keyboard was wrong.
 
 - Storage: shared App Group `UserDefaults` suite `group.com.kvolodymyr.MyCuKey`
 - Cross-process sync: reads refresh from shared storage so app-side edits are visible to keyboard behavior without rebuilding
@@ -90,5 +96,5 @@ flowchart TD
 ## Requirements
 
 - iOS 26.0+
-- Xcode 16+
+- Recent Xcode version with iOS 26 SDK support
 - Swift 5

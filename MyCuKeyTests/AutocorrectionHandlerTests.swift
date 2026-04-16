@@ -55,6 +55,26 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "I ")
     }
 
+    @Test func testStandaloneLowercaseIAfterOpeningParenthesisBecomesCapitalI() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "(i")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "(I ")
+    }
+
+    @Test func testStandaloneLowercaseIAfterQuoteBecomesCapitalI() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "\"i")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "\"I ")
+    }
+
     @Test func testEmbeddedLowercaseIDoesNotBecomeCapitalI() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "hi")
@@ -63,6 +83,16 @@ struct AutocorrectionHandlerTests {
         handler.insertText(" ")
 
         #expect(controller.mockProxy.documentContextBeforeInput == "hi ")
+    }
+
+    @Test func testWordEndingInLowercaseIDoesNotBecomeCapitalI() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "wifi")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "wifi ")
     }
 
     @Test func testDeleteRevertsLastAutocorrectionWithSpace() async throws {
@@ -107,6 +137,24 @@ struct AutocorrectionHandlerTests {
         _ = service.addWord("teh")
 
         let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
+    }
+
+    @Test func testHandlerRefreshesLearnedWordsFromSharedStorageBeforeCorrection() async throws {
+        let suiteName = "test.personal-dictionary.handler-refresh.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defaults.removePersistentDomain(forName: suiteName)
+
+        let service = PersonalDictionaryService(defaults: defaults)
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let externalService = PersonalDictionaryService(defaults: defaults)
+        _ = externalService.addWord("teh")
+
         let controller = MockKeyboardController(beforeInput: "teh")
         handler.controller = controller
 
