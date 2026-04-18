@@ -170,6 +170,7 @@ enum CommonWordLexicon {
     port
     large
     spell
+    okay
     add
     even
     land

@@ -9,6 +9,13 @@ struct AlphabeticKeyboardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            SuggestionBarView(
+                state: actionHandler.suggestionBarState,
+                actionHandler: actionHandler,
+                letterKeyBg: letterKeyBg,
+                actionKeyBg: actionKeyBg
+            )
+
             KeyboardRow(
                 keys: KeyboardLayout.alphabeticTopRow,
                 backgroundColor: letterKeyBg,

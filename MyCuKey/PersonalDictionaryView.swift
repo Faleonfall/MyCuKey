@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 
 @MainActor
-final class PersonalDictionaryManagerViewModel: ObservableObject {
+final class PersonalDictionaryViewModel: ObservableObject {
     @Published var learnedWords: [LearnedWordEntry] = []
     @Published var newWord: String = ""
     @Published var searchText: String = ""
@@ -58,8 +58,9 @@ final class PersonalDictionaryManagerViewModel: ObservableObject {
     }
 }
 
-struct PersonalDictionaryManagerView: View {
-    @StateObject private var viewModel = PersonalDictionaryManagerViewModel()
+struct PersonalDictionaryView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var viewModel = PersonalDictionaryViewModel()
     @State private var showClearAllConfirmation = false
 
     var body: some View {
@@ -118,6 +119,10 @@ struct PersonalDictionaryManagerView: View {
             Button("Cancel", role: .cancel) {}
         }
         .onAppear {
+            viewModel.reload()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            guard newPhase == .active else { return }
             viewModel.reload()
         }
     }

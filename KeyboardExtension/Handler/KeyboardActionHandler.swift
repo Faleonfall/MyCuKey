@@ -28,11 +28,21 @@ class KeyboardActionHandler: ObservableObject {
     weak var controller: UIInputViewController?
     @Published var isShiftEnabled: Bool = false
     @Published var isCapsLocked: Bool = false
-    @Published var currentKeyboardType: KeyboardType = .alphabetic
-    private var lastSpacePressTime: Date?
+    @Published var currentKeyboardType: KeyboardType = .alphabetic {
+        didSet {
+            if currentKeyboardType == .alphabetic {
+                refreshSuggestions(for: controller?.textDocumentProxy.documentContextBeforeInput)
+            } else {
+                clearSuggestions()
+            }
+        }
+    }
+    @Published var suggestionBarState: SuggestionBarState?
+    var lastSpacePressTime: Date?
     private var lastShiftPressTime: Date?
-    private var pendingCorrectionRevert: PendingCorrectionRevert?
-    private var pendingDictionaryLearningCandidate: PendingDictionaryLearningCandidate?
+    var pendingCorrectionRevert: PendingCorrectionRevert?
+    var pendingDictionaryLearningCandidate: PendingDictionaryLearningCandidate?
+    var suppressSuggestionRefreshUntilNextToken = false
     private let personalDictionaryService: PersonalDictionaryService
     
     let contractionEngine = ContractionEngine()
@@ -65,6 +75,9 @@ class KeyboardActionHandler: ObservableObject {
     }
 
     func insertText(_ text: String) {
+        if text.count == 1, text.first?.isLetter == true {
+            suppressSuggestionRefreshUntilNextToken = false
+        }
         clearPendingCorrectionIfNeeded(for: text)
         let confirmedPendingLearning = processPendingDictionaryLearningIfNeeded(forNextInput: text)
         let context = controller?.textDocumentProxy.documentContextBeforeInput
@@ -106,35 +119,26 @@ class KeyboardActionHandler: ObservableObject {
             ? String(originalContext.dropLast()) + result.textToInsert
             : originalContext + result.textToInsert
         evaluateAutoCapitalization(contextBefore: newContext)
+        refreshSuggestions(for: newContext)
     }
     
     // Shared replacement apply — uses Diff logic to minimize flicker.
     // Instead of deleting the whole word, it only deletes the suffix that changed.
     private func applyReplacement(_ fix: AutocorrectionResult, originalContext: String, trailingInput: String) {
         let oldWord = String(originalContext.suffix(fix.charsToDelete))
-        let newWord = fix.corrected
-        
-        let prefixLen = commonPrefixLength(oldWord, newWord)
-        
-        // Number of characters to delete (the part of the old word that doesn't match the new word)
-        let deleteCount = oldWord.count - prefixLen
-        
-        // Part of the new word that needs to be inserted + trailing input (" ", ".", "!", etc.)
-        let insertSuffix = String(newWord.dropFirst(prefixLen)) + trailingInput
-        
-        for _ in 0..<deleteCount {
-            controller?.textDocumentProxy.deleteBackward()
-        }
-        
-        controller?.textDocumentProxy.insertText(insertSuffix)
+        applyWordReplacement(
+            oldWord: oldWord,
+            newWord: fix.corrected,
+            originalContext: originalContext,
+            trailingInput: trailingInput,
+            tracksCorrectionRevert: true
+        )
         pendingCorrectionRevert = PendingCorrectionRevert(
             originalWord: oldWord,
-            correctedWord: newWord,
+            correctedWord: fix.corrected,
             trailingInput: trailingInput
         )
         HapticFeedback.playSoft()
-        
-        evaluateAutoCapitalization(contextBefore: originalContext + fix.corrected + trailingInput)
         lastSpacePressTime = nil
     }
 
@@ -142,7 +146,7 @@ class KeyboardActionHandler: ObservableObject {
         correctionTriggerInputs.contains(input) ? input : nil
     }
     
-    private func commonPrefixLength(_ a: String, _ b: String) -> Int {
+    func commonPrefixLength(_ a: String, _ b: String) -> Int {
         let aChars = Array(a)
         let bChars = Array(b)
         var i = 0
@@ -156,6 +160,7 @@ class KeyboardActionHandler: ObservableObject {
     
     func deleteBackward() {
         if revertLastCorrectionIfPossible() {
+            refreshSuggestions(for: controller?.textDocumentProxy.documentContextBeforeInput)
             HapticFeedback.playRigid()
             refreshAutoCapitalizationAfterDelete()
             return
@@ -166,6 +171,7 @@ class KeyboardActionHandler: ObservableObject {
         controller?.textDocumentProxy.deleteBackward()
         pendingCorrectionRevert = nil
         HapticFeedback.playLight()
+        refreshSuggestions(for: controller?.textDocumentProxy.documentContextBeforeInput)
 
         refreshAutoCapitalizationAfterDelete()
     }
@@ -242,12 +248,16 @@ class KeyboardActionHandler: ObservableObject {
             "!", "! ",
             "?", "? ",
             "\n",
-            "\n*", "\n* ",
             ".*", ".* ",
             ". *", ". * "
         ]
         
         self.isShiftEnabled = false
+        if shouldShiftAfterBulletPrefix(in: text) {
+            self.isShiftEnabled = true
+            return
+        }
+
         for ending in triggerEndings {
             if text.hasSuffix(ending) {
                 self.isShiftEnabled = true
@@ -256,10 +266,16 @@ class KeyboardActionHandler: ObservableObject {
         }
     }
 
+    private func shouldShiftAfterBulletPrefix(in text: String) -> Bool {
+        let currentLine = text.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? text
+        return currentLine == "*" || currentLine == "* "
+    }
+
     private func refreshAutoCapitalizationAfterDelete() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             let context = self.controller?.textDocumentProxy.documentContextBeforeInput
             self.evaluateAutoCapitalization(contextBefore: context)
+            self.refreshSuggestions(for: context)
         }
     }
 

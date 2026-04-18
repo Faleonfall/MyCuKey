@@ -134,12 +134,53 @@ struct AutocorrectionTests {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "mot")?.corrected == "not")
         #expect(engine.evaluate(context: "vome")?.corrected == "come")
+        #expect(engine.evaluate(context: "yur")?.corrected == "your")
+        #expect(engine.evaluate(context: "Okey")?.corrected == "Okay")
+    }
+
+    @Test func testAutocorrectionFixesMergedAndApostropheForms() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "noone")?.corrected == "no one")
+        #expect(engine.evaluate(context: "herrs")?.corrected == "here's")
+        #expect(engine.evaluate(context: "Herrs")?.corrected == "Here's")
+    }
+
+    @Test func testAutocorrectionSuggestionsExposeRankedCandidates() async throws {
+        let engine = AutocorrectionEngine()
+        let suggestionSet = engine.suggestions(context: "teh")
+        #expect(suggestionSet?.token.original == "teh")
+        #expect(suggestionSet?.suggestions.first?.text == "the")
+        #expect(suggestionSet?.suggestions.first?.kind == .candidate)
+        #expect((suggestionSet?.suggestions.count ?? 0) >= 1)
+    }
+
+    @Test func testAutocorrectionSuggestionsReturnSafeLocalMatch() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.suggestions(context: "yur")?.suggestions.first?.text == "your")
+    }
+
+    @Test func testAutocorrectionSuggestionsCanSurfaceHelpfulAlternativesForWordLikeInput() async throws {
+        let engine = AutocorrectionEngine()
+        let suggestions = engine.suggestions(context: "herr")?.suggestions.map(\.text) ?? []
+        #expect(!suggestions.isEmpty)
+        #expect(suggestions.count <= 2)
+    }
+
+    @Test func testAutocorrectionSuggestionsDeduplicateEquivalentCandidates() async throws {
+        let engine = AutocorrectionEngine()
+        let suggestions = engine.suggestions(context: "teh")?.suggestions.map(\.text) ?? []
+        #expect(Set(suggestions).count == suggestions.count)
+        #expect(suggestions.count <= 2)
     }
 
     @Test func testAutocorrectionLeavesAmbiguousNearbyOrDuplicateCasesAlone() async throws {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "woh") == nil)
         #expect(engine.evaluate(context: "yourr") == nil)
+        #expect(engine.evaluate(context: "mind") == nil)
+        #expect(engine.evaluate(context: "herr") == nil)
+        #expect(engine.evaluate(context: "kint") == nil)
+        #expect(engine.evaluate(context: "csb") == nil)
     }
 
     @Test func testAutocorrectionLeavesHeavilyCorruptedWordAlone() async throws {

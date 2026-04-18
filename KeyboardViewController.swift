@@ -8,6 +8,8 @@ class KeyboardViewController: UIInputViewController {
     
     let actionHandler = KeyboardActionHandler()
     private var hostingController: UIHostingController<KeyboardView>?
+    private var cancellables = Set<AnyCancellable>()
+    private var keyboardHeightConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +42,19 @@ class KeyboardViewController: UIInputViewController {
             hc.view.topAnchor.constraint(equalTo: view.topAnchor),
             hc.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
+        let heightConstraint = view.heightAnchor.constraint(equalToConstant: currentKeyboardHeight)
+        heightConstraint.priority = .required
+        heightConstraint.isActive = true
+        keyboardHeightConstraint = heightConstraint
         
         self.hostingController = hc
+
+        Publishers.CombineLatest(actionHandler.$currentKeyboardType, actionHandler.$suggestionBarState)
+            .sink { [weak self] _, _ in
+                self?.updateKeyboardHeight()
+            }
+            .store(in: &cancellables)
         
         // Modern iOS 17+ trait change API — replaces deprecated traitCollectionDidChange
         registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (_: KeyboardViewController, _: UITraitCollection) in
@@ -57,17 +70,54 @@ class KeyboardViewController: UIInputViewController {
         // Use externalized logic for unit testability
         let contextBefore = textDocumentProxy.documentContextBeforeInput
         self.actionHandler.evaluateAutoCapitalization(contextBefore: contextBefore)
+        self.actionHandler.refreshSuggestions(for: contextBefore)
+    }
+
+    private var currentKeyboardHeight: CGFloat {
+        let baseHeight = KeyboardMetrics.rowHeight * 4.0 + 4.0
+        let suggestionHeight = actionHandler.currentKeyboardType == .alphabetic
+            ? 28.0
+            : 0.0
+        return baseHeight + suggestionHeight
+    }
+
+    private func updateKeyboardHeight() {
+        keyboardHeightConstraint?.constant = currentKeyboardHeight
+        view.layoutIfNeeded()
+    }
+}
+
+private struct KeyboardPreviewContainer: View {
+    private let previewSuggestionHeight: CGFloat = 28
+    @StateObject private var handler: KeyboardActionHandler
+    private let previewController = UIInputViewController()
+
+    init() {
+        let handler = KeyboardActionHandler()
+        handler.currentKeyboardType = .alphabetic
+        handler.suggestionBarState = SuggestionBarState(
+            originalToken: "Teh",
+            suggestions: [
+                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99, kind: .candidate),
+                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96, kind: .candidate)
+            ],
+            trailingSuffix: ""
+        )
+        _handler = StateObject(wrappedValue: handler)
+    }
+
+    var body: some View {
+        KeyboardView(
+            actionHandler: handler,
+            needsInputModeSwitchKey: true,
+            controller: previewController
+        )
+        .frame(height: KeyboardMetrics.rowHeight * 4.0 + previewSuggestionHeight)
+        .background(Color(UIColor.systemGroupedBackground))
     }
 }
 
 // MARK: - Preview
-#Preview {
-    KeyboardView(
-        actionHandler: KeyboardActionHandler(),
-        needsInputModeSwitchKey: true,
-        controller: UIInputViewController()
-    )
-    .frame(height: 250) // Approximate keyboard height
-    .padding(.top, 10)
-    .background(Color(UIColor.systemGroupedBackground))
+#Preview("Keyboard With Suggestions", traits: .sizeThatFitsLayout) {
+    KeyboardPreviewContainer()
 }

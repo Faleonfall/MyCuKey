@@ -26,8 +26,14 @@ struct SpaceRowView: View {
                 .frame(width: 60)
             }
 
-            ActionKeyView(title: "*", backgroundColor: actionKeyBg) { actionHandler.insertText("*") }
-                .frame(width: 45)
+            ActionKeyView(
+                title: "*",
+                backgroundColor: actionKeyBg,
+                longPressTitle: "\"",
+                longPressAction: { actionHandler.insertText("\"") },
+                action: { actionHandler.insertText("*") }
+            )
+            .frame(width: 45)
 
             ActionKeyView(
                 title: "",

@@ -23,6 +23,7 @@ Current reliability priorities and known platform ceilings are tracked in [docs/
 - **QWERTY / Numeric / Symbolic** layout switching
 - **Auto-capitalization** — sentence-aware, synchronous prediction bypassing iOS IPC lag
 - **Autocorrection** — conservative trust-first correction with deterministic typo fixes, immediate revert on delete, and support for wrapped plain-word fixes like `*teh* → *the*`
+- **Suggestion bar** — alphabetic-only row with the current token on the left, the best ranked candidate in the center, and a second candidate on the right; suggestions stay available briefly after a trailing space until the next token begins
 - **Caps Lock** — double-tap shift within 0.35s to lock
 - **Correction triggers** — correction pass runs on `space`, `.`, `,`, `!`, `?`, `*`, and newline
 - **Double-space → period** — fast double space inserts `. ` and triggers capitalization

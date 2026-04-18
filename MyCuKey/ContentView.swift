@@ -20,7 +20,7 @@ struct ContentView: View {
 
                 Section(header: Text("Personal Dictionary")) {
                     NavigationLink("Manage Learned Words") {
-                        PersonalDictionaryManagerView()
+                        PersonalDictionaryView()
                     }
                     Text("Words you add here, or words the keyboard learns after repeated correction reverts, will stop being autocorrected.")
                         .font(.footnote)

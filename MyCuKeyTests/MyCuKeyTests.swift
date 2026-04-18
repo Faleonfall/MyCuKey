@@ -149,6 +149,22 @@ struct MyCuKeyTests {
         handler.evaluateAutoCapitalization(contextBefore: "Hello *")
         #expect(handler.isShiftEnabled == false, "Must NOT shift after a raw asterisk unconnected to punctuation.")
     }
+
+    @Test func testKeyboardCapitalizationAfterBulletPrefixOnCurrentLine() async throws {
+        let handler = KeyboardActionHandler()
+
+        handler.evaluateAutoCapitalization(contextBefore: "*")
+        #expect(handler.isShiftEnabled == true, "Must shift when a bullet asterisk is the whole current line.")
+
+        handler.evaluateAutoCapitalization(contextBefore: "* ")
+        #expect(handler.isShiftEnabled == true, "Must keep shift enabled after bullet asterisk followed by a space.")
+
+        handler.evaluateAutoCapitalization(contextBefore: "Line one\n*")
+        #expect(handler.isShiftEnabled == true, "Must shift when a bullet asterisk starts a new line.")
+
+        handler.evaluateAutoCapitalization(contextBefore: "Line one\n* ")
+        #expect(handler.isShiftEnabled == true, "Must keep shift enabled after a bullet asterisk and space on a new line.")
+    }
     
     @Test func testKeyboardCapitalizationDisablesAfterTypingNormalLetters() async throws {
         let handler = KeyboardActionHandler()
