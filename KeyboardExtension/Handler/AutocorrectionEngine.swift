@@ -68,7 +68,14 @@ struct AutocorrectionEngine {
             return deterministic
         }
 
-        guard let textChecker = textCheckerResult(for: token),
+        let lowercasedGuesses = textCheckerGuesses(for: token.correctionTarget)
+            .map { $0.lowercased() }
+
+        if let patterned = patternResult(for: token, guesses: lowercasedGuesses) {
+            return patterned
+        }
+
+        guard let textChecker = textCheckerResult(for: token, guesses: lowercasedGuesses),
               textChecker.confidence >= minimumTextCheckerAutoApplyConfidence else {
             return nil
         }
@@ -177,23 +184,12 @@ struct AutocorrectionEngine {
         return (core, String(first), String(last))
     }
 
-    private func textCheckerResult(for token: CorrectionToken) -> AutocorrectionResult? {
-        let range = NSRange(0..<token.correctionTarget.utf16.count)
-        let misspelledRange = textChecker.rangeOfMisspelledWord(
-            in: token.correctionTarget,
-            range: range,
-            startingAt: 0,
-            wrap: false,
-            language: "en"
-        )
-        guard misspelledRange.location != NSNotFound else { return nil }
-
-        guard let guesses = textChecker.guesses(forWordRange: misspelledRange, in: token.correctionTarget, language: "en") else {
+    private func textCheckerResult(for token: CorrectionToken, guesses: [String]) -> AutocorrectionResult? {
+        guard !shouldBlockTrailingDuplicateCorrection(input: token.correctionTargetLowercased, guesses: guesses) else {
             return nil
         }
 
         let acceptedGuesses = guesses
-            .map { $0.lowercased() }
             .filter { candidate in
                 shouldAcceptTextCheckerCandidate(input: token.correctionTargetLowercased, candidate: candidate)
             }
@@ -212,7 +208,7 @@ struct AutocorrectionEngine {
         )
     }
 
-    private func makeResult(
+    func makeResult(
         for token: CorrectionToken,
         correctedLowercased: String,
         confidence: Double,

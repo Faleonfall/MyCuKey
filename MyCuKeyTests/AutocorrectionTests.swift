@@ -130,6 +130,18 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "ot")?.corrected == "on")
     }
 
+    @Test func testAutocorrectionFixesSafeNearbyKeySubstitutions() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "mot")?.corrected == "not")
+        #expect(engine.evaluate(context: "vome")?.corrected == "come")
+    }
+
+    @Test func testAutocorrectionLeavesAmbiguousNearbyOrDuplicateCasesAlone() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "woh") == nil)
+        #expect(engine.evaluate(context: "yourr") == nil)
+    }
+
     @Test func testAutocorrectionLeavesHeavilyCorruptedWordAlone() async throws {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "gethtett") == nil)

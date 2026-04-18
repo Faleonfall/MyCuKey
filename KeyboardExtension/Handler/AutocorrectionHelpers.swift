@@ -1,6 +1,20 @@
 import UIKit
 
 extension AutocorrectionEngine {
+    func textCheckerGuesses(for word: String) -> [String] {
+        let range = NSRange(0..<word.utf16.count)
+        let misspelledRange = textChecker.rangeOfMisspelledWord(
+            in: word,
+            range: range,
+            startingAt: 0,
+            wrap: false,
+            language: "en"
+        )
+        guard misspelledRange.location != NSNotFound else { return [] }
+
+        return textChecker.guesses(forWordRange: misspelledRange, in: word, language: "en") ?? []
+    }
+
     func isDictionaryWord(_ word: String) -> Bool {
         textChecker.rangeOfMisspelledWord(
             in: word,

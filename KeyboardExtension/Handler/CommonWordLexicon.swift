@@ -16,6 +16,7 @@ enum CommonWordLexicon {
     was
     for
     on
+    not
     are
     with
     as

@@ -55,6 +55,36 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "because?")
     }
 
+    @Test func testHandlerCorrectsSafeLocalTypoInsideSentenceContext() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "I'm mot")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "I'm not ")
+    }
+
+    @Test func testHandlerCorrectsAnotherSafeLocalTypoInsideSentenceContext() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "Want to vome")
+        handler.controller = controller
+
+        handler.insertText("?")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "Want to come?")
+    }
+
+    @Test func testHandlerLeavesAmbiguousWordAloneInsideSentenceContext() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "but maybe yourr")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "but maybe yourr ")
+    }
+
     @Test func testStandaloneLowercaseIBecomesCapitalIWhenFollowedBySpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: " i")

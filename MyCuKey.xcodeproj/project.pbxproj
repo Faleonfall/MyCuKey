@@ -13,9 +13,11 @@
 		CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
 		CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
+		CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
 		CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
 		CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
+		CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
 		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
 		CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
 		CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
@@ -86,6 +88,7 @@
 		CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionEngine.swift; sourceTree = "<group>"; };
 		CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractionEngine.swift; sourceTree = "<group>"; };
 		CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionHelpers.swift; sourceTree = "<group>"; };
+		CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionPatterns.swift; sourceTree = "<group>"; };
 		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
 		CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButtonStyle.swift; sourceTree = "<group>"; };
 		CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
@@ -176,6 +179,7 @@
 				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
 				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
 				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
+				CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */,
 				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
 				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
 				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
@@ -367,6 +371,7 @@
 				CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
 				CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */,
+				CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */,
 				CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
 				CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */,
@@ -400,6 +405,7 @@
 				CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */,
 				CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */,
+				CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */,
 				CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
