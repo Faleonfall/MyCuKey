@@ -41,17 +41,6 @@
                ReferencedContainer = "container:MyCuKey.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CB11436A2F896A0D009F9FA2"
-               BuildableName = "MyCuKeyUITests.xctest"
-               BlueprintName = "MyCuKeyUITests"
-               ReferencedContainer = "container:MyCuKey.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

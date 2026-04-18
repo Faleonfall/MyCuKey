@@ -35,6 +35,26 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "usr ")
     }
 
+    @Test func testHandlerCorrectsRoleplayWrappedPlainWord() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "*teh*")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "*the* ")
+    }
+
+    @Test func testHandlerPreservesQuestionMarkAfterDeterministicCuratedCorrection() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "becase")
+        handler.controller = controller
+
+        handler.insertText("?")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "because?")
+    }
+
     @Test func testStandaloneLowercaseIBecomesCapitalIWhenFollowedBySpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: " i")
@@ -119,6 +139,18 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "teh?")
     }
 
+    @Test func testDeleteRevertsCuratedDeterministicCorrectionWithPunctuation() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "becase")
+        handler.controller = controller
+
+        handler.insertText("?")
+        #expect(controller.mockProxy.documentContextBeforeInput == "because?")
+
+        handler.deleteBackward()
+        #expect(controller.mockProxy.documentContextBeforeInput == "becase?")
+    }
+
     @Test func testDeleteDoesNormalDeleteAfterContinuingTyping() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
@@ -143,6 +175,19 @@ struct AutocorrectionHandlerTests {
         handler.insertText(" ")
 
         #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
+    }
+
+    @Test func testLearnedWordSuppressesFutureCuratedDeterministicCorrection() async throws {
+        let service = makeIsolatedService()
+        _ = service.addWord("actaully")
+
+        let handler = KeyboardActionHandler(personalDictionaryService: service)
+        let controller = MockKeyboardController(beforeInput: "actaully")
+        handler.controller = controller
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "actaully ")
     }
 
     @Test func testHandlerRefreshesLearnedWordsFromSharedStorageBeforeCorrection() async throws {

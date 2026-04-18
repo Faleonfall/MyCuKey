@@ -12,8 +12,10 @@
 		CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
 		CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
 		CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
+		CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
 		CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
+		CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
 		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
 		CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
 		CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
@@ -34,6 +36,10 @@
 		CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
 		CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
 		CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
+		CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBA8E2C12F9355CD009869A4 /* Assets.xcassets */; };
+		CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C22F9355CD009869A4 /* ContentView.swift */; };
+		CBA8E2C92F9355CD009869A4 /* MyCuKeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */; };
+		CBA8E2CA2F9355CD009869A4 /* PersonalDictionaryManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C52F9355CD009869A4 /* PersonalDictionaryManagerView.swift */; };
 		CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
 		CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
 		CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
@@ -79,6 +85,7 @@
 		CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionEngine.swift; sourceTree = "<group>"; };
 		CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractionEngine.swift; sourceTree = "<group>"; };
+		CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionHelpers.swift; sourceTree = "<group>"; };
 		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
 		CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButtonStyle.swift; sourceTree = "<group>"; };
 		CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
@@ -89,16 +96,15 @@
 		CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceRowView.swift; sourceTree = "<group>"; };
 		CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicKeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGesture.swift; sourceTree = "<group>"; };
+		CBA8E2C12F9355CD009869A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CBA8E2C22F9355CD009869A4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCuKeyApp.swift; sourceTree = "<group>"; };
+		CBA8E2C52F9355CD009869A4 /* PersonalDictionaryManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryManagerView.swift; sourceTree = "<group>"; };
 		CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWordLexicon.swift; sourceTree = "<group>"; };
 		CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CB1143562F896A0B009F9FA2 /* MyCuKey */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MyCuKey;
-			sourceTree = "<group>";
-		};
 		CB1143642F896A0D009F9FA2 /* MyCuKeyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyCuKeyTests;
@@ -134,9 +140,11 @@
 		CB11434B2F896A0B009F9FA2 = {
 			isa = PBXGroup;
 			children = (
-				CB1143562F896A0B009F9FA2 /* MyCuKey */,
+				CBA8E2C62F9355CD009869A4 /* MyCuKey */,
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
+				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
+				CB1143A82F89A672009F9FA2 /* Info.plist */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -154,12 +162,10 @@
 		CB1143AC2F89A672009F9FA2 /* KeyboardExtension */ = {
 			isa = PBXGroup;
 			children = (
-				CB9BF32F2F8A1567001FCAA8 /* Handler */,
-				CB9BF3312F8A1567001FCAA8 /* Styles */,
-				CB9BF3342F8A1567001FCAA8 /* Utilities */,
 				CB9BF33B2F8A1567001FCAA8 /* Views */,
-				CB1143A82F89A672009F9FA2 /* Info.plist */,
-				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
+				CB9BF32F2F8A1567001FCAA8 /* Handler */,
+				CB9BF3342F8A1567001FCAA8 /* Utilities */,
+				CB9BF3312F8A1567001FCAA8 /* Styles */,
 			);
 			path = KeyboardExtension;
 			sourceTree = "<group>";
@@ -169,6 +175,7 @@
 			children = (
 				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
 				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
+				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
 				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
 				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
 				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
@@ -206,6 +213,17 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		CBA8E2C62F9355CD009869A4 /* MyCuKey */ = {
+			isa = PBXGroup;
+			children = (
+				CBA8E2C22F9355CD009869A4 /* ContentView.swift */,
+				CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */,
+				CBA8E2C52F9355CD009869A4 /* PersonalDictionaryManagerView.swift */,
+				CBA8E2C12F9355CD009869A4 /* Assets.xcassets */,
+			);
+			path = MyCuKey;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -222,9 +240,6 @@
 			);
 			dependencies = (
 				CB1143882F896DDF009F9FA2 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				CB1143562F896A0B009F9FA2 /* MyCuKey */,
 			);
 			name = MyCuKey;
 			packageProductDependencies = (
@@ -323,6 +338,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,8 +366,12 @@
 				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 				CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
 				CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */,
+				CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */,
 				CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
+				CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */,
+				CBA8E2C92F9355CD009869A4 /* MyCuKeyApp.swift in Sources */,
+				CBA8E2CA2F9355CD009869A4 /* PersonalDictionaryManagerView.swift in Sources */,
 				CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
 				CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */,
@@ -379,6 +399,7 @@
 				CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
 				CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */,
+				CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */,
 				CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
 				CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
@@ -536,7 +557,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -554,6 +575,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -569,7 +591,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -587,6 +609,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -649,7 +672,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -678,7 +701,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = KeyboardExtension/Info.plist;
+				INFOPLIST_FILE = Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -11,7 +11,7 @@ struct ContentView: View {
                     InstructionRow(step: "4", text: "Locate and select MyCuKey from the list.")
                     InstructionRow(step: "5", text: "Tap on MyCuKey again and toggle \"Allow Full Access\" to enable all features.")
                 }
-                
+
                 Section(header: Text("How to Use")) {
                     InstructionRow(step: "6", text: "Open any app with a text field (like Messages).")
                     InstructionRow(step: "7", text: "Tap and hold the 🌐 Globe button located at the bottom left of your standard Apple Keyboard.")

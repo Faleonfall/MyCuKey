@@ -13,6 +13,8 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         
         self.actionHandler.controller = self
+        self.view.backgroundColor = .clear
+        self.inputView?.backgroundColor = .clear
         self.view.clipsToBounds = false
         self.inputView?.clipsToBounds = false
 

@@ -27,7 +27,13 @@ struct KeyboardButtonStyle: ButtonStyle {
     @State private var keyFrameInGlobal: CGRect = .zero
 
     private var keyFaceColor: Color {
-        colorScheme == .light ? Color.white : Color(white: 0.35)
+        colorScheme == .light
+            ? Color.white
+            : Color(white: 0.35)
+    }
+
+    private var pressedOverlayColor: Color {
+        colorScheme == .light ? Color.black.opacity(0.06) : Color.white.opacity(0.15)
     }
 
     private var popupHorizontalOffset: CGFloat {
@@ -106,7 +112,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                     // Highlight on press
                     if isVisuallyPressed {
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(Color.white.opacity(0.15))
+                            .fill(pressedOverlayColor)
                     }
                 }
                 .padding(.horizontal, 3)   // Slightly tighter key spacing

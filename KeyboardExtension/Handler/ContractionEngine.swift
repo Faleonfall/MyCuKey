@@ -38,11 +38,13 @@ struct ContractionEngine {
 
     func evaluate(context: String) -> AutocorrectionResult? {
         guard let token = AutocorrectionEngine.lastToken(in: context) else { return nil }
-        guard let corrected = contractionMap[token.lowercased] else { return nil }
+        guard let corrected = contractionMap[token.correctionTargetLowercased] else { return nil }
+
+        let correctedCore = AutocorrectionEngine.applyCasePattern(from: token.correctionTarget, to: corrected)
 
         return AutocorrectionResult(
             charsToDelete: token.original.count,
-            corrected: AutocorrectionEngine.applyCasePattern(from: token.original, to: corrected),
+            corrected: token.leadingDecoration + correctedCore + token.trailingDecoration,
             confidence: 1.0,
             source: .contraction
         )

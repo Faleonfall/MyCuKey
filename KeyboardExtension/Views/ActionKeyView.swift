@@ -29,7 +29,7 @@ struct ActionKeyView: View {
         self.trackpadAction = trackpadAction
         self.action = action
     }
-    
+
     var body: some View {
         Button(action: {}) { // Empty action! Style handles execution instantly on press.
             Color.white.opacity(0.001) // Massive invisible touch target that completely fills padding gaps!

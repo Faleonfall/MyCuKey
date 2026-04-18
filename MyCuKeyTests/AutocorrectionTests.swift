@@ -96,8 +96,42 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "usr") == nil)
     }
 
-    @Test func testDistanceTwoStillAcceptsLikelyWordShape() async throws {
+    @Test func testAutocorrectionRejectsWeakDistanceTwoGuess() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "definatly") == nil)
+    }
+
+    @Test func testAutocorrectionSkipsExpressiveTrailingRepeatedLetters() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "nooo") == nil)
+    }
+
+    @Test func testAutocorrectionStillFixesRoleplayWrappedPlainWord() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "*teh*")?.corrected == "*the*")
+    }
+
+    @Test func testAutocorrectionFixesCuratedCommonMistakes() async throws {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "becase")?.corrected == "because")
+        #expect(engine.evaluate(context: "wierd")?.corrected == "weird")
+        #expect(engine.evaluate(context: "agian")?.corrected == "again")
+    }
+
+    @Test func testAutocorrectionFixesRealWorldTypingMistakes() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "actaully")?.corrected == "actually")
+        #expect(engine.evaluate(context: "diffrent")?.corrected == "different")
+        #expect(engine.evaluate(context: "intresting")?.corrected == "interesting")
+        #expect(engine.evaluate(context: "chekc")?.corrected == "check")
+        #expect(engine.evaluate(context: "anyhting")?.corrected == "anything")
+        #expect(engine.evaluate(context: "usaully")?.corrected == "usually")
+        #expect(engine.evaluate(context: "keeo")?.corrected == "keep")
+        #expect(engine.evaluate(context: "ot")?.corrected == "on")
+    }
+
+    @Test func testAutocorrectionLeavesHeavilyCorruptedWordAlone() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "gethtett") == nil)
     }
 }
