@@ -15,13 +15,15 @@
 		CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
 		CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
 		CB5EB5DE2F8A6DB100EA32EB /* AutocorrectionSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */; };
+		CB5EB5DF2F8A6DB100EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */; };
 		CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
 		CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
 		CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
 		CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
 		CB5EB5E42F8A6E5200EA32EB /* AutocorrectionSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */; };
-		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
+		CB5EB5E52F8A6E5200EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */; };
 		CB9BF33B2F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */; };
+		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
 		CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
 		CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
 		CB9BF33F2F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */; };
@@ -44,6 +46,7 @@
 		CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
 		CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
 		CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
+		CBA65D532F94D83D006F8164 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CBA65D522F94D83D006F8164 /* Localizable.xcstrings */; };
 		CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBA8E2C12F9355CD009869A4 /* Assets.xcassets */; };
 		CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C22F9355CD009869A4 /* ContentView.swift */; };
 		CBA8E2C92F9355CD009869A4 /* MyCuKeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */; };
@@ -96,6 +99,7 @@
 		CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionHelpers.swift; sourceTree = "<group>"; };
 		CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionPatterns.swift; sourceTree = "<group>"; };
 		CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionSuggestions.swift; sourceTree = "<group>"; };
+		CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionSuggestionPipeline.swift; sourceTree = "<group>"; };
 		CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSuggestions.swift; sourceTree = "<group>"; };
 		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
 		CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButtonStyle.swift; sourceTree = "<group>"; };
@@ -108,6 +112,9 @@
 		CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicKeyboardView.swift; sourceTree = "<group>"; };
 		CB9BF33C2F8A1567001FCAA7 /* SuggestionBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBarView.swift; sourceTree = "<group>"; };
 		CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGesture.swift; sourceTree = "<group>"; };
+		CBA65D4E2F94D645006F8164 /* MyCuKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyCuKey.entitlements; sourceTree = "<group>"; };
+		CBA65D522F94D83D006F8164 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyboardExtension.entitlements; sourceTree = "<group>"; };
 		CBA8E2C12F9355CD009869A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CBA8E2C22F9355CD009869A4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCuKeyApp.swift; sourceTree = "<group>"; };
@@ -156,6 +163,7 @@
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
 				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
+				CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */,
 				CB1143A82F89A672009F9FA2 /* Info.plist */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 			);
@@ -190,6 +198,7 @@
 				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
 				CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */,
 				CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */,
+				CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */,
 				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
 				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
 				CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */,
@@ -236,6 +245,8 @@
 				CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */,
 				CBA8E2C52F9355CD009869A4 /* PersonalDictionaryView.swift */,
 				CBA8E2C12F9355CD009869A4 /* Assets.xcassets */,
+				CBA65D4E2F94D645006F8164 /* MyCuKey.entitlements */,
+				CBA65D522F94D83D006F8164 /* Localizable.xcstrings */,
 			);
 			path = MyCuKey;
 			sourceTree = "<group>";
@@ -333,7 +344,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
+				de,
 			);
 			mainGroup = CB11434B2F896A0B009F9FA2;
 			minimizedProjectReferenceProxies = 1;
@@ -354,6 +365,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBA65D532F94D83D006F8164 /* Localizable.xcstrings in Resources */,
 				CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,6 +397,7 @@
 				CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */,
 				CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */,
 				CB5EB5E42F8A6E5200EA32EB /* AutocorrectionSuggestions.swift in Sources */,
+				CB5EB5E52F8A6E5200EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */,
 				CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
 				CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */,
@@ -422,6 +435,7 @@
 				CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */,
 				CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */,
 				CB5EB5DE2F8A6DB100EA32EB /* AutocorrectionSuggestions.swift in Sources */,
+				CB5EB5DF2F8A6DB100EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */,
 				CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
 				CB9BF33B2F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */,
 				CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
@@ -515,6 +529,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -572,6 +587,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -581,13 +597,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = MyCuKey;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -602,6 +619,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -616,13 +637,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = MyCuKey;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -637,6 +659,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -659,6 +685,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -681,6 +711,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -693,7 +727,7 @@
 		CB11438C2F896DDF009F9FA2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -711,6 +745,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -722,7 +760,7 @@
 		CB11438D2F896DDF009F9FA2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
@@ -740,6 +778,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;

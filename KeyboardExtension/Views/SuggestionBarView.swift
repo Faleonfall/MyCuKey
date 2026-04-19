@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Suggestion Bar
+
 struct SuggestionBarView: View {
     private enum Metrics {
         static let horizontalPadding: CGFloat = 10
@@ -12,8 +14,6 @@ struct SuggestionBarView: View {
 
     let state: SuggestionBarState?
     @ObservedObject var actionHandler: KeyboardActionHandler
-    let letterKeyBg: Color
-    let actionKeyBg: Color
 
     var body: some View {
         HStack(spacing: 0) {
@@ -50,6 +50,8 @@ struct SuggestionBarView: View {
         .frame(height: Metrics.rowHeight)
     }
 
+    // The nearly invisible fill keeps the whole column reliably tappable in
+    // SwiftUI; Color.clear looked right but did not hit-test consistently.
     private func suggestionCell(
         title: String,
         isEnabled: Bool = true,
@@ -95,6 +97,8 @@ struct SuggestionBarView: View {
     }
 }
 
+// MARK: - Press Feedback
+
 private struct SuggestionCellButtonStyle: ButtonStyle {
     let isEnabled: Bool
 
@@ -114,14 +118,12 @@ private struct SuggestionCellButtonStyle: ButtonStyle {
         state: SuggestionBarState(
             originalToken: "Teh",
             suggestions: [
-                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99, kind: .candidate),
-                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96, kind: .candidate)
+                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99),
+                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96)
             ],
             trailingSuffix: ""
         ),
-        actionHandler: handler,
-        letterKeyBg: Color(UIColor.systemBackground),
-        actionKeyBg: Color(UIColor.systemGray5)
+        actionHandler: handler
     )
     .frame(height: previewHeight)
     .background(Color(UIColor.systemGroupedBackground))

@@ -1,6 +1,8 @@
 import SwiftUI
 import Combine
 
+// MARK: - Personal Dictionary View Model
+
 @MainActor
 final class PersonalDictionaryViewModel: ObservableObject {
     @Published var learnedWords: [LearnedWordEntry] = []
@@ -8,6 +10,8 @@ final class PersonalDictionaryViewModel: ObservableObject {
     @Published var searchText: String = ""
 
     private let service: PersonalDictionaryService
+
+    // MARK: - Initialization
 
     init(service: PersonalDictionaryService) {
         self.service = service
@@ -18,6 +22,8 @@ final class PersonalDictionaryViewModel: ObservableObject {
         self.init(service: .shared)
     }
 
+    // MARK: - Derived State
+
     var filteredWords: [LearnedWordEntry] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !query.isEmpty else { return learnedWords }
@@ -27,6 +33,8 @@ final class PersonalDictionaryViewModel: ObservableObject {
     var canAddWord: Bool {
         PersonalDictionaryService.normalizeLearnableWord(newWord) != nil
     }
+
+    // MARK: - Actions
 
     func reload() {
         service.refreshFromStorage()
@@ -58,10 +66,14 @@ final class PersonalDictionaryViewModel: ObservableObject {
     }
 }
 
+// MARK: - Personal Dictionary View
+
 struct PersonalDictionaryView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = PersonalDictionaryViewModel()
     @State private var showClearAllConfirmation = false
+
+    // MARK: - Layout
 
     var body: some View {
         List {

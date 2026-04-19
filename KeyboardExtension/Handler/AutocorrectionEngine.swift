@@ -1,5 +1,7 @@
 import UIKit
 
+// MARK: - Core Types
+
 enum CorrectionSource: Equatable {
     case contraction
     case deterministicRule
@@ -28,12 +30,30 @@ struct PatternEvaluationContext: Equatable {
     let isAtSentenceStart: Bool
 }
 
+enum SuggestionStrength: Int, Comparable {
+    case helpfulAlternative = 1
+    case strongRepair = 0
+
+    static func < (lhs: SuggestionStrength, rhs: SuggestionStrength) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}
+
+struct PreparedCorrectionContext {
+    let token: CorrectionToken
+    let guesses: [String]
+    let patternContext: PatternEvaluationContext
+}
+
 // MARK: - Autocorrection Engine
+
 // Hybrid engine: deterministic typo fixes first, UITextChecker fallback second.
 struct AutocorrectionEngine {
     let textChecker = UITextChecker()
     private let minimumTextCheckerAutoApplyConfidence = 0.96
 
+    // Keep this map intentionally small. The suggestion bar should grow mainly
+    // through ranking and pattern logic rather than an endless typo pair list.
     private let deterministicCorrections: [String: String] = [
         // Transpositions
         "teh": "the",
@@ -77,14 +97,15 @@ struct AutocorrectionEngine {
             AutocorrectionSuggestion(
                 text: result.corrected,
                 source: result.source,
-                confidence: result.confidence,
-                kind: .candidate
+                confidence: result.confidence
             )
         }
 
         guard !suggestions.isEmpty else { return nil }
         return AutocorrectionSuggestionSet(token: ranked.token, suggestions: Array(suggestions))
     }
+
+    // MARK: - Tokenization
 
     static func lastToken(in context: String) -> CorrectionToken? {
         var token = ""
@@ -127,6 +148,8 @@ struct AutocorrectionEngine {
         character == " " || character == "\n" || character == "\t"
     }
 
+    // MARK: - Deterministic Fixes
+
     private func deterministicResult(for token: CorrectionToken) -> AutocorrectionResult? {
         if let exact = deterministicCorrections[token.correctionTargetLowercased] {
             return makeResult(
@@ -153,6 +176,8 @@ struct AutocorrectionEngine {
 
         return nil
     }
+
+    // MARK: - Token Gating
 
     private func shouldSkipStylizedToken(_ token: String) -> Bool {
         if hasExpressiveTrailingRepeat(token.lowercased()) {
@@ -187,6 +212,8 @@ struct AutocorrectionEngine {
         return (core, String(first), String(last))
     }
 
+    // MARK: - Context Preparation
+
     private func makePatternContext(
         for token: CorrectionToken,
         in fullContext: String,
@@ -207,7 +234,30 @@ struct AutocorrectionEngine {
         return last == "." || last == "!" || last == "?" || last == "\n"
     }
 
-    private func textCheckerResult(for token: CorrectionToken, guesses: [String]) -> AutocorrectionResult? {
+    func preparedContext(for context: String) -> PreparedCorrectionContext? {
+        guard let token = Self.lastToken(in: context), token.original.count >= 2 else { return nil }
+        guard token.correctionTarget.count > 1 else { return nil }
+        guard !shouldSkipStylizedToken(token.original) else { return nil }
+
+        let guesses = textCheckerGuesses(for: token.correctionTarget).map { $0.lowercased() }
+        return PreparedCorrectionContext(
+            token: token,
+            guesses: guesses,
+            patternContext: makePatternContext(for: token, in: context, guesses: guesses)
+        )
+    }
+
+    func baseCandidateResults(for prepared: PreparedCorrectionContext) -> [AutocorrectionResult] {
+        [
+            deterministicResult(for: prepared.token),
+            patternResult(for: prepared.patternContext)
+        ]
+        .compactMap { $0 }
+    }
+
+    // MARK: - Result Construction
+
+    func textCheckerResult(for token: CorrectionToken, guesses: [String]) -> AutocorrectionResult? {
         guard !shouldBlockTrailingDuplicateCorrection(input: token.correctionTargetLowercased, guesses: guesses) else {
             return nil
         }
@@ -249,24 +299,14 @@ struct AutocorrectionEngine {
         )
     }
 
+    // MARK: - Auto-Apply Pipeline
+
     private func autoApplyCandidateResults(for context: String) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
-        guard let token = Self.lastToken(in: context), token.original.count >= 2 else { return nil }
-        guard token.correctionTarget.count > 1 else { return nil }
-        guard !shouldSkipStylizedToken(token.original) else { return nil }
+        guard let prepared = preparedContext(for: context) else { return nil }
+        let baseCandidates = baseCandidateResults(for: prepared)
 
-        let lowercasedGuesses = textCheckerGuesses(for: token.correctionTarget)
-            .map { $0.lowercased() }
-
-        let patternContext = makePatternContext(
-            for: token,
-            in: context,
-            guesses: lowercasedGuesses
-        )
-
-        let candidates: [AutocorrectionResult?] = [
-            deterministicResult(for: token),
-            patternResult(for: patternContext),
-            textCheckerResult(for: token, guesses: lowercasedGuesses).flatMap { result in
+        let candidates: [AutocorrectionResult?] = baseCandidates.map { $0 } + [
+            textCheckerResult(for: prepared.token, guesses: prepared.guesses).flatMap { result in
                 result.confidence >= minimumTextCheckerAutoApplyConfidence ? result : nil
             }
         ]
@@ -280,81 +320,12 @@ struct AutocorrectionEngine {
             }
 
         guard !uniqueResults.isEmpty else { return nil }
-        return (token, uniqueResults)
+        return (prepared.token, uniqueResults)
     }
 
-    private func suggestionCandidateResults(for context: String) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
-        guard let token = Self.lastToken(in: context), token.original.count >= 2 else { return nil }
-        guard token.correctionTarget.count > 1 else { return nil }
-        guard !shouldSkipStylizedToken(token.original) else { return nil }
+    // MARK: - Suggestion Pipeline
 
-        let lowercasedGuesses = textCheckerGuesses(for: token.correctionTarget)
-            .map { $0.lowercased() }
-
-        let patternContext = makePatternContext(
-            for: token,
-            in: context,
-            guesses: lowercasedGuesses
-        )
-
-        var candidates = [AutocorrectionResult]()
-
-        if let deterministic = deterministicResult(for: token) {
-            candidates.append(deterministic)
-        }
-
-        if let pattern = patternResult(for: patternContext) {
-            candidates.append(pattern)
-        }
-
-        candidates.append(contentsOf: suggestionTextCheckerResults(for: token, guesses: lowercasedGuesses))
-
-        var seen = Set<String>()
-        let uniqueResults = candidates.filter { result in
-            let key = result.corrected.lowercased()
-            return seen.insert(key).inserted
-        }
-
-        guard !uniqueResults.isEmpty else { return nil }
-        return (token, Array(uniqueResults.prefix(2)))
-    }
-
-    private func suggestionTextCheckerResults(for token: CorrectionToken, guesses: [String]) -> [AutocorrectionResult] {
-        guard !shouldBlockTrailingDuplicateCorrection(input: token.correctionTargetLowercased, guesses: guesses) else {
-            return []
-        }
-
-        let orderedGuesses = orderedSuggestionGuesses(
-            input: token.correctionTargetLowercased,
-            guesses: guesses
-        )
-
-        return orderedGuesses.compactMap { guess in
-            makeResult(
-                for: token,
-                correctedLowercased: guess,
-                confidence: confidenceScore(input: token.correctionTargetLowercased, candidate: guess),
-                source: .textChecker
-            )
-        }
-    }
-
-    private func orderedSuggestionGuesses(input: String, guesses: [String]) -> [String] {
-        let filtered = guesses.filter { candidate in
-            shouldAcceptSuggestionCandidate(input: input, candidate: candidate)
-        }
-
-        return filtered.sorted { lhs, rhs in
-            let lhsRank = rank(lhs, against: input)
-            let rhsRank = rank(rhs, against: input)
-            if lhsRank == rhsRank {
-                return guesses.firstIndex(of: lhs) ?? .max < guesses.firstIndex(of: rhs) ?? .max
-            }
-            return lhsRank < rhsRank
-        }
-    }
-
-    private func shouldAcceptTextCheckerCandidate(input: String, candidate: String) -> Bool {
+    func shouldAcceptTextCheckerCandidate(input: String, candidate: String) -> Bool {
         guard input.count >= 2, candidate != input else { return false }
 
         let distance = damerauLevenshteinDistance(input, candidate)
@@ -381,46 +352,9 @@ struct AutocorrectionEngine {
             && CommonWordLexicon.contains(candidate)
     }
 
-    private func shouldAcceptSuggestionCandidate(input: String, candidate: String) -> Bool {
-        guard input.count >= 2, candidate != input else { return false }
+    // MARK: - Scoring
 
-        if shouldAcceptTextCheckerCandidate(input: input, candidate: candidate) {
-            return true
-        }
-
-        guard input.count >= 3 else { return false }
-
-        let distance = damerauLevenshteinDistance(input, candidate)
-        guard distance <= 3 else { return false }
-
-        if isLikelyApostropheVariant(input: input, candidate: candidate) {
-            return true
-        }
-
-        let isWordCandidate = CommonWordLexicon.contains(candidate) || isDictionaryWord(candidate)
-        guard isWordCandidate else { return false }
-
-        if input.count <= 4 {
-            return distance <= 2
-        }
-
-        if distance == 1 {
-            return true
-        }
-
-        if distance == 2 {
-            return hasSameOuterLetters(input, candidate)
-                || commonPrefixLength(input, candidate) >= 1
-                || isSubsequence(input, of: candidate)
-                || isSubsequence(candidate, of: input)
-        }
-
-        return input.count >= 6
-            && (hasSameOuterLetters(input, candidate)
-                || commonPrefixLength(input, candidate) >= 2)
-    }
-
-    private func confidenceScore(input: String, candidate: String) -> Double {
+    func confidenceScore(input: String, candidate: String) -> Double {
         if isLikelyApostropheVariant(input: input, candidate: candidate) {
             return 0.98
         }

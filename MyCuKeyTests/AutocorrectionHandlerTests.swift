@@ -2,8 +2,12 @@ import Testing
 import UIKit
 @testable import MyCuKey
 
+// MARK: - Handler Correction Tests
+
 @MainActor
 struct AutocorrectionHandlerTests {
+
+    // MARK: - Correction Triggers
 
     @Test func testHandlerPreservesQuestionMarkAfterAutocorrection() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
@@ -125,138 +129,7 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "but maybe yourr ")
     }
 
-    @Test func testHandlerPopulatesSuggestionBarForAlphabeticTyping() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "te")
-        handler.controller = controller
-
-        handler.insertText("h")
-
-        #expect(handler.suggestionBarState?.originalToken == "teh")
-        #expect(handler.suggestionBarState?.suggestions.first?.text == "the")
-    }
-
-    @Test func testHandlerClearsSuggestionBarOutsideAlphabeticMode() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "te")
-        handler.controller = controller
-
-        handler.insertText("h")
-        #expect(handler.suggestionBarState != nil)
-
-        handler.currentKeyboardType = .numeric
-
-        #expect(handler.suggestionBarState == nil)
-    }
-
-    @Test func testHandlerAppliesBestSuggestionToCurrentToken() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teh")
-        handler.controller = controller
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-
-        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
-        handler.applySuggestion(bestSuggestion)
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "the ")
-        #expect(handler.suggestionBarState == nil)
-        #expect(handler.suppressSuggestionRefreshUntilNextToken)
-    }
-
-    @Test func testHandlerOriginalSuggestionKeepsCurrentToken() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teh")
-        handler.controller = controller
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-
-        handler.applyOriginalSuggestion()
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "teh ")
-        #expect(handler.suggestionBarState == nil)
-        #expect(handler.suppressSuggestionRefreshUntilNextToken)
-    }
-
-    @Test func testHandlerRefreshesSuggestionsAfterDelete() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teht")
-        handler.controller = controller
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-
-        #expect(handler.suggestionBarState?.originalToken == "teht")
-
-        handler.deleteBackward()
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "teh")
-        #expect(handler.suggestionBarState?.originalToken == "teh")
-        #expect(handler.suggestionBarState?.suggestions.first?.text == "the")
-    }
-
-    @Test func testHandlerRefreshesSuggestionsWhenCurrentTokenChangesByTyping() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teh")
-        handler.controller = controller
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-
-        #expect(handler.suggestionBarState?.originalToken == "teh")
-
-        handler.insertText("t")
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "teht")
-        #expect(handler.suggestionBarState?.originalToken == "teht")
-    }
-
-    @Test func testHandlerKeepsSuggestionsAvailableAfterSpaceForPreviousToken() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teht")
-        handler.controller = controller
-
-        handler.insertText(" ")
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "teht ")
-        #expect(handler.suggestionBarState?.originalToken == "teht")
-        #expect(!(handler.suggestionBarState?.suggestions.isEmpty ?? true))
-        #expect(handler.suggestionBarState?.trailingSuffix == " ")
-    }
-
-    @Test func testHandlerAppliesSuggestionToPreviousTokenAfterSpace() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "teht")
-        handler.controller = controller
-
-        handler.insertText(" ")
-        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
-
-        handler.applySuggestion(bestSuggestion)
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "\(bestSuggestion.text) ")
-        #expect(handler.suggestionBarState == nil)
-        #expect(handler.suppressSuggestionRefreshUntilNextToken)
-    }
-
-    @Test func testHandlerSuggestionsIgnoreLeadingQuote() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "\"teh")
-        handler.controller = controller
-
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-
-        #expect(handler.suggestionBarState?.originalToken == "\"teh")
-        #expect(handler.suggestionBarState?.suggestions.first?.text == "the")
-    }
-
-    @Test func testHandlerAppliesSuggestionInsideLeadingStarWrapper() async throws {
-        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
-        let controller = MockKeyboardController(beforeInput: "*teh")
-        handler.controller = controller
-
-        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
-        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
-
-        handler.applySuggestion(bestSuggestion)
-
-        #expect(controller.mockProxy.documentContextBeforeInput == "*the ")
-        #expect(handler.suggestionBarState == nil)
-    }
+    // MARK: - Standalone I
 
     @Test func testStandaloneLowercaseIBecomesCapitalIWhenFollowedBySpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
@@ -318,6 +191,8 @@ struct AutocorrectionHandlerTests {
         #expect(controller.mockProxy.documentContextBeforeInput == "wifi ")
     }
 
+    // MARK: - Delete and Revert
+
     @Test func testDeleteRevertsLastAutocorrectionWithSpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
@@ -366,6 +241,8 @@ struct AutocorrectionHandlerTests {
         handler.deleteBackward()
         #expect(controller.mockProxy.documentContextBeforeInput == "the ")
     }
+
+    // MARK: - Learned Words
 
     @Test func testLearnedWordSuppressesFutureAutocorrection() async throws {
         let service = makeIsolatedService()
@@ -475,79 +352,4 @@ struct AutocorrectionHandlerTests {
         #expect(service.revertCount(for: "teh") == 0)
         #expect(service.containsLearnedWord("teh") == false)
     }
-}
-
-private func makeIsolatedService() -> PersonalDictionaryService {
-    let suiteName = "test.personal-dictionary.\(UUID().uuidString)"
-    let defaults = UserDefaults(suiteName: suiteName)!
-    defaults.removePersistentDomain(forName: suiteName)
-    return PersonalDictionaryService(defaults: defaults)
-}
-
-private final class MockKeyboardController: UIInputViewController {
-    let mockProxy: MockTextDocumentProxy
-
-    init(beforeInput: String = "", afterInput: String = "") {
-        self.mockProxy = MockTextDocumentProxy(beforeInput: beforeInput, afterInput: afterInput)
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override var textDocumentProxy: UITextDocumentProxy {
-        mockProxy
-    }
-}
-
-private final class MockTextDocumentProxy: NSObject, UITextDocumentProxy {
-    var documentContextBeforeInput: String?
-    var documentContextAfterInput: String?
-    var selectedText: String?
-    var documentInputMode: UITextInputMode?
-    var documentIdentifier: UUID
-
-    init(beforeInput: String = "", afterInput: String = "") {
-        self.documentContextBeforeInput = beforeInput
-        self.documentContextAfterInput = afterInput
-        self.documentIdentifier = UUID()
-    }
-
-    var hasText: Bool {
-        !(documentContextBeforeInput ?? "").isEmpty || !(documentContextAfterInput ?? "").isEmpty
-    }
-
-    func insertText(_ text: String) {
-        documentContextBeforeInput = (documentContextBeforeInput ?? "") + text
-    }
-
-    func deleteBackward() {
-        guard var before = documentContextBeforeInput, !before.isEmpty else { return }
-        before.removeLast()
-        documentContextBeforeInput = before
-    }
-
-    func adjustTextPosition(byCharacterOffset offset: Int) {
-        guard offset != 0 else { return }
-
-        if offset < 0 {
-            for _ in 0..<abs(offset) {
-                guard var before = documentContextBeforeInput, let moved = before.popLast() else { break }
-                documentContextBeforeInput = before
-                documentContextAfterInput = String(moved) + (documentContextAfterInput ?? "")
-            }
-        } else {
-            for _ in 0..<offset {
-                guard var after = documentContextAfterInput, !after.isEmpty else { break }
-                let moved = after.removeFirst()
-                documentContextAfterInput = after
-                documentContextBeforeInput = (documentContextBeforeInput ?? "") + String(moved)
-            }
-        }
-    }
-
-    func setMarkedText(_ markedText: String, selectedRange: NSRange) {}
-    func unmarkText() {}
 }

@@ -1,5 +1,7 @@
 import UIKit
 
+// MARK: - Spellchecker Access
+
 extension AutocorrectionEngine {
     func textCheckerGuesses(for word: String) -> [String] {
         let range = NSRange(0..<word.utf16.count)
@@ -25,6 +27,8 @@ extension AutocorrectionEngine {
         ).location == NSNotFound
     }
 
+    // MARK: - Candidate Ranking
+
     func isLikelyApostropheVariant(input: String, candidate: String) -> Bool {
         candidate.contains("'") && candidate.replacingOccurrences(of: "'", with: "") == input
     }
@@ -38,6 +42,8 @@ extension AutocorrectionEngine {
         let lengthDelta = abs(input.count - candidate.count)
         return (distance, lexiconBonus, outerLetterPenalty, subsequenceBonus, -prefixScore + lengthDelta)
     }
+
+    // MARK: - Shape Checks
 
     func hasSameOuterLetters(_ input: String, _ candidate: String) -> Bool {
         guard let inputFirst = input.first,
@@ -91,6 +97,8 @@ extension AutocorrectionEngine {
             && inputChars[second] == candidateChars[first]
     }
 
+    // MARK: - Normalization
+
     func collapseRepeatedLetters(in word: String) -> String? {
         var result = ""
         var previous: Character?
@@ -124,6 +132,8 @@ extension AutocorrectionEngine {
 
         return runLength >= 3
     }
+
+    // MARK: - Distance Metrics
 
     // Standard Levenshtein retained for comparison/unit coverage.
     func editDistance(_ a: String, _ b: String) -> Int {

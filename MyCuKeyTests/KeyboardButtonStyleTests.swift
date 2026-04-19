@@ -1,8 +1,11 @@
 import Testing
 @testable import MyCuKey
 
+// MARK: - Keyboard Button Style Tests
+
 @MainActor
 struct KeyboardButtonStyleTests {
+    // MARK: - Popup Preview Logic
 
     @Test func testDefaultPreviewShownForSingleLetterKey() async throws {
         let title = KeyboardButtonStyle.defaultPreviewTitle(
@@ -81,5 +84,25 @@ struct KeyboardButtonStyleTests {
 
     @Test func testPopupLongPressDelayConstant() async throws {
         #expect(KeyboardButtonStyle.longPressPopupDelayNanoseconds == 300_000_000)
+    }
+
+    // MARK: - Popup Alignment Helpers
+
+    @Test func testSplitTopRowPopupAlignmentsSplitsLeftAndRightHalves() async throws {
+        let alignments = splitTopRowPopupAlignments(for: KeyboardLayout.alphabeticTopRow)
+
+        #expect(alignments["Q"] == .diagonalFromLeft)
+        #expect(alignments["T"] == .diagonalFromLeft)
+        #expect(alignments["Y"] == .diagonalFromRight)
+        #expect(alignments["P"] == .diagonalFromRight)
+        #expect(alignments.count == KeyboardLayout.alphabeticTopRow.count)
+    }
+
+    @Test func testEdgePopupAlignmentsOnlyMarksExplicitEdgeKeys() async throws {
+        let alignments = edgePopupAlignments(leftKey: "-", rightKey: "'")
+
+        #expect(alignments["-"] == .insetFromLeft)
+        #expect(alignments["'"] == .insetFromRight)
+        #expect(alignments.count == 2)
     }
 }

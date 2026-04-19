@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Space Row
+
 struct SpaceRowView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -7,7 +9,9 @@ struct SpaceRowView: View {
     var mode: KeyboardType
     var letterKeyBg: Color
     var actionKeyBg: Color
-    
+
+    // MARK: - Layout
+
     var body: some View {
         HStack(spacing: 0) {
             if needsInputModeSwitchKey {
@@ -40,6 +44,8 @@ struct SpaceRowView: View {
                 backgroundColor: letterKeyBg,
                 isTrackpadEnabled: true,
                 trackpadAction: { steps in
+                    // The trackpad surface uses proxy bounds checks so fast scrubbing
+                    // does not try to move beyond the text context the host exposes.
                     let proxy = actionHandler.controller?.textDocumentProxy
 
                     guard proxy?.hasText == true else { return }

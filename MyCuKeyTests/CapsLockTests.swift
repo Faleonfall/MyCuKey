@@ -2,9 +2,11 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// MARK: - Caps Lock Tests
+
 @MainActor
 struct CapsLockTests {
-    
+
     @Test func testSingleShiftTapTogglesShift() async throws {
         let handler = KeyboardActionHandler()
         handler.isShiftEnabled = false

@@ -1,5 +1,7 @@
 import UIKit
 
+// MARK: - Pattern Buckets
+
 extension AutocorrectionEngine {
     private static let trustedMediumCorrections: [String: String] = [
         "yur": "your",
@@ -108,6 +110,8 @@ extension AutocorrectionEngine {
         return nil
     }
 
+    // MARK: - Curated Safe Repairs
+
     func trustedMediumCandidate(input: String) -> String? {
         Self.trustedMediumCorrections[input]
     }
@@ -115,6 +119,8 @@ extension AutocorrectionEngine {
     func mergedTokenCandidate(input: String) -> String? {
         Self.mergedTokenCorrections[input]
     }
+
+    // MARK: - Contextual Repairs
 
     func apostropheRepairCandidate(for context: PatternEvaluationContext) -> String? {
         let input = context.token.correctionTargetLowercased
@@ -130,6 +136,8 @@ extension AutocorrectionEngine {
         guard candidates.count == 1 else { return nil }
         return candidates.first
     }
+
+    // MARK: - Nearby-Key Repairs
 
     func generatedNearbyKeyCandidate(input: String) -> String? {
         guard input.count == 3 else { return nil }
@@ -210,18 +218,7 @@ extension AutocorrectionEngine {
         return best.0
     }
 
-    func isNearbyKeySubstitution(input: String, candidate: String) -> Bool {
-        guard input.count == candidate.count, input.count >= 3 else { return false }
-
-        let inputChars = Array(input)
-        let candidateChars = Array(candidate)
-        let mismatchedIndexes = inputChars.indices.filter { inputChars[$0] != candidateChars[$0] }
-        guard mismatchedIndexes.count == 1, let mismatch = mismatchedIndexes.first else { return false }
-
-        let typed = inputChars[mismatch]
-        let corrected = candidateChars[mismatch]
-        return Self.keyboardNeighborMap[typed]?.contains(corrected) == true
-    }
+    // MARK: - Duplicate Handling
 
     func unambiguousTrailingDuplicateCandidate(input: String, guesses: [String]) -> String? {
         guard input.count >= 5 else { return nil }

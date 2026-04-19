@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Shared Haptics
+
 struct HapticFeedback {
     static let light = UIImpactFeedbackGenerator(style: .light)
     static let medium = UIImpactFeedbackGenerator(style: .medium)

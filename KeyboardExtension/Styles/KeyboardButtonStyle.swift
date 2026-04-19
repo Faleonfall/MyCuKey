@@ -1,6 +1,28 @@
 import SwiftUI
 
+// MARK: - Keyboard Button Style
+
+enum KeyPopupAlignment {
+    case centered
+    case insetFromLeft
+    case insetFromRight
+    case diagonalFromLeft
+    case diagonalFromRight
+}
+
 struct KeyboardButtonStyle: ButtonStyle {
+    private enum Metrics {
+        static let horizontalInset: CGFloat = 3
+        static let verticalInset: CGFloat = 5
+        static let popupWidth: CGFloat = 42
+        static let popupHeight: CGFloat = 50
+        static let popupVerticalOffset: CGFloat = -34
+        static let insetSlide: CGFloat = 18
+        static let diagonalSlide: CGFloat = 22
+        static let keyCornerRadius: CGFloat = 10
+        static let popupCornerRadius: CGFloat = 10
+    }
+
     static let longPressPopupDelayNanoseconds: UInt64 = 300_000_000
     static let popupAppearDuration: Double = 0.08
     static let popupDisappearDuration: Double = 0.08
@@ -10,11 +32,13 @@ struct KeyboardButtonStyle: ButtonStyle {
     let fontSize: CGFloat
     let isRepeatable: Bool
     let suppressRepeatHaptic: Bool
-    let acceleratedAction: (() -> Void)?  // Called instead of action after ~1s of holding
+    // Held repeat keys can switch to a word-level action after the initial key-repeat phase.
+    let acceleratedAction: (() -> Void)?
     let longPressTitle: String?
     let longPressAction: (() -> Void)?
     let isTrackpadEnabled: Bool
     let trackpadAction: ((Int) -> Void)?
+    let popupAlignment: KeyPopupAlignment
     let action: () -> Void
     
     @Environment(\.colorScheme) var colorScheme
@@ -22,14 +46,12 @@ struct KeyboardButtonStyle: ButtonStyle {
     @State private var isLongPressing = false
     @State private var dragStartOffset: CGFloat = 0
     @State private var isDragging = false
-    @State private var isVisuallyPressed = false  // Decoupled from isPressed — guaranteed min 80ms display
+    // Keep the flash visible long enough to read even on extremely quick taps.
+    @State private var isVisuallyPressed = false
     @State private var pressedPreviewTitle: String?
-    @State private var keyFrameInGlobal: CGRect = .zero
 
     private var keyFaceColor: Color {
-        colorScheme == .light
-            ? Color.white
-            : Color(white: 0.35)
+        backgroundColor
     }
 
     private var pressedOverlayColor: Color {
@@ -37,16 +59,22 @@ struct KeyboardButtonStyle: ButtonStyle {
     }
 
     private var popupHorizontalOffset: CGFloat {
-        // Default behavior requested: show popup to the left of the key.
-        let defaultOffset: CGFloat = -30
-        let oppositeOffset: CGFloat = 30
-        let edgePadding: CGFloat = 16
-        guard keyFrameInGlobal.width > 0 else { return defaultOffset }
-
-        if keyFrameInGlobal.minX <= edgePadding {
-            return oppositeOffset
+        switch popupAlignment {
+        case .centered:
+            return 0
+        case .insetFromLeft:
+            return Metrics.insetSlide
+        case .insetFromRight:
+            return -Metrics.insetSlide
+        case .diagonalFromLeft:
+            return Metrics.diagonalSlide
+        case .diagonalFromRight:
+            return -Metrics.diagonalSlide
         }
-        return defaultOffset
+    }
+
+    private var popupVerticalOffset: CGFloat {
+        Metrics.popupVerticalOffset
     }
 
     private var defaultPreviewTitle: String? {
@@ -74,24 +102,14 @@ struct KeyboardButtonStyle: ButtonStyle {
     ) -> String? {
         isLongPressing ? longPressTitle : (pressedPreviewTitle ?? defaultPreviewTitle)
     }
-    
+
+    // MARK: - Button Rendering
+
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label // The massive invisible touch target box
-            .background(
-                GeometryReader { proxy in
-                    Color.clear
-                        .onAppear {
-                            keyFrameInGlobal = proxy.frame(in: .global)
-                        }
-                        .onChange(of: proxy.frame(in: .global)) { _, newValue in
-                            keyFrameInGlobal = newValue
-                        }
-                }
-            )
+        configuration.label
             .overlay(
                 ZStack {
-                    // Solid Brighter Key Background
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.keyCornerRadius, style: .continuous)
                         .fill(keyFaceColor)
                     
                     if let systemImage = systemImage {
@@ -111,12 +129,12 @@ struct KeyboardButtonStyle: ButtonStyle {
                     
                     // Highlight on press
                     if isVisuallyPressed {
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        RoundedRectangle(cornerRadius: Metrics.keyCornerRadius, style: .continuous)
                             .fill(pressedOverlayColor)
                     }
                 }
-                .padding(.horizontal, 3)   // Slightly tighter key spacing
-                .padding(.vertical, 5)     // Increased from 4
+                .padding(.horizontal, Metrics.horizontalInset)
+                .padding(.vertical, Metrics.verticalInset)
             )
             .overlay(
                 Group {
@@ -128,15 +146,19 @@ struct KeyboardButtonStyle: ButtonStyle {
                     ),
                        (configuration.isPressed || isLongPressing) {
                         ZStack {
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            RoundedRectangle(cornerRadius: Metrics.popupCornerRadius, style: .continuous)
                                 .fill(keyFaceColor)
+                                .shadow(color: Color.black.opacity(colorScheme == .light ? 0.14 : 0.3), radius: 2, x: 0, y: 1)
                             
                             Text(popupTitle)
                                 .font(.system(size: 32, weight: .regular))
+                                .baselineOffset(
+                                    popupTitle.count == 1 && popupTitle == popupTitle.lowercased() ? 5 : 0
+                                )
                                 .foregroundColor(.primary)
                         }
-                        .frame(width: 50, height: 58)
-                        .offset(x: popupHorizontalOffset, y: 0)
+                        .frame(width: Metrics.popupWidth, height: Metrics.popupHeight)
+                        .offset(x: popupHorizontalOffset, y: popupVerticalOffset)
                         .transition(.asymmetric(
                             insertion: .scale(scale: 0.95).combined(with: .opacity),
                             removal: .scale(scale: 0.98).combined(with: .opacity)
@@ -149,6 +171,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                             .easeOut(duration: configuration.isPressed ? Self.popupAppearDuration : Self.popupDisappearDuration),
                             value: configuration.isPressed
                         )
+                        .allowsHitTesting(false)
                     }
                 }
             )
@@ -160,7 +183,6 @@ struct KeyboardButtonStyle: ButtonStyle {
             )
             .onChange(of: configuration.isPressed) { oldValue, newValue in
                 if newValue {
-                    // Guaranteed minimum visual feedback — shows even on fastest taps
                     isVisuallyPressed = true
                     pressedPreviewTitle = defaultPreviewTitle
                     

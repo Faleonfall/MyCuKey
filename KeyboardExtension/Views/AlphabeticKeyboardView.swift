@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Alphabetic Keyboard
+
 struct AlphabeticKeyboardView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -7,18 +9,16 @@ struct AlphabeticKeyboardView: View {
     var letterKeyBg: Color
     var actionKeyBg: Color
 
+    private let topRowPopupAlignments = splitTopRowPopupAlignments(for: KeyboardLayout.alphabeticTopRow)
+
+    // MARK: - Layout
+
     var body: some View {
         VStack(spacing: 0) {
-            SuggestionBarView(
-                state: actionHandler.suggestionBarState,
-                actionHandler: actionHandler,
-                letterKeyBg: letterKeyBg,
-                actionKeyBg: actionKeyBg
-            )
-
             KeyboardRow(
                 keys: KeyboardLayout.alphabeticTopRow,
                 backgroundColor: letterKeyBg,
+                popupAlignments: topRowPopupAlignments,
                 keyTitle: displayedLetter(for:)
             ) { letter in
                 actionHandler.typeLetter(letter)
@@ -64,6 +64,8 @@ struct AlphabeticKeyboardView: View {
             )
         }
     }
+
+    // MARK: - Display
 
     private func displayedLetter(for key: String) -> String {
         actionHandler.isShiftEnabled ? key : key.lowercased()

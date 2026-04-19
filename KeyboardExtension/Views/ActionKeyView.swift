@@ -14,8 +14,9 @@ struct ActionKeyView: View {
     let longPressAction: (() -> Void)?
     let isTrackpadEnabled: Bool
     let trackpadAction: ((Int) -> Void)?
-    
-    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, suppressRepeatHaptic: Bool = false, acceleratedAction: (() -> Void)? = nil, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false, trackpadAction: ((Int) -> Void)? = nil, action: @escaping () -> Void) {
+    let popupAlignment: KeyPopupAlignment
+
+    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, suppressRepeatHaptic: Bool = false, acceleratedAction: (() -> Void)? = nil, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false, trackpadAction: ((Int) -> Void)? = nil, popupAlignment: KeyPopupAlignment = .centered, action: @escaping () -> Void) {
         self.title = title
         self.systemImage = systemImage
         self.backgroundColor = backgroundColor
@@ -27,17 +28,20 @@ struct ActionKeyView: View {
         self.longPressAction = longPressAction
         self.isTrackpadEnabled = isTrackpadEnabled
         self.trackpadAction = trackpadAction
+        self.popupAlignment = popupAlignment
         self.action = action
     }
 
     var body: some View {
-        Button(action: {}) { // Empty action! Style handles execution instantly on press.
-            Color.white.opacity(0.001) // Massive invisible touch target that completely fills padding gaps!
+        Button(action: {}) {
+            // The nearly invisible fill keeps the padded hit area alive while
+            // KeyboardButtonStyle owns the visual key rendering and timing.
+            Color.white.opacity(0.001)
         }
         .buttonStyle(KeyboardButtonStyle(
             title: title, 
             systemImage: systemImage, 
-            backgroundColor: backgroundColor, 
+            backgroundColor: backgroundColor,
             fontSize: fontSize,
             isRepeatable: isRepeatable,
             suppressRepeatHaptic: suppressRepeatHaptic,
@@ -46,6 +50,7 @@ struct ActionKeyView: View {
             longPressAction: longPressAction,
             isTrackpadEnabled: isTrackpadEnabled,
             trackpadAction: trackpadAction,
+            popupAlignment: popupAlignment,
             action: action
         ))
         .frame(minWidth: 26, maxWidth: .infinity, maxHeight: .infinity)

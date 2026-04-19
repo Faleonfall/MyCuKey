@@ -25,7 +25,14 @@ MyCuKey's next leverage is reliability, not feature expansion. This document tra
 - **Good enough:** shift, delete, popup, repeat, punctuation, and correction/revert flows behave the same way every time
 - **Decision:** monitor / gather examples
 
-### 4. Personal dictionary safety needs to stay conservative
+### 4. Suggestion bar usefulness now needs steady expansion
+- **What the user experiences:** the new suggestion bar is visibly helpful, but it can still feel too sparse, stale, or wrapper-sensitive if current-word targeting drifts
+- **How often it likely happens:** common during everyday typing because the bar is now a primary repair surface
+- **Control level:** under our control
+- **Good enough:** the bar stays current, survives the right post-space cases, and surfaces helpful visible alternatives more often than silent autocorrection would allow
+- **Decision:** fix now
+
+### 5. Personal dictionary safety needs to stay conservative
 - **What the user experiences:** the keyboard feels smarter when it remembers custom words, but it feels worse instantly if it learns the wrong thing or becomes too eager
 - **How often it likely happens:** low-to-moderate, but high trust impact
 - **Control level:** under our control
@@ -100,10 +107,14 @@ Prioritize only the risks that are both user-visible and realistically fixable:
    - tighten ambiguous correction behavior
    - keep personal dictionary learning conservative
    - expand regression coverage around revert and suppression flows
-2. **Fallback design**
+2. **Suggestion bar refinement**
+   - broaden visible current-word suggestions without weakening silent auto-apply
+   - keep wrapper handling and post-space targeting reliable
+   - improve ranking so center is the strongest repair and right is the next useful alternative
+3. **Fallback design**
    - prefer safe degradation over unstable advanced behavior
    - avoid shipping interactions that imply more power than the host APIs can support
-3. **Scenario-based reliability review**
+4. **Scenario-based reliability review**
    - gather examples from native single-line, native multiline, and web/chat hosts
    - separate real bugs from platform ceilings before changing code
 

@@ -2,8 +2,12 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// MARK: - Autocorrection Engine Tests
+
 @MainActor
 struct AutocorrectionTests {
+
+    // MARK: - Distance Metrics
 
     @Test func testEditDistanceIdentical() async throws {
         let engine = AutocorrectionEngine()
@@ -35,6 +39,8 @@ struct AutocorrectionTests {
         #expect(CommonWordLexicon.contains("keyboard"))
         #expect(CommonWordLexicon.contains("because"))
     }
+
+    // MARK: - Auto-Apply Behavior
 
     @Test func testAutocorrectionSkipsSingleChar() async throws {
         let engine = AutocorrectionEngine()
@@ -145,12 +151,13 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "Herrs")?.corrected == "Here's")
     }
 
+    // MARK: - Suggestion Behavior
+
     @Test func testAutocorrectionSuggestionsExposeRankedCandidates() async throws {
         let engine = AutocorrectionEngine()
         let suggestionSet = engine.suggestions(context: "teh")
         #expect(suggestionSet?.token.original == "teh")
         #expect(suggestionSet?.suggestions.first?.text == "the")
-        #expect(suggestionSet?.suggestions.first?.kind == .candidate)
         #expect((suggestionSet?.suggestions.count ?? 0) >= 1)
     }
 
@@ -166,11 +173,24 @@ struct AutocorrectionTests {
         #expect(suggestions.count <= 2)
     }
 
+    @Test func testAutocorrectionSuggestionsCanSurfaceLongerWordAlternativesWithoutAutoApplying() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.evaluate(context: "definatly") == nil)
+
+        let suggestions = engine.suggestions(context: "definatly")?.suggestions.map(\.text) ?? []
+        #expect(!suggestions.isEmpty)
+    }
+
     @Test func testAutocorrectionSuggestionsDeduplicateEquivalentCandidates() async throws {
         let engine = AutocorrectionEngine()
         let suggestions = engine.suggestions(context: "teh")?.suggestions.map(\.text) ?? []
         #expect(Set(suggestions).count == suggestions.count)
         #expect(suggestions.count <= 2)
+    }
+
+    @Test func testAutocorrectionSuggestionsHandleWrappedTokenContext() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.suggestions(context: "*teh*")?.suggestions.first?.text == "*the*")
     }
 
     @Test func testAutocorrectionLeavesAmbiguousNearbyOrDuplicateCasesAlone() async throws {

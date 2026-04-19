@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Keyboard Layout
+
 enum KeyboardLayout {
     static let alphabeticTopRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"]
     static let alphabeticMiddleRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L"]
@@ -13,6 +15,8 @@ enum KeyboardLayout {
     static let symbolicMiddleRow = ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "•"]
 }
 
+// MARK: - Shared Metrics
+
 enum KeyboardMetrics {
     static let rowHeight: CGFloat = 53
     static let sideKeyWidth: CGFloat = 44
@@ -20,11 +24,44 @@ enum KeyboardMetrics {
     static let bottomRowInset: CGFloat = 16
 }
 
+// MARK: - Popup Alignment Helpers
+
+func splitTopRowPopupAlignments(for keys: [String]) -> [String: KeyPopupAlignment] {
+    let midpoint = keys.count / 2
+    return Dictionary(uniqueKeysWithValues: keys.enumerated().map { index, key in
+        let alignment: KeyPopupAlignment = index < midpoint ? .diagonalFromLeft : .diagonalFromRight
+        return (key, alignment)
+    })
+}
+
+func edgePopupAlignments(leftKey: String, rightKey: String) -> [String: KeyPopupAlignment] {
+    [
+        leftKey: .insetFromLeft,
+        rightKey: .insetFromRight
+    ]
+}
+
+private func popupZIndex(for alignment: KeyPopupAlignment, index: Int, count: Int) -> Double {
+    switch alignment {
+    case .centered:
+        return 0
+    case .insetFromLeft, .diagonalFromLeft:
+        // Left-leaning popups need earlier keys to outrank later neighbors.
+        return Double((count - index) + 10)
+    case .insetFromRight, .diagonalFromRight:
+        // Right-leaning popups need later keys to outrank earlier neighbors.
+        return Double(index + 10)
+    }
+}
+
+// MARK: - Shared Row Views
+
 struct KeyboardRow: View {
     let keys: [String]
     let backgroundColor: Color
     var leadingInset: CGFloat = 0
     var trailingInset: CGFloat = 0
+    var popupAlignments: [String: KeyPopupAlignment] = [:]
     var keyTitle: (String) -> String = { $0 }
     let onKeyPress: (String) -> Void
 
@@ -34,11 +71,17 @@ struct KeyboardRow: View {
                 Spacer(minLength: leadingInset)
             }
 
-            ForEach(keys, id: \.self) { key in
+            ForEach(Array(keys.enumerated()), id: \.element) { index, key in
                 let title = keyTitle(key)
-                ActionKeyView(title: title, backgroundColor: backgroundColor) {
+                let popupAlignment = popupAlignments[key] ?? .centered
+                ActionKeyView(
+                    title: title,
+                    backgroundColor: backgroundColor,
+                    popupAlignment: popupAlignment
+                ) {
                     onKeyPress(title)
                 }
+                .zIndex(popupZIndex(for: popupAlignment, index: index, count: keys.count))
             }
 
             if trailingInset > 0 {
@@ -87,6 +130,7 @@ struct KeyboardCenteredBottomRow: View {
     let letterKeyBg: Color
     let leadingKey: AnyView
     let trailingKey: AnyView
+    var popupAlignments: [String: KeyPopupAlignment] = [:]
     let onKeyPress: (String) -> Void
 
     var body: some View {
@@ -94,10 +138,16 @@ struct KeyboardCenteredBottomRow: View {
             leadingKey
             Spacer(minLength: KeyboardMetrics.bottomRowInset)
 
-            ForEach(keys, id: \.self) { key in
-                ActionKeyView(title: key, backgroundColor: letterKeyBg) {
+            ForEach(Array(keys.enumerated()), id: \.element) { index, key in
+                let popupAlignment = popupAlignments[key] ?? .centered
+                ActionKeyView(
+                    title: key,
+                    backgroundColor: letterKeyBg,
+                    popupAlignment: popupAlignment
+                ) {
                     onKeyPress(key)
                 }
+                .zIndex(popupZIndex(for: popupAlignment, index: index, count: keys.count))
             }
 
             Spacer(minLength: KeyboardMetrics.bottomRowInset)
@@ -136,6 +186,13 @@ struct KeyboardView: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
+
+            // Keep a stable top strip across all keyboard modes so switching
+            // layouts does not change the extension height and cause a jump.
+            SuggestionBarView(
+                state: actionHandler.currentKeyboardType == .alphabetic ? actionHandler.suggestionBarState : nil,
+                actionHandler: actionHandler
+            )
 
             switch actionHandler.currentKeyboardType {
             case .alphabetic:

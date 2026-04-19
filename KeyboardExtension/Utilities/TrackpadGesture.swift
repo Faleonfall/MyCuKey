@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - Trackpad Gesture Helper
+
 extension View {
     @ViewBuilder
     func trackpadGesture(

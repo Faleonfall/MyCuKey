@@ -1,0 +1,266 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu"
+          }
+        }
+      }
+    },
+    "Add Word" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neues Wort"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        }
+      }
+    },
+    "Clear All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle löschen"
+          }
+        }
+      }
+    },
+    "Custom word" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigenes Wort"
+          }
+        }
+      }
+    },
+    "How to Enable" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So aktivierst du die Tastatur"
+          }
+        }
+      }
+    },
+    "How to Use" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "So benutzt du die Tastatur"
+          }
+        }
+      }
+    },
+    "Learned Words" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelernte Wörter"
+          }
+        }
+      }
+    },
+    "Learned words are stored in the shared keyboard dictionary and will suppress future autocorrections." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelernte Wörter werden im gemeinsamen Tastaturwörterbuch gespeichert und verhindern zukünftige Autokorrekturen."
+          }
+        }
+      }
+    },
+    "Manage Learned Words" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelernte Wörter verwalten"
+          }
+        }
+      }
+    },
+    "Locate and select MyCuKey from the list." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche MyCuKey in der Liste und wähle es aus."
+          }
+        }
+      }
+    },
+    "No learned words yet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine gelernten Wörter."
+          }
+        }
+      }
+    },
+    "No matching words." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine passenden Wörter gefunden."
+          }
+        }
+      }
+    },
+    "Personal Dictionary" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörterbuch"
+          }
+        }
+      }
+    },
+    "Remove all learned words?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle gelernten Wörter entfernen?"
+          }
+        }
+      }
+    },
+    "Search learned words" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelernte Wörter suchen"
+          }
+        }
+      }
+    },
+    "Setup Guide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anleitung"
+          }
+        }
+      }
+    },
+    "Go to General > Keyboard > Keyboards." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gehe zu Allgemein > Tastatur > Tastaturen."
+          }
+        }
+      }
+    },
+    "Open any app with a text field (like Messages)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne eine beliebige App mit einem Texteingabefeld, zum Beispiel Nachrichten."
+          }
+        }
+      }
+    },
+    "Open the Settings app on your iPhone or iPad." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne die Einstellungen auf deinem iPhone oder iPad."
+          }
+        }
+      }
+    },
+    "Select MyCuKey from the menu to start typing!" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle MyCuKey im Menü aus, um loszuschreiben!"
+          }
+        }
+      }
+    },
+    "Tap \"Add New Keyboard...\"" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf „Neue Tastatur hinzufügen ...“"
+          }
+        }
+      }
+    },
+    "Tap and hold the 🌐 Globe button located at the bottom left of your standard Apple Keyboard." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halte die 🌐-Globus-Taste unten links auf der normalen Apple-Tastatur gedrückt."
+          }
+        }
+      }
+    },
+    "Tap on MyCuKey again and toggle \"Allow Full Access\" to enable all features." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe erneut auf MyCuKey und aktiviere „Vollen Zugriff erlauben“, um alle Funktionen zu nutzen."
+          }
+        }
+      }
+    },
+    "Words you add here, or words the keyboard learns after repeated correction reverts, will stop being autocorrected." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter, die du hier hinzufügst oder die die Tastatur nach wiederholtem Rückgängigmachen lernt, werden künftig nicht mehr automatisch korrigiert."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.2"
+}

@@ -2,9 +2,11 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// MARK: - Contraction Tests
+
 @MainActor
 struct ContractionTests {
-    
+
     @Test func testContractionDontDetected() async throws {
         let handler = KeyboardActionHandler()
         let result = handler.contractionEngine.evaluate(context: "I dont")

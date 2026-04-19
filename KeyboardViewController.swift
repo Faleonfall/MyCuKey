@@ -2,7 +2,6 @@ import UIKit
 import SwiftUI
 import Combine
 
-
 // MARK: - Standard View Controller
 class KeyboardViewController: UIInputViewController {
     
@@ -75,9 +74,7 @@ class KeyboardViewController: UIInputViewController {
 
     private var currentKeyboardHeight: CGFloat {
         let baseHeight = KeyboardMetrics.rowHeight * 4.0 + 4.0
-        let suggestionHeight = actionHandler.currentKeyboardType == .alphabetic
-            ? 28.0
-            : 0.0
+        let suggestionHeight = 28.0
         return baseHeight + suggestionHeight
     }
 
@@ -86,6 +83,8 @@ class KeyboardViewController: UIInputViewController {
         view.layoutIfNeeded()
     }
 }
+
+// MARK: - Preview Support
 
 private struct KeyboardPreviewContainer: View {
     private let previewSuggestionHeight: CGFloat = 28
@@ -98,8 +97,8 @@ private struct KeyboardPreviewContainer: View {
         handler.suggestionBarState = SuggestionBarState(
             originalToken: "Teh",
             suggestions: [
-                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99, kind: .candidate),
-                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96, kind: .candidate)
+                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99),
+                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96)
             ],
             trailingSuffix: ""
         )
@@ -109,7 +108,7 @@ private struct KeyboardPreviewContainer: View {
     var body: some View {
         KeyboardView(
             actionHandler: handler,
-            needsInputModeSwitchKey: true,
+            needsInputModeSwitchKey: false,
             controller: previewController
         )
         .frame(height: KeyboardMetrics.rowHeight * 4.0 + previewSuggestionHeight)

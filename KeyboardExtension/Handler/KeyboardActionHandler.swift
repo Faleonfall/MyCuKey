@@ -17,10 +17,6 @@ struct PendingCorrectionRevert {
 struct PendingDictionaryLearningCandidate {
     let originalWord: String
     let restoredContextSuffix: String
-
-    var confirmedByTriggerInput: Bool {
-        true
-    }
 }
 
 // MARK: - Keyboard Action Handler
@@ -279,6 +275,8 @@ class KeyboardActionHandler: ObservableObject {
         }
     }
 
+    // MARK: - Correction Revert
+
     private func clearPendingCorrectionIfNeeded(for input: String) {
         if pendingCorrectionRevert == nil {
             return
@@ -314,6 +312,8 @@ class KeyboardActionHandler: ObservableObject {
         lastSpacePressTime = nil
         return true
     }
+
+    // MARK: - Suppression and Learning
 
     private func shouldSuppressCorrections(for context: String) -> Bool {
         guard let token = AutocorrectionEngine.lastToken(in: context) else { return false }

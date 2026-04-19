@@ -1,6 +1,10 @@
 import SwiftUI
 
+// MARK: - Setup Guide
+
 struct ContentView: View {
+    // MARK: - Layout
+
     var body: some View {
         NavigationStack {
             List {
@@ -32,10 +36,14 @@ struct ContentView: View {
     }
 }
 
+// MARK: - Instruction Row
+
 struct InstructionRow: View {
     let step: String
-    let text: String
-    
+    let text: LocalizedStringKey
+
+    // MARK: - Layout
+
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             ZStack {
@@ -54,6 +62,8 @@ struct InstructionRow: View {
         .padding(.vertical, 4)
     }
 }
+
+// MARK: - Preview
 
 #Preview {
     ContentView()

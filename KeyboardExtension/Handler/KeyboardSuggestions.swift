@@ -1,11 +1,15 @@
 import Foundation
 import UIKit
 
+// MARK: - Suggestion State
+
 struct SuggestionBarState: Equatable {
     let originalToken: String
     let suggestions: [AutocorrectionSuggestion]
     let trailingSuffix: String
 }
+
+// MARK: - Suggestion Bar Flow
 
 extension KeyboardActionHandler {
     func refreshSuggestions(for currentContext: String?) {
@@ -43,6 +47,8 @@ extension KeyboardActionHandler {
         applySuggestionText(suggestion.text)
     }
 
+    // Suggestions can target the just-committed word after space, so this
+    // replacement path must preserve any existing trailing whitespace.
     private func applySuggestionText(_ replacement: String) {
         guard currentKeyboardType == .alphabetic,
               let context = controller?.textDocumentProxy.documentContextBeforeInput,
@@ -118,6 +124,10 @@ extension KeyboardActionHandler {
         refreshSuggestions(for: newContext)
     }
 
+    // MARK: - Suggestion Targeting
+
+    // Normalize wrappers for lookup, but keep the original token around so a
+    // chosen suggestion can be re-wrapped when it is applied back to the field.
     private func suggestionTarget(for context: String) -> (activeContext: String, suggestionContext: String, token: CorrectionToken, trailingSuffix: String)? {
         let trailingWhitespace = String(context.reversed().prefix { character in
             character == " " || character == "\n" || character == "\t"

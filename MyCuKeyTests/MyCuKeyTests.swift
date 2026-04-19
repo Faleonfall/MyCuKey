@@ -2,9 +2,13 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// MARK: - Keyboard Core Tests
+
 // Core tests: auto-capitalization, double-space, keyboard type state
 @MainActor
 struct MyCuKeyTests {
+
+    // MARK: - Auto-Capitalization
 
     @Test func testKeyboardCapitalizationAtStart() async throws {
         let handler = KeyboardActionHandler()
@@ -53,6 +57,8 @@ struct MyCuKeyTests {
         #expect(secondPress.needsDeleteBackward == false)
         #expect(secondPress.newLastSpacePress == time2, "Timer should reset to this new slow press.")
     }
+
+    // MARK: - Double-Space Period
 
     @Test func testDoubleSpaceBoundaryAtExactlyPoint25SecondsIsIgnored() async throws {
         let handler = KeyboardActionHandler()
@@ -130,7 +136,9 @@ struct MyCuKeyTests {
         handler.currentKeyboardType = .symbolic
         #expect(handler.currentKeyboardType == .symbolic)
     }
-    
+
+    // MARK: - Additional Capitalization Context
+
     @Test func testKeyboardCapitalizationWithAsterisksAndSpacelessTerminators() async throws {
         let handler = KeyboardActionHandler()
         

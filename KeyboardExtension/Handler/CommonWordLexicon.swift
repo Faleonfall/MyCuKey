@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - Trusted Common Word Lexicon
+
 enum CommonWordLexicon {
     private static let rawWords = """
     the

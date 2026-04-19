@@ -1,11 +1,15 @@
 import Foundation
 
+// MARK: - Learned Word Entry
+
 struct LearnedWordEntry: Codable, Equatable, Identifiable {
     let normalizedWord: String
     let createdAt: Date
 
     var id: String { normalizedWord }
 }
+
+// MARK: - Personal Dictionary Configuration
 
 enum PersonalDictionaryConfiguration {
     static let appGroupSuiteName = "group.com.kvolodymyr.MyCuKey"
@@ -14,6 +18,8 @@ enum PersonalDictionaryConfiguration {
     static let promotionThreshold = 2
     static let maxWordLength = 40
 }
+
+// MARK: - Personal Dictionary Service
 
 final class PersonalDictionaryService {
     static let shared = PersonalDictionaryService()
@@ -30,10 +36,14 @@ final class PersonalDictionaryService {
         } else if let sharedDefaults = UserDefaults(suiteName: PersonalDictionaryConfiguration.appGroupSuiteName) {
             self.defaults = sharedDefaults
         } else {
+            // Falling back to .standard keeps tests and previews working, but the real app
+            // should be wired to the shared App Group so the app and keyboard stay in sync.
             self.defaults = .standard
         }
         refreshFromStorage()
     }
+
+    // MARK: - Public API
 
     func containsLearnedWord(_ word: String) -> Bool {
         guard let normalized = Self.normalizeLearnableWord(word) else { return false }
@@ -135,6 +145,8 @@ final class PersonalDictionaryService {
         return trimmed.lowercased()
     }
 
+    // MARK: - Storage
+
     private func loadLearnedWordsFromStorage() -> [LearnedWordEntry] {
         guard let data = defaults.data(forKey: PersonalDictionaryConfiguration.learnedWordsKey),
               let words = try? decoder.decode([LearnedWordEntry].self, from: data) else {
@@ -154,6 +166,8 @@ final class PersonalDictionaryService {
         learnedWordsCache = loadLearnedWordsFromStorage()
         learnedWordSetCache = Set(learnedWordsCache.map(\.normalizedWord))
     }
+
+    // MARK: - Revert Counts
 
     private func loadRevertCounts() -> [String: Int] {
         defaults.dictionary(forKey: PersonalDictionaryConfiguration.revertCountsKey) as? [String: Int] ?? [:]

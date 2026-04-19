@@ -2,9 +2,11 @@ import Testing
 import Foundation
 @testable import MyCuKey
 
+// MARK: - Word Deletion Tests
+
 @MainActor
 struct WordDeletionTests {
-    
+
     @Test func testWordDeletionCountForSingleWord() async throws {
         let handler = KeyboardActionHandler()
         #expect(handler.charsToDeleteForWordBackward(context: "Hello") == 5, "Should delete all 5 chars of a single word.")
