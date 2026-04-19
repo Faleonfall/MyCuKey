@@ -45,6 +45,7 @@ struct KeyboardButtonStyle: ButtonStyle {
     @State private var repeatTask: Task<Void, Never>?
     @State private var isLongPressing = false
     @State private var dragStartOffset: CGFloat = 0
+    @State private var isTrackpadTouchActive = false
     @State private var isDragging = false
     // Keep the flash visible long enough to read even on extremely quick taps.
     @State private var isVisuallyPressed = false
@@ -56,6 +57,10 @@ struct KeyboardButtonStyle: ButtonStyle {
 
     private var pressedOverlayColor: Color {
         colorScheme == .light ? Color.black.opacity(0.06) : Color.white.opacity(0.15)
+    }
+
+    private var isTrackpadVisuallyActive: Bool {
+        isTrackpadTouchActive || isDragging
     }
 
     private var popupHorizontalOffset: CGFloat {
@@ -128,7 +133,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                     }
                     
                     // Highlight on press
-                    if isVisuallyPressed {
+                    if isVisuallyPressed || isTrackpadVisuallyActive {
                         RoundedRectangle(cornerRadius: Metrics.keyCornerRadius, style: .continuous)
                             .fill(pressedOverlayColor)
                     }
@@ -178,6 +183,7 @@ struct KeyboardButtonStyle: ButtonStyle {
             .trackpadGesture(
                 isEnabled: isTrackpadEnabled,
                 trackpadAction: trackpadAction,
+                isTouchActive: $isTrackpadTouchActive,
                 isDragging: $isDragging,
                 dragStartOffset: $dragStartOffset
             )

@@ -63,6 +63,7 @@ extension KeyboardActionHandler {
         pendingCorrectionRevert = nil
         pendingDictionaryLearningCandidate = nil
         lastSpacePressTime = nil
+        pendingSuggestionCommittedSpace = trailingSuffix.isEmpty
         suppressSuggestionRefreshUntilNextToken = true
         clearSuggestions()
 

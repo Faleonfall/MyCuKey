@@ -181,7 +181,7 @@ struct KeyboardView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var letterKeyBg: Color { colorScheme == .dark ? Color(UIColor.systemGray2) : Color(UIColor.systemBackground) }
-    var actionKeyBg: Color { colorScheme == .dark ? Color(UIColor.systemGray4) : Color(UIColor.systemGray2) }
+    var actionKeyBg: Color { colorScheme == .dark ? Color(UIColor.systemGray4) : Color(UIColor.systemBackground) }
 
     var body: some View {
         VStack(spacing: 0) {

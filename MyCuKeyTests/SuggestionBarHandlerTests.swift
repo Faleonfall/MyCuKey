@@ -129,6 +129,54 @@ struct SuggestionBarHandlerTests {
         #expect(handler.suppressSuggestionRefreshUntilNextToken)
     }
 
+    @Test func testHandlerConsumesSuggestionSpaceBeforePunctuation() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
+
+        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
+        handler.applySuggestion(bestSuggestion)
+        #expect(controller.mockProxy.documentContextBeforeInput == "the ")
+
+        handler.insertText("?")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "the?")
+    }
+
+    @Test func testHandlerRequiresTwoUserSpacesAfterSuggestionForPeriodShortcut() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
+
+        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
+        handler.applySuggestion(bestSuggestion)
+        #expect(controller.mockProxy.documentContextBeforeInput == "the ")
+
+        handler.insertText(" ")
+        #expect(controller.mockProxy.documentContextBeforeInput == "the  ")
+
+        handler.insertText(" ")
+
+        #expect(controller.mockProxy.documentContextBeforeInput == "the. ")
+    }
+
+    @Test func testHandlerSuggestionSpaceOnlyBecomesPeriodAfterQuickSecondUserSpace() async throws {
+        let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
+        let controller = MockKeyboardController(beforeInput: "teh")
+        handler.controller = controller
+        handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
+
+        let bestSuggestion = try #require(handler.suggestionBarState?.suggestions.first)
+        handler.applySuggestion(bestSuggestion)
+        handler.insertText(" ")
+
+        #expect(handler.pendingSuggestionCommittedSpace)
+        #expect(handler.pendingSuggestionSpaceTapCount == 1)
+        #expect(controller.mockProxy.documentContextBeforeInput == "the  ")
+    }
+
     @Test func testHandlerSuggestionsIgnoreLeadingQuote() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "\"teh")

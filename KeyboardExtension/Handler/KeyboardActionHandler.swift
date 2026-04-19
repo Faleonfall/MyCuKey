@@ -39,6 +39,8 @@ class KeyboardActionHandler: ObservableObject {
     var pendingCorrectionRevert: PendingCorrectionRevert?
     var pendingDictionaryLearningCandidate: PendingDictionaryLearningCandidate?
     var suppressSuggestionRefreshUntilNextToken = false
+    var pendingSuggestionCommittedSpace = false
+    var pendingSuggestionSpaceTapCount = 0
     private let personalDictionaryService: PersonalDictionaryService
     
     let contractionEngine = ContractionEngine()
@@ -71,8 +73,16 @@ class KeyboardActionHandler: ObservableObject {
     }
 
     func insertText(_ text: String) {
+        if applySuggestionFollowupIfNeeded(for: text) {
+            return
+        }
+
         if text.count == 1, text.first?.isLetter == true {
             suppressSuggestionRefreshUntilNextToken = false
+        }
+        if !(pendingSuggestionCommittedSpace && text == " ") {
+            pendingSuggestionCommittedSpace = false
+            pendingSuggestionSpaceTapCount = 0
         }
         clearPendingCorrectionIfNeeded(for: text)
         let confirmedPendingLearning = processPendingDictionaryLearningIfNeeded(forNextInput: text)
@@ -99,6 +109,16 @@ class KeyboardActionHandler: ObservableObject {
             applyReplacement(fix, originalContext: ctx, trailingInput: suffix)
             return
         }
+
+        if pendingSuggestionCommittedSpace && text == " " && pendingSuggestionSpaceTapCount == 1 {
+            controller?.textDocumentProxy.insertText(" ")
+
+            let originalContext = context ?? ""
+            let newContext = originalContext + " "
+            evaluateAutoCapitalization(contextBefore: newContext)
+            refreshSuggestions(for: newContext)
+            return
+        }
         
         // Priority 3: double-space → period
         let result = evaluateTextInsertion(text: text, context: context, now: Date(), lastPress: lastSpacePressTime)
@@ -116,6 +136,61 @@ class KeyboardActionHandler: ObservableObject {
             : originalContext + result.textToInsert
         evaluateAutoCapitalization(contextBefore: newContext)
         refreshSuggestions(for: newContext)
+    }
+
+    private func applySuggestionFollowupIfNeeded(for text: String) -> Bool {
+        guard pendingSuggestionCommittedSpace,
+              let context = controller?.textDocumentProxy.documentContextBeforeInput,
+              context.hasSuffix(" ") else {
+            return false
+        }
+
+        switch text {
+        case " ":
+            let now = Date()
+
+            if pendingSuggestionSpaceTapCount == 0 {
+                pendingSuggestionSpaceTapCount = 1
+                lastSpacePressTime = now
+                return false
+            }
+
+            if let lastPress = lastSpacePressTime,
+               now.timeIntervalSince(lastPress) < 0.25 {
+                controller?.textDocumentProxy.deleteBackward()
+                controller?.textDocumentProxy.deleteBackward()
+                controller?.textDocumentProxy.insertText(". ")
+                lastSpacePressTime = nil
+                pendingSuggestionCommittedSpace = false
+                pendingSuggestionSpaceTapCount = 0
+
+                let newContext = String(context.dropLast(2)) + ". "
+                evaluateAutoCapitalization(contextBefore: newContext)
+                refreshSuggestions(for: newContext)
+                return true
+            }
+
+            pendingSuggestionSpaceTapCount = 1
+            lastSpacePressTime = now
+            return false
+
+        case ".", ",", "!", "?", "*":
+            controller?.textDocumentProxy.deleteBackward()
+            controller?.textDocumentProxy.insertText(text)
+            lastSpacePressTime = nil
+            pendingSuggestionCommittedSpace = false
+            pendingSuggestionSpaceTapCount = 0
+
+            let newContext = String(context.dropLast()) + text
+            evaluateAutoCapitalization(contextBefore: newContext)
+            refreshSuggestions(for: newContext)
+            return true
+
+        default:
+            pendingSuggestionCommittedSpace = false
+            pendingSuggestionSpaceTapCount = 0
+            return false
+        }
     }
     
     // Shared replacement apply — uses Diff logic to minimize flicker.
