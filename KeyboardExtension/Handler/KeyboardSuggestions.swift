@@ -1,14 +1,6 @@
 import Foundation
 import UIKit
 
-// MARK: - Suggestion State
-
-struct SuggestionBarState: Equatable {
-    let originalToken: String
-    let suggestions: [AutocorrectionSuggestion]
-    let trailingSuffix: String
-}
-
 // MARK: - Suggestion Bar Flow
 
 extension KeyboardActionHandler {
@@ -20,55 +12,161 @@ extension KeyboardActionHandler {
 
         guard currentKeyboardType == .alphabetic,
               let context = currentContext,
-              let target = suggestionTarget(for: context),
-              let suggestionSet = autocorrectionEngine.suggestions(context: target.suggestionContext),
-              !suggestionSet.suggestions.isEmpty else {
+              let suggestionContext = SuggestionContext.parse(context) else {
             clearSuggestions()
             return
         }
 
-        suggestionBarState = SuggestionBarState(
-            originalToken: target.token.original,
-            suggestions: Array(suggestionSet.suggestions.prefix(2)),
-            trailingSuffix: target.trailingSuffix
-        )
+        refreshSupplementaryLexiconIfNeeded()
+
+        switch suggestionContext.mode {
+        case .currentToken:
+            refreshCurrentTokenSuggestions(for: suggestionContext)
+        case .nextWord:
+            refreshNextWordSuggestions(for: suggestionContext)
+        }
     }
 
     func clearSuggestions() {
         suggestionBarState = nil
     }
 
-    func applyOriginalSuggestion() {
-        guard let state = suggestionBarState else { return }
-        applySuggestionText(state.originalToken)
-    }
-
-    func applySuggestion(_ suggestion: AutocorrectionSuggestion) {
-        applySuggestionText(suggestion.text)
-    }
-
-    // Suggestions can target the just-committed word after space, so this
-    // replacement path must preserve any existing trailing whitespace.
-    private func applySuggestionText(_ replacement: String) {
-        guard currentKeyboardType == .alphabetic,
-              let context = controller?.textDocumentProxy.documentContextBeforeInput,
-              let target = suggestionTarget(for: context) else {
+    private func refreshCurrentTokenSuggestions(for context: SuggestionContext) {
+        guard let token = context.token,
+              let currentWordContext = context.suggestionContext,
+              let suggestionSet = autocorrectionEngine.suggestions(
+                context: currentWordContext,
+                boostedTerms: suggestionBoostTerms()
+              ),
+              !suggestionSet.suggestions.isEmpty else {
             clearSuggestions()
             return
         }
 
-        let token = target.token
-        let trailingSuffix = target.trailingSuffix
+        let cells = [
+            SuggestionBarCell(
+                text: token.original,
+                source: .userInput,
+                role: .original,
+                confidence: 1.0
+            )
+        ] + suggestionSet.suggestions.prefix(2).map { suggestion in
+            SuggestionBarCell(
+                text: suggestion.text,
+                source: suggestion.source,
+                role: .suggestion,
+                confidence: suggestion.confidence
+            )
+        }
+
+        suggestionBarState = SuggestionBarState(
+            mode: .currentToken,
+            cells: cells,
+            context: context
+        )
+    }
+
+    private func refreshNextWordSuggestions(for context: SuggestionContext) {
+        let cells = NextWordSuggestionProvider.shared.suggestions(for: context)
+        guard !cells.isEmpty else {
+            clearSuggestions()
+            return
+        }
+
+        suggestionBarState = SuggestionBarState(
+            mode: .nextWord,
+            cells: cells,
+            context: context
+        )
+    }
+
+    // Personal and system lexicon words are shown as bar options only. They
+    // should not make silent autocorrection more aggressive.
+    private func suggestionBoostTerms() -> [SuggestionBoostTerm] {
+        personalDictionaryService.refreshFromStorage()
+
+        let personalTerms = personalDictionaryService.allWords().map {
+            SuggestionBoostTerm(word: $0.normalizedWord, source: .personalDictionary)
+        }
+        let supplementaryTerms = supplementarySuggestionTerms.map {
+            SuggestionBoostTerm(word: $0, source: .supplementaryLexicon)
+        }
+
+        return personalTerms + supplementaryTerms
+    }
+
+    private func refreshSupplementaryLexiconIfNeeded() {
+        guard !hasRequestedSupplementaryLexicon,
+              let controller else {
+            return
+        }
+
+        hasRequestedSupplementaryLexicon = true
+        controller.requestSupplementaryLexicon { [weak self] lexicon in
+            let normalizedTerms = Set(lexicon.entries.flatMap { entry in
+                [entry.userInput, entry.documentText].compactMap(KeyboardActionHandler.normalizedSuggestionTerm)
+            })
+
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.supplementarySuggestionTerms = normalizedTerms
+                self.refreshSuggestions(for: self.controller?.textDocumentProxy.documentContextBeforeInput)
+            }
+        }
+    }
+
+    nonisolated private static func normalizedSuggestionTerm(_ word: String) -> String? {
+        PersonalDictionaryService.normalizeLearnableWord(word)
+    }
+
+    func applyOriginalSuggestion() {
+        guard let originalCell = suggestionBarState?.cells.first(where: { $0.role == .original }) else { return }
+        applyCell(originalCell)
+    }
+
+    func applySuggestion(_ suggestion: AutocorrectionSuggestion) {
+        guard let state = suggestionBarState else { return }
+
+        switch state.mode {
+        case .currentToken:
+            applyCurrentTokenSuggestionText(suggestion.text)
+        case .nextWord:
+            applyPredictionText(suggestion.text)
+        }
+    }
+
+    func applyCell(_ cell: SuggestionBarCell) {
+        guard let state = suggestionBarState else { return }
+
+        switch (state.mode, cell.role) {
+        case (.nextWord, _), (_, .prediction):
+            applyPredictionText(cell.text)
+        case (.currentToken, _):
+            applyCurrentTokenSuggestionText(cell.text)
+        }
+    }
+
+    // Suggestions can target a decorated current token, so this replacement path
+    // keeps wrappers such as quotes or roleplay markers attached to the chosen word.
+    private func applyCurrentTokenSuggestionText(_ replacement: String) {
+        guard currentKeyboardType == .alphabetic,
+              let context = controller?.textDocumentProxy.documentContextBeforeInput,
+              let target = SuggestionContext.parse(context),
+              target.mode == .currentToken,
+              let token = target.token else {
+            clearSuggestions()
+            return
+        }
 
         pendingCorrectionRevert = nil
         pendingDictionaryLearningCandidate = nil
         lastSpacePressTime = nil
-        pendingSuggestionCommittedSpace = trailingSuffix.isEmpty
+        pendingSuggestionCommittedSpace = target.trailingSuffix.isEmpty
         suppressSuggestionRefreshUntilNextToken = true
         clearSuggestions()
 
         guard token.original != replacement else {
-            if trailingSuffix.isEmpty {
+            if target.trailingSuffix.isEmpty {
                 let committedContext = context + " "
                 controller?.textDocumentProxy.insertText(" ")
                 evaluateAutoCapitalization(contextBefore: committedContext)
@@ -83,8 +181,8 @@ extension KeyboardActionHandler {
 
         let decoratedReplacement = token.leadingDecoration + replacement + token.trailingDecoration
 
-        if !trailingSuffix.isEmpty {
-            for _ in 0..<trailingSuffix.count {
+        if !target.trailingSuffix.isEmpty {
+            for _ in 0..<target.trailingSuffix.count {
                 controller?.textDocumentProxy.deleteBackward()
             }
         }
@@ -93,9 +191,34 @@ extension KeyboardActionHandler {
             oldWord: token.original,
             newWord: decoratedReplacement,
             originalContext: target.activeContext,
-            trailingInput: trailingSuffix.isEmpty ? " " : trailingSuffix,
+            trailingInput: target.trailingSuffix.isEmpty ? " " : target.trailingSuffix,
             tracksCorrectionRevert: false
         )
+    }
+
+    private func applyPredictionText(_ prediction: String) {
+        guard currentKeyboardType == .alphabetic,
+              let context = controller?.textDocumentProxy.documentContextBeforeInput,
+              let target = SuggestionContext.parse(context),
+              target.mode == .nextWord else {
+            clearSuggestions()
+            return
+        }
+
+        pendingCorrectionRevert = nil
+        pendingDictionaryLearningCandidate = nil
+        lastSpacePressTime = nil
+        pendingSuggestionCommittedSpace = true
+        pendingSuggestionSpaceTapCount = 0
+        suppressSuggestionRefreshUntilNextToken = false
+        clearSuggestions()
+
+        let insertion = target.predictionInsertionPrefix + prediction + " "
+        controller?.textDocumentProxy.insertText(insertion)
+
+        let newContext = context + insertion
+        evaluateAutoCapitalization(contextBefore: newContext)
+        refreshSuggestions(for: newContext)
     }
 
     func applyWordReplacement(
@@ -123,68 +246,5 @@ extension KeyboardActionHandler {
             ?? (String(originalContext.dropLast(oldWord.count)) + newWord + trailingInput)
         evaluateAutoCapitalization(contextBefore: newContext)
         refreshSuggestions(for: newContext)
-    }
-
-    // MARK: - Suggestion Targeting
-
-    // Normalize wrappers for lookup, but keep the original token around so a
-    // chosen suggestion can be re-wrapped when it is applied back to the field.
-    private func suggestionTarget(for context: String) -> (activeContext: String, suggestionContext: String, token: CorrectionToken, trailingSuffix: String)? {
-        let trailingWhitespace = String(context.reversed().prefix { character in
-            character == " " || character == "\n" || character == "\t"
-        }.reversed())
-
-        let activeContext = trailingWhitespace.isEmpty
-            ? context
-            : String(context.dropLast(trailingWhitespace.count))
-
-        guard let token = suggestionToken(in: activeContext),
-              token.correctionTarget.count >= 2,
-              token.correctionTarget.last?.isLetter == true else {
-            return nil
-        }
-
-        let suggestionContext = String(activeContext.dropLast(token.original.count)) + token.correctionTarget
-        return (activeContext, suggestionContext, token, trailingWhitespace)
-    }
-
-    private func suggestionToken(in context: String) -> CorrectionToken? {
-        var rawToken = ""
-        for character in context.reversed() {
-            if character == " " || character == "\n" || character == "\t" {
-                break
-            }
-            rawToken = String(character) + rawToken
-        }
-
-        guard !rawToken.isEmpty else { return nil }
-
-        var core = rawToken
-        var leadingDecoration = ""
-        var trailingDecoration = ""
-
-        while let first = core.first, !isSuggestionCoreCharacter(first) {
-            leadingDecoration.append(first)
-            core.removeFirst()
-        }
-
-        while let last = core.last, !isSuggestionCoreCharacter(last) {
-            trailingDecoration.insert(last, at: trailingDecoration.startIndex)
-            core.removeLast()
-        }
-
-        guard !core.isEmpty else { return nil }
-
-        return CorrectionToken(
-            original: rawToken,
-            correctionTarget: core,
-            correctionTargetLowercased: core.lowercased(),
-            leadingDecoration: leadingDecoration,
-            trailingDecoration: trailingDecoration
-        )
-    }
-
-    private func isSuggestionCoreCharacter(_ character: Character) -> Bool {
-        character.isLetter || character.isNumber || character == "'"
     }
 }

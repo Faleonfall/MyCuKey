@@ -41,7 +41,9 @@ class KeyboardActionHandler: ObservableObject {
     var suppressSuggestionRefreshUntilNextToken = false
     var pendingSuggestionCommittedSpace = false
     var pendingSuggestionSpaceTapCount = 0
-    private let personalDictionaryService: PersonalDictionaryService
+    var hasRequestedSupplementaryLexicon = false
+    var supplementarySuggestionTerms: Set<String> = []
+    let personalDictionaryService: PersonalDictionaryService
     
     let contractionEngine = ContractionEngine()
     let autocorrectionEngine = AutocorrectionEngine()

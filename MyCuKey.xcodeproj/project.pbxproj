@@ -55,6 +55,32 @@
 		CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
 		CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
 		CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
+		CBFA10012FA9000000000001 /* WordFrequencyLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */; };
+		CBFA10022FA9000000000001 /* WordFrequencyLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */; };
+		CBFA10032FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */; };
+		CBFA10042FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */; };
+		CBFA10052FA9000000000001 /* SuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00032FA9000000000001 /* SuggestionProvider.swift */; };
+		CBFA10062FA9000000000001 /* SuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00032FA9000000000001 /* SuggestionProvider.swift */; };
+		CBFA10072FA9000000000001 /* LocalSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */; };
+		CBFA10082FA9000000000001 /* LocalSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */; };
+		CBFA10092FA9000000000001 /* SuggestionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00052FA9000000000001 /* SuggestionContext.swift */; };
+		CBFA100A2FA9000000000001 /* SuggestionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00052FA9000000000001 /* SuggestionContext.swift */; };
+		CBFA100B2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */; };
+		CBFA100C2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */; };
+		CBFA100D2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */; };
+		CBFA100E2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */; };
+		CBFA10112FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
+		CBFA10122FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
+		CBFA10132FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
+		CBFA10142FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
+		CBFA10152FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
+		CBFA10162FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
+		CBFA10172FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
+		CBFA10182FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
+		CBFA10192FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
+		CBFA101A2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
+		CBFA101B2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
+		CBFA101C2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,6 +147,17 @@
 		CBA8E2C52F9355CD009869A4 /* PersonalDictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryView.swift; sourceTree = "<group>"; };
 		CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWordLexicon.swift; sourceTree = "<group>"; };
 		CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryService.swift; sourceTree = "<group>"; };
+		CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordFrequencyLexicon.swift; sourceTree = "<group>"; };
+		CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCandidateIndex.swift; sourceTree = "<group>"; };
+		CBFA00032FA9000000000001 /* SuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionProvider.swift; sourceTree = "<group>"; };
+		CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSuggestionProvider.swift; sourceTree = "<group>"; };
+		CBFA00052FA9000000000001 /* SuggestionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionContext.swift; sourceTree = "<group>"; };
+		CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextWordSuggestionProvider.swift; sourceTree = "<group>"; };
+		CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortTokenSuggestionProvider.swift; sourceTree = "<group>"; };
+		CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishSuggestionLexicon.tsv; sourceTree = "<group>"; };
+		CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "EnglishSuggestionLexicon-LICENSE.md"; sourceTree = "<group>"; };
+		CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishNextWordLexicon.tsv; sourceTree = "<group>"; };
+		CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishShortTokenLexicon.tsv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -186,14 +223,33 @@
 				CB9BF32F2F8A1567001FCAA8 /* Handler */,
 				CB9BF3342F8A1567001FCAA8 /* Utilities */,
 				CB9BF3312F8A1567001FCAA8 /* Styles */,
+				CBFA00102FA9000000000001 /* Resources */,
 			);
 			path = KeyboardExtension;
+			sourceTree = "<group>";
+		};
+		CBFA00102FA9000000000001 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */,
+				CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */,
+				CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */,
+				CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		CB9BF32F2F8A1567001FCAA8 /* Handler */ = {
 			isa = PBXGroup;
 			children = (
 				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
+				CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */,
+				CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */,
+				CBFA00032FA9000000000001 /* SuggestionProvider.swift */,
+				CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */,
+				CBFA00052FA9000000000001 /* SuggestionContext.swift */,
+				CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */,
+				CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */,
 				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
 				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
 				CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */,
@@ -366,6 +422,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBA65D532F94D83D006F8164 /* Localizable.xcstrings in Resources */,
+				CBFA10112FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
+				CBFA10172FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
+				CBFA101A2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
+				CBFA10142FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
 				CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -374,6 +434,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBFA10122FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
+				CBFA10182FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
+				CBFA101B2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
+				CBFA10152FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +445,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBFA10132FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
+				CBFA10192FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
+				CBFA101C2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
+				CBFA10162FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +461,13 @@
 			files = (
 				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
 				CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
+				CBFA10012FA9000000000001 /* WordFrequencyLexicon.swift in Sources */,
+				CBFA10032FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */,
+				CBFA10052FA9000000000001 /* SuggestionProvider.swift in Sources */,
+				CBFA10072FA9000000000001 /* LocalSuggestionProvider.swift in Sources */,
+				CBFA10092FA9000000000001 /* SuggestionContext.swift in Sources */,
+				CBFA100B2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */,
+				CBFA100D2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */,
 				CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */,
 				CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */,
@@ -430,6 +505,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
+				CBFA10022FA9000000000001 /* WordFrequencyLexicon.swift in Sources */,
+				CBFA10042FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */,
+				CBFA10062FA9000000000001 /* SuggestionProvider.swift in Sources */,
+				CBFA10082FA9000000000001 /* LocalSuggestionProvider.swift in Sources */,
+				CBFA100A2FA9000000000001 /* SuggestionContext.swift in Sources */,
+				CBFA100C2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */,
+				CBFA100E2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */,
 				CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */,
 				CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */,
 				CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */,

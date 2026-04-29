@@ -157,13 +157,140 @@ struct AutocorrectionTests {
         let engine = AutocorrectionEngine()
         let suggestionSet = engine.suggestions(context: "teh")
         #expect(suggestionSet?.token.original == "teh")
-        #expect(suggestionSet?.suggestions.first?.text == "the")
+        #expect(suggestionSet?.suggestions.first?.text == "The")
         #expect((suggestionSet?.suggestions.count ?? 0) >= 1)
     }
 
     @Test func testAutocorrectionSuggestionsReturnSafeLocalMatch() async throws {
         let engine = AutocorrectionEngine()
-        #expect(engine.suggestions(context: "yur")?.suggestions.first?.text == "your")
+        #expect(engine.suggestions(context: "yur")?.suggestions.first?.text == "Your")
+    }
+
+    @Test func testAutocorrectionSuggestionsSurfaceShortPrefixCompletions() async throws {
+        let engine = AutocorrectionEngine()
+
+        let singleLetterSuggestions = engine.suggestions(context: "t")?.suggestions.map(\.text) ?? []
+        #expect(singleLetterSuggestions == ["The", "This"])
+
+        let twoLetterSuggestions = engine.suggestions(context: "th")?.suggestions.map(\.text) ?? []
+        #expect(twoLetterSuggestions == ["The", "This"])
+    }
+
+    @Test func testAutocorrectionSuggestionsUseCuratedTinyPrefixRanking() async throws {
+        let engine = AutocorrectionEngine()
+
+        let midSentenceTh = engine.suggestions(context: "hello th")?.suggestions.map(\.text) ?? []
+        let sentenceStartYo = engine.suggestions(context: "yo")?.suggestions.map(\.text) ?? []
+        let afterI = engine.suggestions(context: "I th")?.suggestions.map(\.text) ?? []
+
+        #expect(midSentenceTh == ["the", "that"])
+        #expect(sentenceStartYo == ["You", "Your"])
+        #expect(afterI.first == "think")
+    }
+
+    @Test func testAutocorrectionSuggestionsKeepTinyWordsCommonAndLocal() async throws {
+        let engine = AutocorrectionEngine()
+
+        let heSuggestions = engine.suggestions(
+            context: "hello he",
+            boostedTerms: [SuggestionBoostTerm(word: "henrique", source: .supplementaryLexicon)]
+        )?.suggestions.map(\.text) ?? []
+        let meSuggestions = engine.suggestions(
+            context: "hello me",
+            boostedTerms: [SuggestionBoostTerm(word: "mendonca", source: .supplementaryLexicon)]
+        )?.suggestions.map(\.text) ?? []
+
+        #expect(heSuggestions == ["her", "here"])
+        #expect(meSuggestions == ["mean", "message"])
+        #expect(!heSuggestions.contains("henrique"))
+        #expect(!meSuggestions.contains("mendonca"))
+    }
+
+    @Test func testAutocorrectionSuggestionsGatePersonalDictionaryForTinyPrefixes() async throws {
+        let engine = AutocorrectionEngine()
+        let boostedTerms = [SuggestionBoostTerm(word: "mycustomword", source: .personalDictionary)]
+
+        let twoLetterSuggestions = engine.suggestions(
+            context: "hello my",
+            boostedTerms: boostedTerms
+        )?.suggestions.map(\.text) ?? []
+        let threeLetterSuggestions = engine.suggestions(
+            context: "hello myc",
+            boostedTerms: boostedTerms
+        )?.suggestions.map(\.text) ?? []
+
+        #expect(!twoLetterSuggestions.contains("mycustomword"))
+        #expect(threeLetterSuggestions.first == "mycustomword")
+    }
+
+    @Test func testAutocorrectionSuggestionsHideWeakTinyPrefixFallbacks() async throws {
+        let engine = AutocorrectionEngine()
+
+        #expect(engine.suggestions(context: "hello zx") == nil)
+        #expect(engine.suggestions(context: "qz") == nil)
+    }
+
+    @Test func testAutocorrectionSuggestionsKeepTinyRepairsCurated() async throws {
+        let engine = AutocorrectionEngine()
+
+        #expect(engine.suggestions(context: "teh")?.suggestions.first?.text == "The")
+        #expect(engine.suggestions(context: "hello adn")?.suggestions.first?.text == "and")
+        #expect(engine.suggestions(context: "hello yur")?.suggestions.first?.text == "your")
+    }
+
+    @Test func testAutocorrectionSuggestionsRepairLongerMisspellings() async throws {
+        let engine = AutocorrectionEngine()
+        let cases = [
+            ("langauge", "language"),
+            ("definatly", "definitely"),
+            ("suggesstion", "suggestion"),
+            ("autocorection", "autocorrection"),
+            ("intresting", "interesting"),
+            ("wotk", "work")
+        ]
+
+        for (input, expected) in cases {
+            let suggestions = engine.suggestions(context: "please \(input)")?.suggestions.map(\.text) ?? []
+            #expect(suggestions.contains(expected))
+        }
+    }
+
+    @Test func testAutocorrectionSuggestionsRankKeyboardNeighborRepairFirst() async throws {
+        let engine = AutocorrectionEngine()
+        #expect(engine.suggestions(context: "please wotk")?.suggestions.first?.text == "work")
+    }
+
+    @Test func testAutocorrectionSuggestionsCanBoostPersonalTerms() async throws {
+        let engine = AutocorrectionEngine()
+        let suggestions = engine.suggestions(
+            context: "hello myc",
+            boostedTerms: [SuggestionBoostTerm(word: "mycustomword", source: .personalDictionary)]
+        )?.suggestions.map(\.text) ?? []
+
+        #expect(suggestions.first == "mycustomword")
+        #expect(suggestions.contains("mycustomword"))
+        #expect(!suggestions.contains("my"))
+    }
+
+    @Test func testAutocorrectionSuggestionsDoNotSurfaceSupplementaryNamesForTinyPrefixes() async throws {
+        let engine = AutocorrectionEngine()
+
+        let heSuggestions = engine.suggestions(
+            context: "hello he",
+            boostedTerms: [SuggestionBoostTerm(word: "henrique", source: .supplementaryLexicon)]
+        )?.suggestions.map(\.text) ?? []
+        let meSuggestions = engine.suggestions(
+            context: "hello me",
+            boostedTerms: [SuggestionBoostTerm(word: "mendonca", source: .supplementaryLexicon)]
+        )?.suggestions.map(\.text) ?? []
+        let longerPrefixSuggestions = engine.suggestions(
+            context: "hello henr",
+            boostedTerms: [SuggestionBoostTerm(word: "henrique", source: .supplementaryLexicon)]
+        )?.suggestions.map(\.text) ?? []
+
+        #expect(!heSuggestions.contains("henrique"))
+        #expect(!meSuggestions.contains("mendonca"))
+        #expect(longerPrefixSuggestions.contains("henrique"))
     }
 
     @Test func testAutocorrectionSuggestionsCanSurfaceHelpfulAlternativesForWordLikeInput() async throws {
@@ -177,8 +304,21 @@ struct AutocorrectionTests {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "definatly") == nil)
 
-        let suggestions = engine.suggestions(context: "definatly")?.suggestions.map(\.text) ?? []
-        #expect(!suggestions.isEmpty)
+        let suggestions = engine.suggestions(context: "please definatly")?.suggestions.map(\.text) ?? []
+        #expect(suggestions.first == "definitely")
+        #expect(suggestions.contains("definitely"))
+    }
+
+    @Test func testNextWordSuggestionsUseSentenceAndPhraseContext() async throws {
+        let provider = NextWordSuggestionProvider()
+
+        let afterI = try #require(SuggestionContext.parse("I "))
+        let afterPhrase = try #require(SuggestionContext.parse("How are "))
+        let afterSentence = try #require(SuggestionContext.parse(". "))
+
+        #expect(provider.suggestions(for: afterI).map(\.text) == ["think", "have", "am"])
+        #expect(provider.suggestions(for: afterPhrase).first?.text == "you")
+        #expect(Array(provider.suggestions(for: afterSentence).map(\.text).prefix(3)) == ["I", "The", "You"])
     }
 
     @Test func testAutocorrectionSuggestionsDeduplicateEquivalentCandidates() async throws {
@@ -190,7 +330,7 @@ struct AutocorrectionTests {
 
     @Test func testAutocorrectionSuggestionsHandleWrappedTokenContext() async throws {
         let engine = AutocorrectionEngine()
-        #expect(engine.suggestions(context: "*teh*")?.suggestions.first?.text == "*the*")
+        #expect(engine.suggestions(context: "*teh*")?.suggestions.first?.text == "*The*")
     }
 
     @Test func testAutocorrectionLeavesAmbiguousNearbyOrDuplicateCasesAlone() async throws {

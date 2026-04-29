@@ -27,6 +27,8 @@ final class PersonalDictionaryService {
     private let defaults: UserDefaults
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
+    nonisolated private static let normalizedWordLengthRange = 2...40
+
     private var learnedWordsCache: [LearnedWordEntry] = []
     private var learnedWordSetCache: Set<String> = []
 
@@ -120,10 +122,10 @@ final class PersonalDictionaryService {
         return loadRevertCounts()[normalized] ?? 0
     }
 
-    static func normalizeLearnableWord(_ word: String) -> String? {
+    nonisolated static func normalizeLearnableWord(_ word: String) -> String? {
         let trimmed = word.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        guard trimmed.count >= 2, trimmed.count <= PersonalDictionaryConfiguration.maxWordLength else { return nil }
+        guard normalizedWordLengthRange.contains(trimmed.count) else { return nil }
         guard !trimmed.contains(where: \.isWhitespace) else { return nil }
 
         var containsLetter = false

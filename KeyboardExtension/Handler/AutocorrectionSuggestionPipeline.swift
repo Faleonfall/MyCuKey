@@ -3,13 +3,21 @@ import UIKit
 // MARK: - Suggestion Pipeline
 
 extension AutocorrectionEngine {
-    func suggestionCandidateResults(for context: String) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
-        guard let prepared = preparedContext(for: context) else { return nil }
+    func suggestionCandidateResults(
+        for context: String,
+        boostedTerms: [SuggestionBoostTerm] = []
+    ) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
+        guard let prepared = preparedContext(for: context, minimumTokenLength: 1) else { return nil }
 
         var rankedCandidates = baseCandidateResults(for: prepared).map { result in
             (result: result, strength: SuggestionStrength.strongRepair)
         }
         rankedCandidates.append(contentsOf: suggestionTextCheckerResults(for: prepared.token, guesses: prepared.guesses))
+        rankedCandidates.append(contentsOf: suggestionProvider.candidates(
+            for: prepared,
+            engine: self,
+            boostedTerms: boostedTerms
+        ))
 
         var seen = Set<String>()
         let uniqueResults = rankedCandidates
@@ -21,17 +29,69 @@ extension AutocorrectionEngine {
                 if lhs.strength != rhs.strength {
                     return lhs.strength < rhs.strength
                 }
+                let lhsSourceRank = suggestionSourceRank(lhs.result.source)
+                let rhsSourceRank = suggestionSourceRank(rhs.result.source)
+                if lhsSourceRank != rhsSourceRank {
+                    return lhsSourceRank < rhsSourceRank
+                }
                 if lhs.result.confidence != rhs.result.confidence {
                     return lhs.result.confidence > rhs.result.confidence
                 }
                 return rank(lhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
                     < rank(rhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
             }
-            .map(\.result)
+            .map { candidate in
+                displayResult(candidate.result, for: prepared)
+            }
             .filter { $0.corrected.lowercased() != prepared.token.original.lowercased() }
 
         guard !uniqueResults.isEmpty else { return nil }
         return (prepared.token, Array(uniqueResults.prefix(2)))
+    }
+
+    private func displayResult(_ result: AutocorrectionResult, for prepared: PreparedCorrectionContext) -> AutocorrectionResult {
+        guard prepared.patternContext.isAtSentenceStart else { return result }
+        return AutocorrectionResult(
+            charsToDelete: result.charsToDelete,
+            corrected: sentenceStartText(result.corrected),
+            confidence: result.confidence,
+            source: result.source
+        )
+    }
+
+    private func sentenceStartText(_ text: String) -> String {
+        guard let firstLetterIndex = text.firstIndex(where: { $0.isLetter }) else {
+            return text
+        }
+
+        var result = text
+        let letter = result[firstLetterIndex]
+        result.replaceSubrange(
+            firstLetterIndex...firstLetterIndex,
+            with: String(letter).uppercased()
+        )
+        return result
+    }
+
+    private func suggestionSourceRank(_ source: CorrectionSource) -> Int {
+        switch source {
+        case .userInput:
+            return 0
+        case .personalDictionary:
+            return 1
+        case .supplementaryLexicon:
+            return 2
+        case .contraction, .deterministicRule:
+            return 3
+        case .shortTokenLexicon:
+            return 4
+        case .nextWordLexicon:
+            return 5
+        case .localLexicon:
+            return 6
+        case .textChecker:
+            return 7
+        }
     }
 
     func suggestionTextCheckerResults(for token: CorrectionToken, guesses: [String]) -> [(result: AutocorrectionResult, strength: SuggestionStrength)] {
@@ -75,6 +135,7 @@ extension AutocorrectionEngine {
 
     func shouldAcceptSuggestionCandidate(input: String, candidate: String) -> Bool {
         guard input.count >= 2, candidate != input else { return false }
+        guard !(input.count <= 3 && candidate.count < input.count) else { return false }
 
         if shouldAcceptTextCheckerCandidate(input: input, candidate: candidate) {
             return true

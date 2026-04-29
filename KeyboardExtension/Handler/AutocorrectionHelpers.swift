@@ -97,6 +97,24 @@ extension AutocorrectionEngine {
             && inputChars[second] == candidateChars[first]
     }
 
+    func keyboardNeighborSubstitutionCount(input: String, candidate: String) -> Int {
+        guard input.count == candidate.count else { return 0 }
+
+        let inputChars = Array(input)
+        let candidateChars = Array(candidate)
+        var count = 0
+
+        for index in inputChars.indices where inputChars[index] != candidateChars[index] {
+            let typed = inputChars[index]
+            let corrected = candidateChars[index]
+            if Self.keyboardNeighborMap[typed]?.contains(corrected) == true {
+                count += 1
+            }
+        }
+
+        return count
+    }
+
     // MARK: - Normalization
 
     func collapseRepeatedLetters(in word: String) -> String? {

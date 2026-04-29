@@ -18,32 +18,22 @@ struct SuggestionBarView: View {
     var body: some View {
         HStack(spacing: 0) {
             suggestionCell(
-                title: state?.originalToken ?? "",
-                action: actionHandler.applyOriginalSuggestion
+                cell: cell(at: 0),
+                action: applyCell(at: 0)
             )
 
             separator
 
             suggestionCell(
-                title: firstSuggestion?.text ?? "",
-                isEnabled: firstSuggestion != nil,
-                action: {
-                    if let suggestion = firstSuggestion {
-                        actionHandler.applySuggestion(suggestion)
-                    }
-                }
+                cell: cell(at: 1),
+                action: applyCell(at: 1)
             )
 
             separator
 
             suggestionCell(
-                title: secondSuggestion?.text ?? "",
-                isEnabled: secondSuggestion != nil,
-                action: {
-                    if let suggestion = secondSuggestion {
-                        actionHandler.applySuggestion(suggestion)
-                    }
-                }
+                cell: cell(at: 2),
+                action: applyCell(at: 2)
             )
         }
         .padding(.horizontal, Metrics.horizontalPadding)
@@ -53,15 +43,15 @@ struct SuggestionBarView: View {
     // The nearly invisible fill keeps the whole column reliably tappable in
     // SwiftUI; Color.clear looked right but did not hit-test consistently.
     private func suggestionCell(
-        title: String,
-        isEnabled: Bool = true,
+        cell: SuggestionBarCell?,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
+        let isEnabled = cell != nil
+        return Button(action: action) {
             Rectangle()
                 .fill(Color.white.opacity(0.001))
                 .overlay(alignment: .top) {
-                    Text(title)
+                    Text(cell?.text ?? "")
                         .font(.system(size: Metrics.fontSize, weight: .medium))
                         .foregroundColor(.primary.opacity(isEnabled ? 0.86 : 0.3))
                         .lineLimit(1)
@@ -86,14 +76,16 @@ struct SuggestionBarView: View {
             .frame(maxHeight: .infinity, alignment: .top)
     }
 
-    private var firstSuggestion: AutocorrectionSuggestion? {
-        guard let state, !state.suggestions.isEmpty else { return nil }
-        return state.suggestions[0]
+    private func cell(at index: Int) -> SuggestionBarCell? {
+        guard let state, state.cells.indices.contains(index) else { return nil }
+        return state.cells[index]
     }
 
-    private var secondSuggestion: AutocorrectionSuggestion? {
-        guard let state, state.suggestions.count > 1 else { return nil }
-        return state.suggestions[1]
+    private func applyCell(at index: Int) -> () -> Void {
+        {
+            guard let cell = cell(at: index) else { return }
+            actionHandler.applyCell(cell)
+        }
     }
 }
 
@@ -116,12 +108,13 @@ private struct SuggestionCellButtonStyle: ButtonStyle {
 
     SuggestionBarView(
         state: SuggestionBarState(
-            originalToken: "Teh",
-            suggestions: [
-                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99),
-                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96)
+            mode: .currentToken,
+            cells: [
+                SuggestionBarCell(text: "Teh", source: .userInput, role: .original, confidence: 1.0),
+                SuggestionBarCell(text: "The", source: .deterministicRule, role: .suggestion, confidence: 0.99),
+                SuggestionBarCell(text: "Ten", source: .textChecker, role: .suggestion, confidence: 0.96)
             ],
-            trailingSuffix: ""
+            context: SuggestionContext.parse("Teh")!
         ),
         actionHandler: handler
     )

@@ -23,7 +23,7 @@ extension AutocorrectionEngine {
         "it's"
     ]
 
-    private static let keyboardNeighborMap: [Character: Set<Character>] = [
+    static let keyboardNeighborMap: [Character: Set<Character>] = [
         "a": ["q", "w", "s", "z"],
         "b": ["v", "g", "h", "n"],
         "c": ["x", "d", "f", "v"],

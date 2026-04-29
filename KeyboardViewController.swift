@@ -95,12 +95,13 @@ private struct KeyboardPreviewContainer: View {
         let handler = KeyboardActionHandler()
         handler.currentKeyboardType = .alphabetic
         handler.suggestionBarState = SuggestionBarState(
-            originalToken: "Teh",
-            suggestions: [
-                AutocorrectionSuggestion(text: "The", source: .deterministicRule, confidence: 0.99),
-                AutocorrectionSuggestion(text: "Ten", source: .textChecker, confidence: 0.96)
+            mode: .currentToken,
+            cells: [
+                SuggestionBarCell(text: "Teh", source: .userInput, role: .original, confidence: 1.0),
+                SuggestionBarCell(text: "The", source: .deterministicRule, role: .suggestion, confidence: 0.99),
+                SuggestionBarCell(text: "Ten", source: .textChecker, role: .suggestion, confidence: 0.96)
             ],
-            trailingSuffix: ""
+            context: SuggestionContext.parse("Teh")!
         )
         _handler = StateObject(wrappedValue: handler)
     }

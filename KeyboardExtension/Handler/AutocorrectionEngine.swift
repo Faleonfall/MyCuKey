@@ -3,8 +3,14 @@ import UIKit
 // MARK: - Core Types
 
 enum CorrectionSource: Equatable {
+    case userInput
     case contraction
     case deterministicRule
+    case localLexicon
+    case nextWordLexicon
+    case personalDictionary
+    case shortTokenLexicon
+    case supplementaryLexicon
     case textChecker
 }
 
@@ -50,6 +56,7 @@ struct PreparedCorrectionContext {
 // Hybrid engine: deterministic typo fixes first, UITextChecker fallback second.
 struct AutocorrectionEngine {
     let textChecker = UITextChecker()
+    let suggestionProvider: any SuggestionProvider = HybridSuggestionProvider.shared
     private let minimumTextCheckerAutoApplyConfidence = 0.96
 
     // Keep this map intentionally small. The suggestion bar should grow mainly
@@ -90,8 +97,8 @@ struct AutocorrectionEngine {
         autoApplyCandidateResults(for: context)?.results.first
     }
 
-    func suggestions(context: String) -> AutocorrectionSuggestionSet? {
-        guard let ranked = suggestionCandidateResults(for: context) else { return nil }
+    func suggestions(context: String, boostedTerms: [SuggestionBoostTerm] = []) -> AutocorrectionSuggestionSet? {
+        guard let ranked = suggestionCandidateResults(for: context, boostedTerms: boostedTerms) else { return nil }
 
         let suggestions = ranked.results.prefix(2).map { result in
             AutocorrectionSuggestion(
@@ -220,10 +227,11 @@ struct AutocorrectionEngine {
         guesses: [String]
     ) -> PatternEvaluationContext {
         let prefix = String(fullContext.dropLast(token.original.count))
+        let previousContext = prefix.trimmingCharacters(in: .whitespacesAndNewlines)
         return PatternEvaluationContext(
             token: token,
             guesses: guesses,
-            previousTokenLowercased: Self.lastToken(in: prefix)?.correctionTargetLowercased,
+            previousTokenLowercased: Self.lastToken(in: previousContext)?.correctionTargetLowercased,
             isAtSentenceStart: Self.isSentenceStartPrefix(prefix)
         )
     }
@@ -234,9 +242,9 @@ struct AutocorrectionEngine {
         return last == "." || last == "!" || last == "?" || last == "\n"
     }
 
-    func preparedContext(for context: String) -> PreparedCorrectionContext? {
-        guard let token = Self.lastToken(in: context), token.original.count >= 2 else { return nil }
-        guard token.correctionTarget.count > 1 else { return nil }
+    func preparedContext(for context: String, minimumTokenLength: Int = 2) -> PreparedCorrectionContext? {
+        guard let token = Self.lastToken(in: context), token.original.count >= minimumTokenLength else { return nil }
+        guard token.correctionTarget.count >= minimumTokenLength else { return nil }
         guard !shouldSkipStylizedToken(token.original) else { return nil }
 
         let guesses = textCheckerGuesses(for: token.correctionTarget).map { $0.lowercased() }
