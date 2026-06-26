@@ -63,6 +63,7 @@ struct SpaceRowView: View {
                 },
                 action: { actionHandler.insertText(" ") }
             )
+            .accessibilityIdentifier("key.space")
 
             ActionKeyView(
                 title: ",",

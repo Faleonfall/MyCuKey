@@ -26,6 +26,8 @@ MyCuKey currently treats English as the main typing language for autocorrection,
 6. Toggle **Allow Full Access** on the keyboard entry.
 7. Switch to MyCuKey via the globe key in any text field.
 
+For deterministic command-line builds and tests, run `scripts/xc.sh test` (see header comment in the script for options).
+
 ## Features
 
 - **QWERTY / Numeric / Symbolic** layout switching
@@ -65,8 +67,7 @@ These are limits of the public iOS custom-keyboard API surface, not just local b
 - **Background coverage ceiling** — the keyboard does not own every visible region around it. In practice, a background image or visual treatment can fill MyCuKey’s content area, but not the full system-managed space around the custom keyboard.
 - **Cursor/navigation ceiling** — reliable character-by-character movement is possible, but advanced multiline cursor behavior depends on limited `UITextDocumentProxy` context, especially after the insertion point. Vertical movement and selection behavior are therefore less dependable than Apple’s own keyboard.
 - **Document-model ceiling** — custom keyboards do not get a rich editable text model, robust selection mutation APIs, or Apple’s private autocorrection stack. Some “Apple-grade” behavior is simply outside the public extension surface.
-- **Testing ceiling** — true end-to-end XCTest automation for the keyboard extension is unreliable because Simulator/XCTest does not consistently present the software keyboard for custom-keyboard flows. Regression confidence therefore relies more on unit tests and manual smoke checks than on full UI automation.
-- **Tooling ceiling** — external CLI or MCP-driven build/test flows can disagree with the active Xcode session because signing, provisioning, and simulator state are not always resolved the same way outside Xcode itself. In practice, the open Xcode session is sometimes the source of truth.
+Testing coverage: unit tests (logic), in-process snapshot tests (views), and an unattended XCUITest that drives the **live** keyboard extension end-to-end (`scripts/xc.sh uitest` — it seeds MyCuKey as the only keyboard, then types on its on-screen keys and asserts autocorrection fires). The extension's keys are reached through its own process (`XCUIApplication(bundleIdentifier: "…KeyboardExtension")`).
 
 ## Current Priorities
 

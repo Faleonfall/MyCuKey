@@ -84,3 +84,9 @@ iOSInjectionProject/
 
 # Mac OS X
 .DS_Store
+
+# Deterministic CLI build output (scripts/xc.sh)
+.build-cli/
+
+# Snapshot diff artifacts (transient, regenerated on failure)
+*.failure.png

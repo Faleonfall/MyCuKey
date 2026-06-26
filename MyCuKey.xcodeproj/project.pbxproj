@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63902BD20916A6A8254A07AB /* KeyboardE2EUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */; };
+		9AD2FEF68ADD78048E099467 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE805995CA931AD63BB709D /* Foundation.framework */; };
 		CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
 		CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
@@ -84,6 +86,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		02AB47AAA153C93F7EB7AA14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB11434C2F896A0B009F9FA2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB1143532F896A0B009F9FA2;
+			remoteInfo = MyCuKey;
+		};
 		CB1143622F896A0D009F9FA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CB11434C2F896A0B009F9FA2 /* Project object */;
@@ -115,6 +124,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BA2F646E655ECCDBD5033E0F /* MyCuKeyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143542F896A0B009F9FA2 /* MyCuKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCuKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +168,8 @@
 		CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "EnglishSuggestionLexicon-LICENSE.md"; sourceTree = "<group>"; };
 		CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishNextWordLexicon.tsv; sourceTree = "<group>"; };
 		CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishShortTokenLexicon.tsv; sourceTree = "<group>"; };
+		CEE805995CA931AD63BB709D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeyboardE2EUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -169,6 +181,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		495476EF3178D98756F321B8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9AD2FEF68ADD78048E099467 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CB1143512F896A0B009F9FA2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,16 +213,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		86C2A86D8C47C22226733200 /* MyCuKeyUITests */ = {
+			isa = PBXGroup;
+			children = (
+				E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */,
+			);
+			path = MyCuKeyUITests;
+			sourceTree = "<group>";
+		};
+		8A5D7791791E31BA96EC4034 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8A0E989507D2ACFAF244E06 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A8A0E989507D2ACFAF244E06 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				CEE805995CA931AD63BB709D /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		CB11434B2F896A0B009F9FA2 = {
 			isa = PBXGroup;
 			children = (
 				CBA8E2C62F9355CD009869A4 /* MyCuKey */,
-				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
+				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
+				86C2A86D8C47C22226733200 /* MyCuKeyUITests */,
 				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
 				CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */,
 				CB1143A82F89A672009F9FA2 /* Info.plist */,
 				CB1143552F896A0B009F9FA2 /* Products */,
+				8A5D7791791E31BA96EC4034 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -212,6 +258,7 @@
 				CB1143542F896A0B009F9FA2 /* MyCuKey.app */,
 				CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */,
 				CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */,
+				BA2F646E655ECCDBD5033E0F /* MyCuKeyUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,17 +273,6 @@
 				CBFA00102FA9000000000001 /* Resources */,
 			);
 			path = KeyboardExtension;
-			sourceTree = "<group>";
-		};
-		CBFA00102FA9000000000001 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */,
-				CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */,
-				CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */,
-				CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		CB9BF32F2F8A1567001FCAA8 /* Handler */ = {
@@ -307,9 +343,38 @@
 			path = MyCuKey;
 			sourceTree = "<group>";
 		};
+		CBFA00102FA9000000000001 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */,
+				CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */,
+				CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */,
+				CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B75CAF37D21396A75E153773 /* MyCuKeyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C761D4134A64AE1D9CBEB74F /* Build configuration list for PBXNativeTarget "MyCuKeyUITests" */;
+			buildPhases = (
+				C16503C7B167F9908DCFF8A8 /* Sources */,
+				495476EF3178D98756F321B8 /* Frameworks */,
+				CB154396AC123303849D3860 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				78479B6E0D2BFBF3E7EFEA38 /* PBXTargetDependency */,
+			);
+			name = MyCuKeyUITests;
+			productName = MyCuKeyUITests;
+			productReference = BA2F646E655ECCDBD5033E0F /* MyCuKeyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		CB1143532F896A0B009F9FA2 /* MyCuKey */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CB1143752F896A0D009F9FA2 /* Build configuration list for PBXNativeTarget "MyCuKey" */;
@@ -325,8 +390,6 @@
 				CB1143882F896DDF009F9FA2 /* PBXTargetDependency */,
 			);
 			name = MyCuKey;
-			packageProductDependencies = (
-			);
 			productName = MyCuKey;
 			productReference = CB1143542F896A0B009F9FA2 /* MyCuKey.app */;
 			productType = "com.apple.product-type.application";
@@ -348,8 +411,6 @@
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 			);
 			name = MyCuKeyTests;
-			packageProductDependencies = (
-			);
 			productName = MyCuKeyTests;
 			productReference = CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -367,8 +428,6 @@
 			dependencies = (
 			);
 			name = KeyboardExtension;
-			packageProductDependencies = (
-			);
 			productName = KeyboardExtension;
 			productReference = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -381,8 +440,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
+					B75CAF37D21396A75E153773 = {
+						TestTargetID = CB1143532F896A0B009F9FA2;
+					};
 					CB1143532F896A0B009F9FA2 = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -410,8 +472,9 @@
 			projectRoot = "";
 			targets = (
 				CB1143532F896A0B009F9FA2 /* MyCuKey */,
-				CB1143602F896A0D009F9FA2 /* MyCuKeyTests */,
 				CB1143812F896DDF009F9FA2 /* KeyboardExtension */,
+				CB1143602F896A0D009F9FA2 /* MyCuKeyTests */,
+				B75CAF37D21396A75E153773 /* MyCuKeyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -452,9 +515,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB154396AC123303849D3860 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C16503C7B167F9908DCFF8A8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				63902BD20916A6A8254A07AB /* KeyboardE2EUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CB1143502F896A0B009F9FA2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -538,6 +616,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		78479B6E0D2BFBF3E7EFEA38 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MyCuKey;
+			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
+			targetProxy = 02AB47AAA153C93F7EB7AA14 /* PBXContainerItemProxy */;
+		};
 		CB1143632F896A0D009F9FA2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
@@ -551,11 +635,34 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		A88A6A697F12D8E14F7856C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q8T2W5DK59;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyCuKey;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		CB1143732F896A0D009F9FA2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -610,6 +717,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -621,6 +729,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -668,6 +777,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
@@ -872,9 +982,39 @@
 			};
 			name = Release;
 		};
+		DD3AE45DAB8772750D32C816 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q8T2W5DK59;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyCuKey;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C761D4134A64AE1D9CBEB74F /* Build configuration list for PBXNativeTarget "MyCuKeyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A88A6A697F12D8E14F7856C8 /* Release */,
+				DD3AE45DAB8772750D32C816 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CB11434F2F896A0B009F9FA2 /* Build configuration list for PBXProject "MyCuKey" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
