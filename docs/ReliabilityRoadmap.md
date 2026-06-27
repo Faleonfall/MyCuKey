@@ -56,14 +56,10 @@ These limits shape what “good enough” means for a public custom keyboard. Th
 - **Good enough:** focus effort on safe, reliable public-API behavior instead of imitating private keyboard capabilities that are not available
 
 ### UI automation reliability
-- **User impact:** true end-to-end XCTest coverage for the custom keyboard is weak because Simulator/XCTest does not consistently present the software keyboard for extension flows
-- **Status:** platform-limited
-- **Good enough:** rely on unit tests and manual smoke checks for correction trust, and treat keyboard-extension UI automation as non-authoritative
+- **Resolved:** `scripts/xc.sh uitest` drives the live extension via XCUITest; a state-gated retry absorbs the cold-launch race
 
 ### Tooling divergence outside Xcode
-- **User impact:** external CLI or MCP build/test flows can disagree with the active Xcode session because signing, provisioning, and simulator state do not always resolve the same way outside Xcode
-- **Status:** partially under our control, heavily environment-limited
-- **Good enough:** use the open Xcode session as the practical source of truth when external tooling disagrees
+- **Resolved:** `scripts/xc.sh` disables signing, pins one simulator, and isolates DerivedData, so CLI runs are deterministic
 
 ## Reliability Validation Matrix
 

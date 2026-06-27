@@ -83,6 +83,12 @@
 		CBFA101A2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
 		CBFA101B2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
 		CBFA101C2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
+		CBWT10012FA9000000000001 /* WordTrie.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBWT00002FA9000000000001 /* WordTrie.swift */; };
+		CBWT10022FA9000000000001 /* WordTrie.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBWT00002FA9000000000001 /* WordTrie.swift */; };
+		CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBUD00002FA9000000000001 /* UnifiedDecoder.swift */; };
+		CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBUD00002FA9000000000001 /* UnifiedDecoder.swift */; };
+		CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
+		CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -170,6 +176,9 @@
 		CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishShortTokenLexicon.tsv; sourceTree = "<group>"; };
 		CEE805995CA931AD63BB709D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeyboardE2EUITests.swift; sourceTree = "<group>"; };
+		CBWT00002FA9000000000001 /* WordTrie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordTrie.swift; sourceTree = "<group>"; };
+		CBUD00002FA9000000000001 /* UnifiedDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedDecoder.swift; sourceTree = "<group>"; };
+		CBSD00002FA9000000000001 /* SpatialDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialDecoder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -244,9 +253,6 @@
 				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
 				86C2A86D8C47C22226733200 /* MyCuKeyUITests */,
-				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
-				CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */,
-				CB1143A82F89A672009F9FA2 /* Info.plist */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 				8A5D7791791E31BA96EC4034 /* Frameworks */,
 			);
@@ -266,37 +272,75 @@
 		CB1143AC2F89A672009F9FA2 /* KeyboardExtension */ = {
 			isa = PBXGroup;
 			children = (
+				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
 				CB9BF33B2F8A1567001FCAA8 /* Views */,
-				CB9BF32F2F8A1567001FCAA8 /* Handler */,
-				CB9BF3342F8A1567001FCAA8 /* Utilities */,
 				CB9BF3312F8A1567001FCAA8 /* Styles */,
+				CB9BF3342F8A1567001FCAA8 /* Utilities */,
+				CB9BF32E0F8A1567001FCAA8 /* Input */,
+				CB5EB5E60F8A6DB100EA32EB /* Autocorrection */,
+				CBFA00200FA9000000000001 /* Suggestions */,
+				CBF200100F8A6DB100EA32EB /* Lexicon */,
+				CBDE00000FA9000000000001 /* Decoding */,
 				CBFA00102FA9000000000001 /* Resources */,
+				CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */,
+				CB1143A82F89A672009F9FA2 /* Info.plist */,
 			);
 			path = KeyboardExtension;
 			sourceTree = "<group>";
 		};
-		CB9BF32F2F8A1567001FCAA8 /* Handler */ = {
+		CB9BF32E0F8A1567001FCAA8 /* Input */ = {
 			isa = PBXGroup;
 			children = (
-				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
-				CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */,
-				CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */,
-				CBFA00032FA9000000000001 /* SuggestionProvider.swift */,
-				CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */,
-				CBFA00052FA9000000000001 /* SuggestionContext.swift */,
-				CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */,
-				CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */,
+				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
+				CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */,
+			);
+			path = Input;
+			sourceTree = "<group>";
+		};
+		CB5EB5E60F8A6DB100EA32EB /* Autocorrection */ = {
+			isa = PBXGroup;
+			children = (
 				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
 				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
 				CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */,
 				CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */,
 				CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */,
 				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
-				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
-				CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */,
-				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
 			);
-			path = Handler;
+			path = Autocorrection;
+			sourceTree = "<group>";
+		};
+		CBFA00200FA9000000000001 /* Suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				CBFA00052FA9000000000001 /* SuggestionContext.swift */,
+				CBFA00032FA9000000000001 /* SuggestionProvider.swift */,
+				CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */,
+				CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */,
+				CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */,
+				CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */,
+			);
+			path = Suggestions;
+			sourceTree = "<group>";
+		};
+		CBF200100F8A6DB100EA32EB /* Lexicon */ = {
+			isa = PBXGroup;
+			children = (
+				CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */,
+				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
+				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
+			);
+			path = Lexicon;
+			sourceTree = "<group>";
+		};
+		CBDE00000FA9000000000001 /* Decoding */ = {
+			isa = PBXGroup;
+			children = (
+				CBWT00002FA9000000000001 /* WordTrie.swift */,
+				CBUD00002FA9000000000001 /* UnifiedDecoder.swift */,
+				CBSD00002FA9000000000001 /* SpatialDecoder.swift */,
+			);
+			path = Decoding;
 			sourceTree = "<group>";
 		};
 		CB9BF3312F8A1567001FCAA8 /* Styles */ = {
@@ -568,6 +612,9 @@
 				CB9BF34D2F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */,
 				CB9BF34E2F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */,
 				CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
+				CBWT10012FA9000000000001 /* WordTrie.swift in Sources */,
+				CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */,
+				CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,6 +657,9 @@
 				CB9BF3442F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */,
 				CB9BF3452F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
 				CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
+				CBWT10022FA9000000000001 /* WordTrie.swift in Sources */,
+				CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */,
+				CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -919,12 +969,12 @@
 		CB11438C2F896DDF009F9FA2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeyboardExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -952,12 +1002,12 @@
 		CB11438D2F896DDF009F9FA2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = KeyboardExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_FILE = KeyboardExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = KeyboardExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

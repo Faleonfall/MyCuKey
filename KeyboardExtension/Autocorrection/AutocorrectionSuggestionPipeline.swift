@@ -19,12 +19,13 @@ extension AutocorrectionEngine {
             boostedTerms: boostedTerms
         ))
 
+        // Sort BEFORE de-duplicating so that when the same word arrives from
+        // multiple sources (e.g. localLexicon and textChecker) the highest
+        // priority / highest confidence copy survives, matching the sort's own
+        // intent. De-duplicating first kept whichever source was appended
+        // earliest, which let low-priority copies bury a strong correction.
         var seen = Set<String>()
         let uniqueResults = rankedCandidates
-            .filter { candidate in
-                let key = candidate.result.corrected.lowercased()
-                return seen.insert(key).inserted
-            }
             .sorted { lhs, rhs in
                 if lhs.strength != rhs.strength {
                     return lhs.strength < rhs.strength
@@ -39,6 +40,10 @@ extension AutocorrectionEngine {
                 }
                 return rank(lhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
                     < rank(rhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
+            }
+            .filter { candidate in
+                let key = candidate.result.corrected.lowercased()
+                return seen.insert(key).inserted
             }
             .map { candidate in
                 displayResult(candidate.result, for: prepared)

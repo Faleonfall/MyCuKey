@@ -33,12 +33,43 @@ extension KeyboardActionHandler {
 
     private func refreshCurrentTokenSuggestions(for context: SuggestionContext) {
         guard let token = context.token,
-              let currentWordContext = context.suggestionContext,
-              let suggestionSet = autocorrectionEngine.suggestions(
-                context: currentWordContext,
-                boostedTerms: suggestionBoostTerms()
-              ),
-              !suggestionSet.suggestions.isEmpty else {
+              let currentWordContext = context.suggestionContext else {
+            clearSuggestions()
+            return
+        }
+
+        let engineSet = autocorrectionEngine.suggestions(
+            context: currentWordContext,
+            boostedTerms: suggestionBoostTerms()
+        )
+
+        var suggestionCells: [SuggestionBarCell] = []
+
+        // Phase 2 spatial: surface the spatially-decoded word first when the tap
+        // buffer cleanly matches the typed token (otherwise this is inert).
+        if let spatialText = spatialSuggestionText(for: token) {
+            suggestionCells.append(SuggestionBarCell(
+                text: spatialText,
+                source: .localLexicon,
+                role: .suggestion,
+                confidence: 0.9
+            ))
+        }
+
+        for suggestion in engineSet?.suggestions ?? [] {
+            if suggestionCells.contains(where: { $0.text.lowercased() == suggestion.text.lowercased() }) {
+                continue
+            }
+            suggestionCells.append(SuggestionBarCell(
+                text: suggestion.text,
+                source: suggestion.source,
+                role: .suggestion,
+                confidence: suggestion.confidence
+            ))
+        }
+
+        suggestionCells = Array(suggestionCells.prefix(2))
+        guard !suggestionCells.isEmpty else {
             clearSuggestions()
             return
         }
@@ -50,20 +81,52 @@ extension KeyboardActionHandler {
                 role: .original,
                 confidence: 1.0
             )
-        ] + suggestionSet.suggestions.prefix(2).map { suggestion in
-            SuggestionBarCell(
-                text: suggestion.text,
-                source: suggestion.source,
-                role: .suggestion,
-                confidence: suggestion.confidence
-            )
-        }
+        ] + suggestionCells
 
         suggestionBarState = SuggestionBarState(
             mode: .currentToken,
             cells: cells,
             context: context
         )
+    }
+
+    // Phase 2: spatial-decoded candidate for the in-progress word. Returns nil
+    // unless every letter of the token has a recorded tap and the keyboard
+    // geometry is known, so a tap/text desync simply yields no contribution.
+    private func spatialSuggestionText(for token: CorrectionToken) -> String? {
+        let target = token.correctionTarget
+        guard currentTokenTaps.count == target.count,
+              target.count >= 3,
+              liveKeyCenters.count >= 15 else {
+            return nil
+        }
+        let pitch = estimatedKeyPitch()
+        guard pitch > 0 else { return nil }
+
+        let candidates = spatialDecoder.decodeTaps(
+            currentTokenTaps,
+            centers: liveKeyCenters,
+            sigma: pitch * 0.9,
+            limit: 3
+        )
+        guard let best = candidates.first,
+              best.word.lowercased() != target.lowercased(),
+              best.confidence >= 0.5 else {
+            return nil
+        }
+        return AutocorrectionEngine.applyCasePattern(from: target, to: best.word)
+    }
+
+    private func estimatedKeyPitch() -> CGFloat {
+        let centers = "qwertyuiop".compactMap { liveKeyCenters[$0] }
+        guard centers.count >= 2 else { return 0 }
+        let xs = centers.map(\.x).sorted()
+        var gaps: [CGFloat] = []
+        for index in 1..<xs.count {
+            gaps.append(xs[index] - xs[index - 1])
+        }
+        guard !gaps.isEmpty else { return 0 }
+        return gaps.reduce(0, +) / CGFloat(gaps.count)
     }
 
     private func refreshNextWordSuggestions(for context: SuggestionContext) {

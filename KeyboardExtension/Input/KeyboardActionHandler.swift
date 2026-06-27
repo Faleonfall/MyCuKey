@@ -49,6 +49,26 @@ class KeyboardActionHandler: ObservableObject {
     let autocorrectionEngine = AutocorrectionEngine()
     let correctionTriggerInputs: Set<String> = [" ", ".", ",", "!", "?", "*", "\n"]
 
+    // Phase 2 spatial: live key-center registry + tap buffer for the in-progress
+    // word, fed to the spatial decoder. All best-effort; a count mismatch with
+    // the current token simply disables the spatial contribution (never corrupts).
+    let spatialDecoder = UnifiedDecoder()
+    var liveKeyCenters: [Character: CGPoint] = [:]
+    var currentTokenTaps: [CGPoint] = []
+
+    func recordKeyCenter(_ character: Character, _ point: CGPoint) {
+        guard let lower = character.lowercased().first else { return }
+        liveKeyCenters[lower] = point
+    }
+
+    func recordLetterTap(_ point: CGPoint) {
+        currentTokenTaps.append(point)
+    }
+
+    func clearTokenTaps() {
+        currentTokenTaps.removeAll(keepingCapacity: true)
+    }
+
     init(personalDictionaryService: PersonalDictionaryService) {
         self.personalDictionaryService = personalDictionaryService
         self.personalDictionaryService.refreshFromStorage()
@@ -81,6 +101,9 @@ class KeyboardActionHandler: ObservableObject {
 
         if text.count == 1, text.first?.isLetter == true {
             suppressSuggestionRefreshUntilNextToken = false
+        } else {
+            // A boundary or non-letter ends the current word; drop its tap buffer.
+            clearTokenTaps()
         }
         if !(pendingSuggestionCommittedSpace && text == " ") {
             pendingSuggestionCommittedSpace = false
@@ -211,6 +234,7 @@ class KeyboardActionHandler: ObservableObject {
             correctedWord: fix.corrected,
             trailingInput: trailingInput
         )
+        clearTokenTaps()
         HapticFeedback.playSoft()
         lastSpacePressTime = nil
     }
@@ -242,6 +266,7 @@ class KeyboardActionHandler: ObservableObject {
         guard controller?.textDocumentProxy.hasText == true else { return }
         pendingDictionaryLearningCandidate = nil
         controller?.textDocumentProxy.deleteBackward()
+        if !currentTokenTaps.isEmpty { currentTokenTaps.removeLast() }
         pendingCorrectionRevert = nil
         HapticFeedback.playLight()
         refreshSuggestions(for: controller?.textDocumentProxy.documentContextBeforeInput)
@@ -275,6 +300,7 @@ class KeyboardActionHandler: ObservableObject {
         
         pendingDictionaryLearningCandidate = nil
         pendingCorrectionRevert = nil
+        clearTokenTaps()
         let count = charsToDeleteForWordBackward(context: context)
         for _ in 0..<count {
             controller?.textDocumentProxy.deleteBackward()

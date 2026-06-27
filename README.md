@@ -33,6 +33,8 @@ For deterministic command-line builds and tests, run `scripts/xc.sh test` (see h
 - **QWERTY / Numeric / Symbolic** layout switching
 - **Auto-capitalization** — sentence-aware capitalization with local context handling
 - **Autocorrection** — conservative, trust-first correction with deterministic typo fixes, immediate revert on delete, and support for wrapped plain-word fixes such as `*teh* → *the*`
+- **Unified decoder** — a `WordTrie` over the 50k-word frequency lexicon answers prefix completion and bounded Damerau-Levenshtein repair from one structure, giving uniform suggestion coverage at every token length (no length cliff); protect-in-vocab stops valid words being changed
+- **Spatial decoder** (in progress) — per-tap `(x,y)` capture plus a Gaussian key model feed a beam search that decodes sloppy taps into the intended word; live path wired, pending on-device tuning
 - **Suggestion bar** — ranked current-word suggestions with the original token on the left, the strongest repair in the center, and a secondary alternative on the right
 - **Caps Lock** — double-tap shift within 0.35s to lock
 - **Correction triggers** — correction pass runs on `space`, `.`, `,`, `!`, `?`, `*`, and newline
@@ -59,6 +61,8 @@ MyCuKey follows the standard hybrid custom-keyboard structure used by many serio
 
 This keeps latency-sensitive behavior local to the extension while still allowing the main app to manage longer-lived state.
 
+The keyboard extension is grouped by responsibility: `Input/` (key handling and the suggestion-bar flow), `Decoding/` (`WordTrie`, the unified noisy-channel `UnifiedDecoder`, and the `SpatialDecoder` tap decoder), `Autocorrection/` (the engine plus its ranking and gating pipeline), `Suggestions/` (candidate providers and the trie-backed `SuggestionCandidateIndex`), `Lexicon/` (frequency and personal-dictionary sources), and `Views/`, `Styles/`, `Utilities/`, `Resources/` for the UI layer.
+
 ## Platform Ceilings
 
 These are limits of the public iOS custom-keyboard API surface, not just local bugs in MyCuKey:
@@ -67,16 +71,14 @@ These are limits of the public iOS custom-keyboard API surface, not just local b
 - **Background coverage ceiling** — the keyboard does not own every visible region around it. In practice, a background image or visual treatment can fill MyCuKey’s content area, but not the full system-managed space around the custom keyboard.
 - **Cursor/navigation ceiling** — reliable character-by-character movement is possible, but advanced multiline cursor behavior depends on limited `UITextDocumentProxy` context, especially after the insertion point. Vertical movement and selection behavior are therefore less dependable than Apple’s own keyboard.
 - **Document-model ceiling** — custom keyboards do not get a rich editable text model, robust selection mutation APIs, or Apple’s private autocorrection stack. Some “Apple-grade” behavior is simply outside the public extension surface.
-Testing coverage: unit tests (logic), in-process snapshot tests (views), and an unattended XCUITest that drives the **live** keyboard extension end-to-end (`scripts/xc.sh uitest` — it seeds MyCuKey as the only keyboard, then types on its on-screen keys and asserts autocorrection fires). The extension's keys are reached through its own process (`XCUIApplication(bundleIdentifier: "…KeyboardExtension")`).
 
-## Current Priorities
+## Testing
 
-The main near-term focus areas are:
+Three layers, all runnable headless via `scripts/xc.sh`:
 
-- improving visible suggestion quality without making silent autocorrection too aggressive
-- keeping personal dictionary learning predictable and conservative
-- tightening interaction polish around popup behavior, delete/revert flow, and keyboard mode transitions
-- expanding regression coverage around the most trust-sensitive typing paths
+- **Unit** (`test`) — correction, dictionary, and capitalization logic
+- **Snapshot** (`test`) — in-process SwiftUI view rendering pinned against committed references
+- **End-to-end** (`uitest`) — XCUITest typing on the **live** keyboard extension and asserting autocorrection fires
 
 ## Personal Dictionary Rules
 

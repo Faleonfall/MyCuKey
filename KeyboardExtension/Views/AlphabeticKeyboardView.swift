@@ -19,7 +19,10 @@ struct AlphabeticKeyboardView: View {
                 keys: KeyboardLayout.alphabeticTopRow,
                 backgroundColor: letterKeyBg,
                 popupAlignments: topRowPopupAlignments,
-                keyTitle: displayedLetter(for:)
+                keyTitle: displayedLetter(for:),
+                spatialCaptureEnabled: true,
+                onLetterTap: { actionHandler.recordLetterTap($0) },
+                onLetterCenter: { actionHandler.recordKeyCenter($0, $1) }
             ) { letter in
                 actionHandler.typeLetter(letter)
             }
@@ -29,7 +32,10 @@ struct AlphabeticKeyboardView: View {
                 backgroundColor: letterKeyBg,
                 leadingInset: KeyboardMetrics.bottomRowInset,
                 trailingInset: KeyboardMetrics.bottomRowInset,
-                keyTitle: displayedLetter(for:)
+                keyTitle: displayedLetter(for:),
+                spatialCaptureEnabled: true,
+                onLetterTap: { actionHandler.recordLetterTap($0) },
+                onLetterCenter: { actionHandler.recordKeyCenter($0, $1) }
             ) { letter in
                 actionHandler.typeLetter(letter)
             }
@@ -48,12 +54,18 @@ struct AlphabeticKeyboardView: View {
                     ActionKeyView(title: letter, backgroundColor: letterKeyBg) {
                         actionHandler.typeLetter(letter)
                     }
+                    .spatialCapture(
+                        enabled: true,
+                        character: Character(key.lowercased()),
+                        onTap: { actionHandler.recordLetterTap($0) },
+                        onCenter: { actionHandler.recordKeyCenter($0, $1) }
+                    )
                 }
 
                 KeyboardDeleteKey(actionHandler: actionHandler, backgroundColor: actionKeyBg)
             }
             .frame(height: KeyboardMetrics.rowHeight)
-            
+
             SpaceRowView(
                 actionHandler: actionHandler,
                 needsInputModeSwitchKey: needsInputModeSwitchKey,
@@ -63,6 +75,7 @@ struct AlphabeticKeyboardView: View {
                 actionKeyBg: actionKeyBg
             )
         }
+        .coordinateSpace(name: keyboardCoordinateSpaceName)
     }
 
     // MARK: - Display

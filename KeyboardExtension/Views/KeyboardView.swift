@@ -1,5 +1,62 @@
 import SwiftUI
 
+// MARK: - Phase 2 Spatial Capture
+
+let keyboardCoordinateSpaceName = "keyboardSpatial"
+
+// Reports a key's center and the landing point of each tap, both in the shared
+// keyboard coordinate space, exactly once per press. Attached only to letter
+// keys so action/space/delete gesture handling is never affected.
+struct SpatialCaptureModifier: ViewModifier {
+    let character: Character
+    let onTap: (CGPoint) -> Void
+    let onCenter: (Character, CGPoint) -> Void
+    @State private var reportedThisPress = false
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear { onCenter(character, Self.center(proxy)) }
+                        .onChange(of: proxy.frame(in: .named(keyboardCoordinateSpaceName)).minX) { _, _ in
+                            onCenter(character, Self.center(proxy))
+                        }
+                }
+            )
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .named(keyboardCoordinateSpaceName))
+                    .onChanged { value in
+                        guard !reportedThisPress else { return }
+                        reportedThisPress = true
+                        onTap(value.startLocation)
+                    }
+                    .onEnded { _ in reportedThisPress = false }
+            )
+    }
+
+    private static func center(_ proxy: GeometryProxy) -> CGPoint {
+        let frame = proxy.frame(in: .named(keyboardCoordinateSpaceName))
+        return CGPoint(x: frame.midX, y: frame.midY)
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func spatialCapture(
+        enabled: Bool,
+        character: Character,
+        onTap: ((CGPoint) -> Void)?,
+        onCenter: ((Character, CGPoint) -> Void)?
+    ) -> some View {
+        if enabled, let onTap, let onCenter {
+            modifier(SpatialCaptureModifier(character: character, onTap: onTap, onCenter: onCenter))
+        } else {
+            self
+        }
+    }
+}
+
 // MARK: - Keyboard Layout
 
 enum KeyboardLayout {
@@ -63,6 +120,9 @@ struct KeyboardRow: View {
     var trailingInset: CGFloat = 0
     var popupAlignments: [String: KeyPopupAlignment] = [:]
     var keyTitle: (String) -> String = { $0 }
+    var spatialCaptureEnabled: Bool = false
+    var onLetterTap: ((CGPoint) -> Void)? = nil
+    var onLetterCenter: ((Character, CGPoint) -> Void)? = nil
     let onKeyPress: (String) -> Void
 
     var body: some View {
@@ -81,6 +141,12 @@ struct KeyboardRow: View {
                 ) {
                     onKeyPress(title)
                 }
+                .spatialCapture(
+                    enabled: spatialCaptureEnabled,
+                    character: Character(key.lowercased()),
+                    onTap: onLetterTap,
+                    onCenter: onLetterCenter
+                )
                 .zIndex(popupZIndex(for: popupAlignment, index: index, count: keys.count))
             }
 
