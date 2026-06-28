@@ -63,6 +63,14 @@ This keeps latency-sensitive behavior local to the extension while still allowin
 
 The keyboard extension is grouped by responsibility: `Input/` (key handling and the suggestion-bar flow), `Decoding/` (`WordTrie`, the unified noisy-channel `UnifiedDecoder`, and the `SpatialDecoder` tap decoder), `Autocorrection/` (the engine plus its ranking and gating pipeline), `Suggestions/` (candidate providers and the trie-backed `SuggestionCandidateIndex`), `Lexicon/` (frequency and personal-dictionary sources), and `Views/`, `Styles/`, `Utilities/`, `Resources/` for the UI layer.
 
+## Typing Engine Roadmap
+
+The bar is Apple-grade "type sloppily, get the right words" on English. Against a heavy fat-finger sentence, native silently repairs almost everything while MyCuKey leaves most words wrong. The gap is three capabilities, in priority order:
+
+1. **Decoder-driven auto-apply** — let the trie noisy-channel decoder silently commit a fix, not just suggest it. *Shipped (safe slice):* it commits only when the winning repair is unambiguous (alone at its edit distance) and the token is neither a real word (even one missing from the lexicon, via `UITextChecker`) nor an intentional spelling (stray doubled letter, expressive repeat). This closes clear cases like `peoole → people` and `dobe → done` with zero over-correction; ambiguous cases are deliberately deferred to #2.
+2. **Bigram / context language model** — *Shipped:* `BigramModel` scores candidates by the previous word, so an edit-distance tie is broken by context (`fifty fivd → five`) and short tokens the unigram regime is too cautious to touch are rescued when the previous word is decisive (`spent ny → my`). When no candidate is predicted by the previous word it still defers. v1 ships an in-code curated collocation seed, swappable for a corpus table without touching call sites. To reach common inflections our 50k list omits (`spent`, `things`), the context path also folds in `UITextChecker`'s guesses — the full system dictionary — for free, ranked by the same frequency + bigram model; system-only words commit only when context backs them, so precision is unchanged (`i slent → spent`).
+3. **Word split / merge** — retokenize across spaces for `firme → for me` and `ibt he → in the`. Hardest, smallest payoff, done last.
+
 ## Platform Ceilings
 
 These are limits of the public iOS custom-keyboard API surface, not just local bugs in MyCuKey:

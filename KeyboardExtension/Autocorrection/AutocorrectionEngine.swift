@@ -57,7 +57,26 @@ struct PreparedCorrectionContext {
 struct AutocorrectionEngine {
     let textChecker = UITextChecker()
     let suggestionProvider: any SuggestionProvider = HybridSuggestionProvider.shared
+    private let decoder = UnifiedDecoder()
+    private let bigram = BigramModel.shared
     private let minimumTextCheckerAutoApplyConfidence = 0.96
+    // The decoder may silently commit from this length up on unigram evidence
+    // alone. Shorter tokens have too many near neighbors to trust without context.
+    private let minimumDecoderAutoApplyLength = 4
+    // Context (#2) can rescue shorter tokens (ny -> my) but only down to here,
+    // and only when the previous word decisively predicts one candidate.
+    private let minimumContextAutoApplyLength = 2
+    // How strongly the previous word must predict the winner, and how far ahead
+    // of the runner-up, for an edit-distance tie to be broken by context.
+    private let contextMinAssociation = 0.20
+    private let contextMinMargin = 0.20
+    // Short tokens demand a near-certain context signal before any silent commit.
+    private let shortTokenMinAssociation = 0.50
+    private let contextAppliedConfidence = 0.90
+    // Frequency assumed for a UITextChecker word that our lexicon does not list
+    // (e.g. inflections like "spent"). Modest, so it never out-ranks a known
+    // common word on frequency alone — it only competes via context.
+    private let systemGuessDefaultScore = 2_500.0
 
     // Keep this map intentionally small. The suggestion bar should grow mainly
     // through ranking and pattern logic rather than an endless typo pair list.
@@ -316,7 +335,12 @@ struct AutocorrectionEngine {
         let candidates: [AutocorrectionResult?] = baseCandidates.map { $0 } + [
             textCheckerResult(for: prepared.token, guesses: prepared.guesses).flatMap { result in
                 result.confidence >= minimumTextCheckerAutoApplyConfidence ? result : nil
-            }
+            },
+            decoderAutoApplyResult(
+                for: prepared.token,
+                previousWord: prepared.patternContext.previousTokenLowercased,
+                systemGuesses: prepared.guesses
+            )
         ]
 
         var seen = Set<String>()
@@ -329,6 +353,152 @@ struct AutocorrectionEngine {
 
         guard !uniqueResults.isEmpty else { return nil }
         return (prepared.token, uniqueResults)
+    }
+
+    // Decoder-driven silent commit. The trie noisy-channel decoder proposes
+    // out-of-vocabulary repairs; this picks one to apply under two regimes:
+    //   - Unigram: when exactly one real word sits at the winning edit distance,
+    //     commit it (peoole -> people, dobe -> done).
+    //   - Context (#2): when several words tie at that distance, the previous
+    //     word breaks the tie via the bigram model (slent -> spent after "i",
+    //     tine -> time after "my"). Context can also rescue shorter tokens that
+    //     the unigram regime is too cautious to touch (ny -> my after "spent").
+    // Curated and textChecker results above take priority; this fills the gap
+    // where nothing else fires. The trust guards keep both regimes safe.
+    private func decoderAutoApplyResult(for token: CorrectionToken, previousWord: String?, systemGuesses: [String]) -> AutocorrectionResult? {
+        let typed = token.correctionTargetLowercased
+        guard typed.count >= minimumContextAutoApplyLength else { return nil }
+
+        // Trust guard 1: a word UITextChecker already accepts is real even when
+        // it is missing from our frequency lexicon (e.g. "wifi"). Never silently
+        // rewrite it. This closes the out-of-vocab false-positive hole that
+        // protect-in-vocab alone cannot, since our 50k list is not exhaustive.
+        guard isMisspelled(typed) else { return nil }
+
+        // Trust guard 2: an expressive trailing run ("nooo", "yesss") is emphasis,
+        // not a misspelling to rewrite.
+        guard !hasExpressiveTrailingRepeat(typed) else { return nil }
+
+        // Trust guard 3: a real word with one letter doubled ("yourr" -> your,
+        // "herr" -> her) reads as a stray repeat key, not a word to silently
+        // swap. Interior doubles that do not reduce to a word ("peoole" -> peole)
+        // stay correctable.
+        guard !hasStrayDoubledLetterFormingWord(typed) else { return nil }
+
+        guard let chosen = chooseDecoderCandidate(for: typed, previousWord: previousWord, systemGuesses: systemGuesses) else {
+            return nil
+        }
+
+        return makeResult(
+            for: token,
+            correctedLowercased: chosen.word,
+            confidence: chosen.confidence,
+            source: .localLexicon
+        )
+    }
+
+    private func chooseDecoderCandidate(for typed: String, previousWord: String?, systemGuesses: [String]) -> UnifiedDecoder.Candidate? {
+        let trieCandidates = decoder.candidates(for: typed, limit: 24, includePrefixCompletions: false)
+        let isShort = typed.count < minimumDecoderAutoApplyLength
+
+        // No-context commit is reserved for our frequency-vetted trie vocabulary:
+        // exactly one known word at the winning distance, on a confident token.
+        // System-dictionary words (below) never commit this way; they are only
+        // trustworthy when context backs them.
+        if let leader = trieCandidates.first, leader.distance > 0, !isShort {
+            let winners = trieCandidates.filter { $0.distance == leader.distance }
+            if winners.count == 1, leader.confidence >= 0.80 {
+                return leader
+            }
+        }
+
+        // Context path: widen the pool with UITextChecker's guesses so common
+        // inflections our lexicon omits ("spent", "things") become reachable, and
+        // let the previous word pick among everything at the winning distance.
+        let pool = mergeSystemGuesses(systemGuesses, into: trieCandidates, typed: typed)
+        guard let leader = pool.first, leader.distance > 0 else { return nil }
+        let winners = pool.filter { $0.distance == leader.distance }
+        return contextResolvedCandidate(winners: winners, previousWord: previousWord, isShort: isShort)
+    }
+
+    // Fold UITextChecker guesses into the trie candidate list as scored
+    // candidates, deduped by word (the trie's own frequency wins when it has the
+    // word). Only real edits within the decoder's distance bound are kept.
+    private func mergeSystemGuesses(
+        _ guesses: [String],
+        into trieCandidates: [UnifiedDecoder.Candidate],
+        typed: String
+    ) -> [UnifiedDecoder.Candidate] {
+        var byWord: [String: UnifiedDecoder.Candidate] = [:]
+        for candidate in trieCandidates {
+            byWord[candidate.word] = candidate
+        }
+
+        for guess in guesses {
+            let word = guess.lowercased()
+            guard word != typed, byWord[word] == nil else { continue }
+            let distance = damerauLevenshteinDistance(typed, word)
+            guard distance >= 1, distance <= decoder.maxEditDistance else { continue }
+            let score = decoder.trie.score(for: word) ?? systemGuessDefaultScore
+            byWord[word] = decoder.scored(WordTrie.Match(word: word, score: score, distance: distance))
+        }
+
+        return byWord.values.sorted { lhs, rhs in
+            if lhs.distance == 0 && rhs.distance != 0 { return true }
+            if rhs.distance == 0 && lhs.distance != 0 { return false }
+            return lhs.score > rhs.score
+        }
+    }
+
+    // Break an edit-distance tie (or rescue a short token) using the bigram
+    // model: the previous word must predict exactly one candidate clearly more
+    // than the rest. Returns nil when context gives no decisive signal.
+    private func contextResolvedCandidate(
+        winners: [UnifiedDecoder.Candidate],
+        previousWord: String?,
+        isShort: Bool
+    ) -> UnifiedDecoder.Candidate? {
+        guard let previousWord, !previousWord.isEmpty else { return nil }
+
+        let ranked = winners
+            .map { (candidate: $0, association: bigram.association(prev: previousWord, next: $0.word)) }
+            .sorted { $0.association > $1.association }
+
+        guard let best = ranked.first else { return nil }
+        let runnerUp = ranked.count > 1 ? ranked[1].association : 0
+        let minimumAssociation = isShort ? shortTokenMinAssociation : contextMinAssociation
+
+        guard best.association >= minimumAssociation,
+              best.association - runnerUp >= contextMinMargin else {
+            return nil
+        }
+
+        return UnifiedDecoder.Candidate(
+            word: best.candidate.word,
+            score: best.candidate.score,
+            distance: best.candidate.distance,
+            confidence: contextAppliedConfidence
+        )
+    }
+
+    // True when collapsing any one adjacent doubled letter yields a real word,
+    // i.e. the token is a dictionary word with a single stray repeat key.
+    private func hasStrayDoubledLetterFormingWord(_ word: String) -> Bool {
+        let chars = Array(word)
+        for index in 1..<chars.count where chars[index] == chars[index - 1] {
+            var reduced = chars
+            reduced.remove(at: index)
+            if isDictionaryWord(String(reduced)) { return true }
+        }
+        return false
+    }
+
+    private func isMisspelled(_ word: String) -> Bool {
+        let range = NSRange(location: 0, length: word.utf16.count)
+        let misspelled = textChecker.rangeOfMisspelledWord(
+            in: word, range: range, startingAt: 0, wrap: false, language: "en_US"
+        )
+        return misspelled.location != NSNotFound
     }
 
     // MARK: - Suggestion Pipeline

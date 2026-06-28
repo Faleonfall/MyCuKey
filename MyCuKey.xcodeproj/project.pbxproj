@@ -89,6 +89,8 @@
 		CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBUD00002FA9000000000001 /* UnifiedDecoder.swift */; };
 		CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
 		CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
+		CBBG10012FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
+		CBBG10022FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +181,7 @@
 		CBWT00002FA9000000000001 /* WordTrie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordTrie.swift; sourceTree = "<group>"; };
 		CBUD00002FA9000000000001 /* UnifiedDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedDecoder.swift; sourceTree = "<group>"; };
 		CBSD00002FA9000000000001 /* SpatialDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialDecoder.swift; sourceTree = "<group>"; };
+		CBBG00002FA9000000000001 /* BigramModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigramModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -328,6 +331,7 @@
 			children = (
 				CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */,
 				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
+				CBBG00002FA9000000000001 /* BigramModel.swift */,
 				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
 			);
 			path = Lexicon;
@@ -615,6 +619,7 @@
 				CBWT10012FA9000000000001 /* WordTrie.swift in Sources */,
 				CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */,
 				CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */,
+				CBBG10012FA9000000000001 /* BigramModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +665,7 @@
 				CBWT10022FA9000000000001 /* WordTrie.swift in Sources */,
 				CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */,
 				CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */,
+				CBBG10022FA9000000000001 /* BigramModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

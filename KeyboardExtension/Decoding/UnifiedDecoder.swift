@@ -25,12 +25,22 @@ struct UnifiedDecoder {
         let confidence: Double
     }
 
-    func candidates(for token: String) -> [Candidate] {
+    // limit caps the returned list. Suggestion UI wants the few best (default),
+    // but context disambiguation (#2) needs the full closest-distance neighborhood
+    // so the right-by-context word is not dropped before the bigram can pick it.
+    //
+    // includePrefixCompletions adds words that merely extend the typed string
+    // (good for in-progress suggestions). Auto-apply runs on a completed token,
+    // where those completions are noise that injects spurious distance-0 entries,
+    // so it asks for edit-distance corrections only.
+    func candidates(for token: String, limit: Int? = nil, includePrefixCompletions: Bool = true) -> [Candidate] {
         let typed = token.lowercased()
         guard !typed.isEmpty else { return [] }
 
         var matches = trie.search(typed, maxDistance: maxEditDistance)
-        matches.append(contentsOf: trie.prefixCompletions(for: typed, limit: prefixCandidateLimit))
+        if includePrefixCompletions {
+            matches.append(contentsOf: trie.prefixCompletions(for: typed, limit: prefixCandidateLimit))
+        }
 
         var best: [String: WordTrie.Match] = [:]
         for match in matches {
@@ -45,7 +55,7 @@ struct UnifiedDecoder {
                 if rhs.distance == 0 && lhs.distance != 0 { return false }
                 return lhs.score > rhs.score
             }
-        return Array(ranked.prefix(suggestionLimit))
+        return Array(ranked.prefix(limit ?? suggestionLimit))
     }
 }
 
