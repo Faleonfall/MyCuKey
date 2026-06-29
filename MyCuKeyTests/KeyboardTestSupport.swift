@@ -1,8 +1,8 @@
 import UIKit
+
 @testable import MyCuKey
 
 // MARK: - Shared Keyboard Test Support
-
 func makeIsolatedService() -> PersonalDictionaryService {
     let suiteName = "test.personal-dictionary.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suiteName)!
@@ -60,7 +60,9 @@ final class MockTextDocumentProxy: NSObject, UITextDocumentProxy {
 
         if offset < 0 {
             for _ in 0..<abs(offset) {
-                guard var before = documentContextBeforeInput, let moved = before.popLast() else { break }
+                guard var before = documentContextBeforeInput, let moved = before.popLast() else {
+                    break
+                }
                 documentContextBeforeInput = before
                 documentContextAfterInput = String(moved) + (documentContextAfterInput ?? "")
             }

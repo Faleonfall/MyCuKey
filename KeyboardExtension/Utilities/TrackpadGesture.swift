@@ -1,12 +1,11 @@
 import SwiftUI
 
 // MARK: - Trackpad Gesture Helper
-
 extension View {
     @ViewBuilder
     func trackpadGesture(
         isEnabled: Bool,
-        trackpadAction: ((Int)->Void)?,
+        trackpadAction: ((Int) -> Void)?,
         isTouchActive: Binding<Bool>,
         isDragging: Binding<Bool>,
         dragStartOffset: Binding<CGFloat>
@@ -27,7 +26,7 @@ extension View {
                             if !isDragging.wrappedValue {
                                 isDragging.wrappedValue = true
                                 dragStartOffset.wrappedValue = value.translation.width
-                                HapticFeedback.playMedium() // Trackpad initiate haptic
+                                HapticFeedback.playMedium()  // Trackpad initiate haptic
                             }
 
                             let translation = value.translation.width
@@ -37,12 +36,13 @@ extension View {
                             let absDisplacement = abs(value.translation.width)
                             let threshold: Double
                             switch absDisplacement {
-                            case ..<50:   threshold = 14.0  // Precise: 1 char per 14px
-                            case ..<120:  threshold = 8.0   // Medium:  1 char per 8px
-                            default:      threshold = 4.0   // Fast:    1 char per 4px
+                            case ..<50: threshold = 14.0  // Precise: 1 char per 14px
+                            case ..<120: threshold = 8.0  // Medium:  1 char per 8px
+                            default: threshold = 4.0  // Fast:    1 char per 4px
                             }
 
-                            let steps = Int((translation - dragStartOffset.wrappedValue) / threshold)
+                            let steps = Int(
+                                (translation - dragStartOffset.wrappedValue) / threshold)
 
                             if steps != 0 {
                                 trackpadAction?(steps)

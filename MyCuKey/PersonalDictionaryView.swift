@@ -1,8 +1,7 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
 // MARK: - Personal Dictionary View Model
-
 @MainActor
 final class PersonalDictionaryViewModel: ObservableObject {
     @Published var learnedWords: [LearnedWordEntry] = []
@@ -12,7 +11,6 @@ final class PersonalDictionaryViewModel: ObservableObject {
     private let service: PersonalDictionaryService
 
     // MARK: - Initialization
-
     init(service: PersonalDictionaryService) {
         self.service = service
         reload()
@@ -23,7 +21,6 @@ final class PersonalDictionaryViewModel: ObservableObject {
     }
 
     // MARK: - Derived State
-
     var filteredWords: [LearnedWordEntry] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         guard !query.isEmpty else { return learnedWords }
@@ -35,7 +32,6 @@ final class PersonalDictionaryViewModel: ObservableObject {
     }
 
     // MARK: - Actions
-
     func reload() {
         service.refreshFromStorage()
         learnedWords = service.allWords()
@@ -67,14 +63,12 @@ final class PersonalDictionaryViewModel: ObservableObject {
 }
 
 // MARK: - Personal Dictionary View
-
 struct PersonalDictionaryView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var viewModel = PersonalDictionaryViewModel()
     @State private var showClearAllConfirmation = false
 
     // MARK: - Layout
-
     var body: some View {
         List {
             Section("Add Word") {
@@ -89,15 +83,20 @@ struct PersonalDictionaryView: View {
                     .disabled(!viewModel.canAddWord)
                 }
 
-                Text("Learned words are stored in the shared keyboard dictionary and will suppress future autocorrections.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Text(
+                    "Learned words are stored in the shared keyboard dictionary and will suppress future autocorrections."
+                )
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
 
             Section {
                 if viewModel.filteredWords.isEmpty {
-                    Text(viewModel.searchText.isEmpty ? "No learned words yet." : "No matching words.")
-                        .foregroundStyle(.secondary)
+                    Text(
+                        viewModel.searchText.isEmpty
+                            ? "No learned words yet." : "No matching words."
+                    )
+                    .foregroundStyle(.secondary)
                 } else {
                     ForEach(viewModel.filteredWords) { entry in
                         Text(entry.normalizedWord)
@@ -124,7 +123,10 @@ struct PersonalDictionaryView: View {
                 }
             }
         }
-        .confirmationDialog("Remove all learned words?", isPresented: $showClearAllConfirmation, titleVisibility: .visible) {
+        .confirmationDialog(
+            "Remove all learned words?", isPresented: $showClearAllConfirmation,
+            titleVisibility: .visible
+        ) {
             Button("Clear All", role: .destructive) {
                 viewModel.clearAll()
             }

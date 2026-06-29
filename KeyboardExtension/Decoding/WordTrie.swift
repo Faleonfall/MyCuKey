@@ -52,7 +52,6 @@ extension WordTrie {
 }
 
 // MARK: - Prefix Completion
-
 extension WordTrie {
     // All stored words extending `prefix`, ranked by score, capped at `limit`.
     func prefixCompletions(for prefix: String, limit: Int) -> [Match] {
@@ -78,7 +77,6 @@ extension WordTrie {
 }
 
 // MARK: - Bounded Damerau-Levenshtein Search
-
 extension WordTrie {
     // All stored words within optimal-string-alignment (adjacent transposition)
     // edit distance <= maxDistance of `word`, each Match carrying its true distance.
@@ -87,17 +85,20 @@ extension WordTrie {
         let firstRow = Array(0...chars.count)
         var results: [Match] = []
         for (childChar, child) in root.children {
-            searchRecursive(node: child, nodeChar: childChar, prevNodeChar: nil,
-                            chars: chars, previousRow: firstRow, prevPreviousRow: nil,
-                            maxDistance: maxDistance, results: &results)
+            searchRecursive(
+                node: child, nodeChar: childChar, prevNodeChar: nil,
+                chars: chars, previousRow: firstRow, prevPreviousRow: nil,
+                maxDistance: maxDistance, results: &results)
         }
         return results
     }
 
-    private func searchRecursive(node: Node, nodeChar: Character, prevNodeChar: Character?,
-                                 chars: [Character], previousRow: [Int],
-                                 prevPreviousRow: [Int]?, maxDistance: Int,
-                                 results: inout [Match]) {
+    private func searchRecursive(
+        node: Node, nodeChar: Character, prevNodeChar: Character?,
+        chars: [Character], previousRow: [Int],
+        prevPreviousRow: [Int]?, maxDistance: Int,
+        results: inout [Match]
+    ) {
         let cols = chars.count + 1
         var currentRow = [previousRow[0] + 1]
         currentRow.reserveCapacity(cols)
@@ -107,7 +108,8 @@ extension WordTrie {
             let substituteCost = previousRow[col - 1] + (chars[col - 1] == nodeChar ? 0 : 1)
             var cost = min(insertCost, deleteCost, substituteCost)
             if col > 1, let pp = prevPreviousRow, let prevChar = prevNodeChar,
-               chars[col - 1] == prevChar, chars[col - 2] == nodeChar {
+                chars[col - 1] == prevChar, chars[col - 2] == nodeChar
+            {
                 cost = min(cost, pp[col - 2] + 1)
             }
             currentRow.append(cost)
@@ -117,17 +119,17 @@ extension WordTrie {
         }
         if let smallest = currentRow.min(), smallest <= maxDistance {
             for (childChar, child) in node.children {
-                searchRecursive(node: child, nodeChar: childChar, prevNodeChar: nodeChar,
-                                chars: chars, previousRow: currentRow,
-                                prevPreviousRow: previousRow, maxDistance: maxDistance,
-                                results: &results)
+                searchRecursive(
+                    node: child, nodeChar: childChar, prevNodeChar: nodeChar,
+                    chars: chars, previousRow: currentRow,
+                    prevPreviousRow: previousRow, maxDistance: maxDistance,
+                    results: &results)
             }
         }
     }
 }
 
 // MARK: - Shared Build From Lexicon
-
 extension WordTrie {
     static let shared: WordTrie = build(from: WordFrequencyLexicon.shared.entries)
 

@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Local Suggestion Provider
-
 struct LocalSuggestionProvider: SuggestionProvider {
     static let shared = LocalSuggestionProvider()
 
@@ -19,32 +18,38 @@ struct LocalSuggestionProvider: SuggestionProvider {
         let input = prepared.token.correctionTargetLowercased
         var candidates: [SuggestionCandidate] = []
 
-        candidates.append(contentsOf: boostedCandidates(
-            input: input,
-            boostedTerms: boostedTerms,
-            engine: engine
-        ))
+        candidates.append(
+            contentsOf: boostedCandidates(
+                input: input,
+                boostedTerms: boostedTerms,
+                engine: engine
+            ))
 
-        candidates.append(contentsOf: prefixCandidates(
-            for: prepared,
-            engine: engine
-        ))
+        candidates.append(
+            contentsOf: prefixCandidates(
+                for: prepared,
+                engine: engine
+            ))
 
-        candidates.append(contentsOf: lexiconRepairCandidates(
-            input: input,
-            engine: engine
-        ))
+        candidates.append(
+            contentsOf: lexiconRepairCandidates(
+                input: input,
+                engine: engine
+            ))
 
-        return candidates
+        return
+            candidates
             .sorted()
             .prefix(24)
             .compactMap { candidate in
-                guard let result = engine.makeResult(
-                    for: prepared.token,
-                    correctedLowercased: candidate.text,
-                    confidence: candidate.confidence,
-                    source: candidate.source
-                ) else {
+                guard
+                    let result = engine.makeResult(
+                        for: prepared.token,
+                        correctedLowercased: candidate.text,
+                        confidence: candidate.confidence,
+                        source: candidate.source
+                    )
+                else {
                     return nil
                 }
                 return (result: result, strength: candidate.strength)
@@ -52,7 +57,6 @@ struct LocalSuggestionProvider: SuggestionProvider {
     }
 
     // MARK: - Candidate Sources
-
     private func boostedCandidates(
         input: String,
         boostedTerms: [SuggestionBoostTerm],
@@ -60,19 +64,22 @@ struct LocalSuggestionProvider: SuggestionProvider {
     ) -> [SuggestionCandidate] {
         boostedTerms.compactMap { term in
             let word = term.word.lowercased()
-            guard shouldConsiderBoostedTerm(
-                input: input,
-                word: word,
-                source: term.source,
-                engine: engine
-            ) else {
+            guard
+                shouldConsiderBoostedTerm(
+                    input: input,
+                    word: word,
+                    source: term.source,
+                    engine: engine
+                )
+            else {
                 return nil
             }
 
             let isPrefixCompletion = word.hasPrefix(input)
             // Learned/system prefix matches are completions, not typo repairs, so
             // their full length should not bury them below generic dictionary words.
-            let distance = isPrefixCompletion
+            let distance =
+                isPrefixCompletion
                 ? max(1, min(2, word.count - input.count))
                 : engine.damerauLevenshteinDistance(input, word)
             return rankedCandidate(
@@ -88,7 +95,9 @@ struct LocalSuggestionProvider: SuggestionProvider {
         }
     }
 
-    private func prefixCandidates(for prepared: PreparedCorrectionContext, engine: AutocorrectionEngine) -> [SuggestionCandidate] {
+    private func prefixCandidates(
+        for prepared: PreparedCorrectionContext, engine: AutocorrectionEngine
+    ) -> [SuggestionCandidate] {
         let input = prepared.token.correctionTargetLowercased
         guard input.count <= 3 else { return [] }
 
@@ -99,15 +108,17 @@ struct LocalSuggestionProvider: SuggestionProvider {
                 context: prepared.patternContext
             )
             if prepared.patternContext.isAtSentenceStart,
-               input.count <= 2,
-               sentenceStarterPriority == nil {
+                input.count <= 2,
+                sentenceStarterPriority == nil
+            {
                 return nil
             }
 
             let contextBoost = sentenceStarterPriority.map { Double(20 - $0) * 0.015 } ?? 0.04
-            let confidence = sentenceStarterPriority.map { priority in
-                max(0.70, 0.94 - Double(priority) * 0.004)
-            } ?? min(0.91, 0.56 + entry.score / 24_000 + Double(input.count) * 0.06)
+            let confidence =
+                sentenceStarterPriority.map { priority in
+                    max(0.70, 0.94 - Double(priority) * 0.004)
+                } ?? min(0.91, 0.56 + entry.score / 24_000 + Double(input.count) * 0.06)
             return SuggestionCandidate(
                 text: entry.word,
                 source: .localLexicon,
@@ -122,14 +133,20 @@ struct LocalSuggestionProvider: SuggestionProvider {
         }
     }
 
-    private func lexiconRepairCandidates(input: String, engine: AutocorrectionEngine) -> [SuggestionCandidate] {
+    private func lexiconRepairCandidates(input: String, engine: AutocorrectionEngine)
+        -> [SuggestionCandidate]
+    {
         guard input.count >= 3 else { return [] }
 
         let maximumDistance = engine.maximumSuggestionDistance(for: input)
-        return index
+        return
+            index
             .editCandidates(for: input, maximumDistance: maximumDistance)
             .compactMap { entry in
-                guard shouldConsiderLexiconCandidate(input: input, candidate: entry.word, engine: engine) else {
+                guard
+                    shouldConsiderLexiconCandidate(
+                        input: input, candidate: entry.word, engine: engine)
+                else {
                     return nil
                 }
 
@@ -149,7 +166,6 @@ struct LocalSuggestionProvider: SuggestionProvider {
     }
 
     // MARK: - Acceptance
-
     private func shouldConsiderBoostedTerm(
         input: String,
         word: String,
@@ -169,7 +185,9 @@ struct LocalSuggestionProvider: SuggestionProvider {
             && strongShapeMatch(input: input, candidate: word, engine: engine)
     }
 
-    private func shouldConsiderLexiconCandidate(input: String, candidate: String, engine: AutocorrectionEngine) -> Bool {
+    private func shouldConsiderLexiconCandidate(
+        input: String, candidate: String, engine: AutocorrectionEngine
+    ) -> Bool {
         guard candidate != input else { return false }
 
         if input.count <= 3, candidate.count < input.count {
@@ -184,7 +202,9 @@ struct LocalSuggestionProvider: SuggestionProvider {
             || characterOverlapRatio(input, candidate) >= 0.58
     }
 
-    private func strongShapeMatch(input: String, candidate: String, engine: AutocorrectionEngine) -> Bool {
+    private func strongShapeMatch(input: String, candidate: String, engine: AutocorrectionEngine)
+        -> Bool
+    {
         engine.hasSameOuterLetters(input, candidate)
             || engine.commonPrefixLength(input, candidate) >= min(3, input.count)
             || engine.isSubsequence(input, of: candidate)
@@ -209,13 +229,12 @@ struct LocalSuggestionProvider: SuggestionProvider {
             "what",
             "how",
             "where",
-            "why"
+            "why",
         ]
         return starters.firstIndex(of: word)
     }
 
     // MARK: - Ranking
-
     private func rankedCandidate(
         input: String,
         word: String,
@@ -226,7 +245,8 @@ struct LocalSuggestionProvider: SuggestionProvider {
         forcedStrength: SuggestionStrength? = nil,
         engine: AutocorrectionEngine
     ) -> SuggestionCandidate {
-        let keyboardNeighborScore = engine.keyboardNeighborSubstitutionCount(input: input, candidate: word)
+        let keyboardNeighborScore = engine.keyboardNeighborSubstitutionCount(
+            input: input, candidate: word)
         let prefixLength = engine.commonPrefixLength(input, word)
         let shapeBoost = engine.hasSameOuterLetters(input, word) ? 0.05 : 0
         let prefixBoost = min(Double(prefixLength) * 0.025, 0.12)
@@ -236,18 +256,25 @@ struct LocalSuggestionProvider: SuggestionProvider {
 
         let confidence = max(
             0.44,
-            min(0.97, 0.58 + frequencyBoost + shapeBoost + prefixBoost + neighborBoost + sourceBoost - distancePenalty)
+            min(
+                0.97,
+                0.58 + frequencyBoost + shapeBoost + prefixBoost + neighborBoost + sourceBoost
+                    - distancePenalty)
         )
 
-        let strength: SuggestionStrength = forcedStrength ?? {
-            if distance <= 1 || engine.isSingleTransposition(input, word) {
-                return .strongRepair
-            }
-            if input.count >= 6, distance <= 3, strongShapeMatch(input: input, candidate: word, engine: engine) {
-                return .strongRepair
-            }
-            return .helpfulAlternative
-        }()
+        let strength: SuggestionStrength =
+            forcedStrength
+            ?? {
+                if distance <= 1 || engine.isSingleTransposition(input, word) {
+                    return .strongRepair
+                }
+                if input.count >= 6, distance <= 3,
+                    strongShapeMatch(input: input, candidate: word, engine: engine)
+                {
+                    return .strongRepair
+                }
+                return .helpfulAlternative
+            }()
 
         return SuggestionCandidate(
             text: word,
@@ -280,7 +307,6 @@ struct LocalSuggestionProvider: SuggestionProvider {
 }
 
 // MARK: - Suggestion Candidate
-
 private struct SuggestionCandidate: Comparable {
     let text: String
     let source: CorrectionSource

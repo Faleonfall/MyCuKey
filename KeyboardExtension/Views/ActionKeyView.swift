@@ -16,7 +16,15 @@ struct ActionKeyView: View {
     let trackpadAction: ((Int) -> Void)?
     let popupAlignment: KeyPopupAlignment
 
-    init(title: String, systemImage: String? = nil, backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24, isRepeatable: Bool = false, suppressRepeatHaptic: Bool = false, acceleratedAction: (() -> Void)? = nil, longPressTitle: String? = nil, longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false, trackpadAction: ((Int) -> Void)? = nil, popupAlignment: KeyPopupAlignment = .centered, action: @escaping () -> Void) {
+    init(
+        title: String, systemImage: String? = nil,
+        backgroundColor: Color = Color(UIColor.systemGray4), fontSize: CGFloat = 24,
+        isRepeatable: Bool = false, suppressRepeatHaptic: Bool = false,
+        acceleratedAction: (() -> Void)? = nil, longPressTitle: String? = nil,
+        longPressAction: (() -> Void)? = nil, isTrackpadEnabled: Bool = false,
+        trackpadAction: ((Int) -> Void)? = nil, popupAlignment: KeyPopupAlignment = .centered,
+        action: @escaping () -> Void
+    ) {
         self.title = title
         self.systemImage = systemImage
         self.backgroundColor = backgroundColor
@@ -38,21 +46,23 @@ struct ActionKeyView: View {
             // KeyboardButtonStyle owns the visual key rendering and timing.
             Color.white.opacity(0.001)
         }
-        .buttonStyle(KeyboardButtonStyle(
-            title: title, 
-            systemImage: systemImage, 
-            backgroundColor: backgroundColor,
-            fontSize: fontSize,
-            isRepeatable: isRepeatable,
-            suppressRepeatHaptic: suppressRepeatHaptic,
-            acceleratedAction: acceleratedAction,
-            longPressTitle: longPressTitle,
-            longPressAction: longPressAction,
-            isTrackpadEnabled: isTrackpadEnabled,
-            trackpadAction: trackpadAction,
-            popupAlignment: popupAlignment,
-            action: action
-        ))
+        .buttonStyle(
+            KeyboardButtonStyle(
+                title: title,
+                systemImage: systemImage,
+                backgroundColor: backgroundColor,
+                fontSize: fontSize,
+                isRepeatable: isRepeatable,
+                suppressRepeatHaptic: suppressRepeatHaptic,
+                acceleratedAction: acceleratedAction,
+                longPressTitle: longPressTitle,
+                longPressAction: longPressAction,
+                isTrackpadEnabled: isTrackpadEnabled,
+                trackpadAction: trackpadAction,
+                popupAlignment: popupAlignment,
+                action: action
+            )
+        )
         .frame(minWidth: 26, maxWidth: .infinity, maxHeight: .infinity)
     }
 }

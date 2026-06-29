@@ -1,9 +1,9 @@
 import Testing
 import UIKit
+
 @testable import MyCuKey
 
 // MARK: - Suggestion Bar Handler Tests
-
 @MainActor
 struct SuggestionBarHandlerTests {
 
@@ -37,7 +37,9 @@ struct SuggestionBarHandlerTests {
         #expect(context.trailingBoundary == ".")
     }
 
-    @Test func testSuggestionContextParsesSentenceStartAfterPunctuationSpaceAndNewline() async throws {
+    @Test func testSuggestionContextParsesSentenceStartAfterPunctuationSpaceAndNewline()
+        async throws
+    {
         let punctuationSpace = try #require(SuggestionContext.parse("Hello. "))
         let newline = try #require(SuggestionContext.parse("Hello\n"))
 
@@ -95,7 +97,8 @@ struct SuggestionBarHandlerTests {
         handler.refreshSuggestions(for: controller.mockProxy.documentContextBeforeInput)
 
         #expect(handler.suggestionBarState?.suggestions.first?.text == "mycustomword")
-        #expect(handler.suggestionBarState?.suggestions.map(\.text).contains("mycustomword") == true)
+        #expect(
+            handler.suggestionBarState?.suggestions.map(\.text).contains("mycustomword") == true)
     }
 
     @Test func testHandlerClearsSuggestionBarOutsideAlphabeticMode() async throws {
@@ -190,7 +193,8 @@ struct SuggestionBarHandlerTests {
 
         #expect(controller.mockProxy.documentContextBeforeInput == "I ")
         #expect(handler.suggestionBarState?.mode == .nextWord)
-        let predictions = handler.suggestionBarState.map { Array($0.cells.map(\.text).prefix(3)) } ?? []
+        let predictions =
+            handler.suggestionBarState.map { Array($0.cells.map(\.text).prefix(3)) } ?? []
         #expect(predictions == ["think", "have", "am"])
         #expect(handler.suggestionBarState?.trailingSuffix == " ")
     }

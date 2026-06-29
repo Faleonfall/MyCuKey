@@ -54,7 +54,6 @@ final class KeyboardE2EUITests: XCTestCase {
     }
 
     // MARK: - Helpers
-
     // First focus can race the extension's cold launch, so the keys may not be
     // queryable yet. Gate the (potentially hanging) UI query behind `.state`,
     // which reads process status without a snapshot, then re-tap the field each
@@ -62,7 +61,8 @@ final class KeyboardE2EUITests: XCTestCase {
     private func waitForKeyboard(_ keyboard: XCUIApplication, refocus field: XCUIElement) -> Bool {
         for attempt in 0..<8 {
             if keyboard.state == .runningForeground,
-               keyboard.buttons.firstMatch.waitForExistence(timeout: 2) {
+                keyboard.buttons.firstMatch.waitForExistence(timeout: 2)
+            {
                 return true
             }
             if attempt < 7 { field.tap() }

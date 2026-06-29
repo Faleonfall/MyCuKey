@@ -1,10 +1,8 @@
 import SwiftUI
 
 // MARK: - Setup Guide
-
 struct ContentView: View {
     // MARK: - Layout
-
     var body: some View {
         NavigationStack {
             List {
@@ -13,12 +11,21 @@ struct ContentView: View {
                     InstructionRow(step: "2", text: "Go to General > Keyboard > Keyboards.")
                     InstructionRow(step: "3", text: "Tap \"Add New Keyboard...\"")
                     InstructionRow(step: "4", text: "Locate and select MyCuKey from the list.")
-                    InstructionRow(step: "5", text: "Tap on MyCuKey again and toggle \"Allow Full Access\" to enable all features.")
+                    InstructionRow(
+                        step: "5",
+                        text:
+                            "Tap on MyCuKey again and toggle \"Allow Full Access\" to enable all features."
+                    )
                 }
 
                 Section(header: Text("How to Use")) {
-                    InstructionRow(step: "6", text: "Open any app with a text field (like Messages).")
-                    InstructionRow(step: "7", text: "Tap and hold the 🌐 Globe button located at the bottom left of your standard Apple Keyboard.")
+                    InstructionRow(
+                        step: "6", text: "Open any app with a text field (like Messages).")
+                    InstructionRow(
+                        step: "7",
+                        text:
+                            "Tap and hold the 🌐 Globe button located at the bottom left of your standard Apple Keyboard."
+                    )
                     InstructionRow(step: "8", text: "Select MyCuKey from the menu to start typing!")
                 }
 
@@ -26,9 +33,11 @@ struct ContentView: View {
                     NavigationLink("Manage Learned Words") {
                         PersonalDictionaryView()
                     }
-                    Text("Words you add here, or words the keyboard learns after repeated correction reverts, will stop being autocorrected.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    Text(
+                        "Words you add here, or words the keyboard learns after repeated correction reverts, will stop being autocorrected."
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Setup Guide")
@@ -37,13 +46,11 @@ struct ContentView: View {
 }
 
 // MARK: - Instruction Row
-
 struct InstructionRow: View {
     let step: String
     let text: LocalizedStringKey
 
     // MARK: - Layout
-
     var body: some View {
         HStack(alignment: .center, spacing: 16) {
             ZStack {
@@ -55,7 +62,7 @@ struct InstructionRow: View {
                     .bold()
                     .foregroundColor(.white)
             }
-            
+
             Text(text)
                 .font(.body)
         }
@@ -64,7 +71,6 @@ struct InstructionRow: View {
 }
 
 // MARK: - Preview
-
 #Preview {
     ContentView()
 }

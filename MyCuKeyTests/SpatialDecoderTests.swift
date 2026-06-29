@@ -1,12 +1,15 @@
-import Testing
 import CoreGraphics
+import Testing
+
 @testable import MyCuKey
 
 private func spatialTrie() -> WordTrie {
     let trie = WordTrie()
-    for (w, s) in [("when", 9000.0), ("then", 800.0), ("wren", 100.0),
-                   ("hen", 90.0), ("the", 10000.0), ("word", 5000.0),
-                   ("work", 6000.0), ("wor", 10.0)] {
+    for (w, s) in [
+        ("when", 9000.0), ("then", 800.0), ("wren", 100.0),
+        ("hen", 90.0), ("the", 10000.0), ("word", 5000.0),
+        ("work", 6000.0), ("wor", 10.0),
+    ] {
         trie.insert(w, score: s)
     }
     return trie
@@ -19,7 +22,7 @@ private func center(_ ch: Character) -> CGPoint { KeyGeometry.center(for: ch)! }
     #expect(KeyGeometry.center(for: "p") == CGPoint(x: 9, y: 0))
     #expect(KeyGeometry.center(for: "a") == CGPoint(x: 0.5, y: 1))
     #expect(KeyGeometry.center(for: "z") == CGPoint(x: 1.5, y: 2))
-    #expect(KeyGeometry.center(for: "Q") == CGPoint(x: 0, y: 0)) // case-insensitive
+    #expect(KeyGeometry.center(for: "Q") == CGPoint(x: 0, y: 0))  // case-insensitive
 }
 
 @Test func spatialDecodeRecoversWordFromExactTaps() {
@@ -35,7 +38,7 @@ private func center(_ ch: Character) -> CGPoint { KeyGeometry.center(for: ch)! }
         CGPoint(x: center("w").x + 0.25, y: center("w").y),
         CGPoint(x: center("h").x - 0.2, y: center("h").y + 0.15),
         CGPoint(x: center("e").x, y: center("e").y),
-        CGPoint(x: center("n").x + 0.2, y: center("n").y)
+        CGPoint(x: center("n").x + 0.2, y: center("n").y),
     ]
     #expect(decoder.decodeTaps(taps).first?.word == "when")
 }

@@ -28,6 +28,21 @@ MyCuKey currently treats English as the main typing language for autocorrection,
 
 For deterministic command-line builds and tests, run `scripts/xc.sh test` (see header comment in the script for options).
 
+### Formatting
+
+Sources are formatted with Apple `swift-format` against the repo `.swift-format` config (4-space indent, 100-column lines). Enable the pre-commit hook once to auto-format staged Swift files on commit:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Format or lint the whole tree on demand:
+
+```bash
+scripts/xc.sh format        # rewrite all sources in place
+scripts/xc.sh format-check  # strict lint, non-zero exit if anything is off
+```
+
 ## Features
 
 - **QWERTY / Numeric / Symbolic** layout switching

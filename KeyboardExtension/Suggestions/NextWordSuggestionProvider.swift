@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Next Word Entry
-
 struct NextWordEntry: Equatable {
     let context: String
     let candidate: String
@@ -9,7 +8,6 @@ struct NextWordEntry: Equatable {
 }
 
 // MARK: - Next Word Lexicon
-
 final class NextWordLexicon {
     static let shared = NextWordLexicon()
 
@@ -38,14 +36,15 @@ final class NextWordLexicon {
     }
 
     // MARK: - Loading
-
     private func loadEntries() -> [NextWordEntry] {
         guard let url = lexiconURL(),
-              let content = try? String(contentsOf: url, encoding: .utf8) else {
+            let content = try? String(contentsOf: url, encoding: .utf8)
+        else {
             return fallbackEntries
         }
 
-        let entries = content
+        let entries =
+            content
             .split(whereSeparator: \.isNewline)
             .compactMap(Self.entry(from:))
 
@@ -53,7 +52,8 @@ final class NextWordLexicon {
     }
 
     private func lexiconURL() -> URL? {
-        let bundles = [Bundle.main, Bundle(for: BundleToken.self)] + Bundle.allBundles + Bundle.allFrameworks
+        let bundles =
+            [Bundle.main, Bundle(for: BundleToken.self)] + Bundle.allBundles + Bundle.allFrameworks
         for bundle in bundles {
             if let url = bundle.url(forResource: resourceName, withExtension: "tsv") {
                 return url
@@ -65,7 +65,8 @@ final class NextWordLexicon {
     nonisolated private static func entry(from line: Substring) -> NextWordEntry? {
         let parts = line.split(separator: "\t")
         guard parts.count == 3,
-              let score = Double(parts[2]) else {
+            let score = Double(parts[2])
+        else {
             return nil
         }
         return NextWordEntry(
@@ -85,12 +86,11 @@ final class NextWordLexicon {
         NextWordEntry(context: "how are", candidate: "you", score: 10000),
         NextWordEntry(context: "<any>", candidate: "the", score: 7200),
         NextWordEntry(context: "<any>", candidate: "I", score: 7000),
-        NextWordEntry(context: "<any>", candidate: "you", score: 6800)
+        NextWordEntry(context: "<any>", candidate: "you", score: 6800),
     ]
 }
 
 // MARK: - Next Word Suggestion Provider
-
 struct NextWordSuggestionProvider {
     static let shared = NextWordSuggestionProvider()
 
@@ -105,7 +105,8 @@ struct NextWordSuggestionProvider {
 
         let keyedEntries = rankedEntries(for: context)
         var seen = Set<String>()
-        return keyedEntries
+        return
+            keyedEntries
             .filter { entry in
                 let key = entry.candidate.lowercased()
                 return seen.insert(key).inserted

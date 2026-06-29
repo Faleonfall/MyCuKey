@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 // MARK: - Suggestion Bar Flow
-
 extension KeyboardActionHandler {
     func refreshSuggestions(for currentContext: String?) {
         guard !suppressSuggestionRefreshUntilNextToken else {
@@ -11,8 +10,9 @@ extension KeyboardActionHandler {
         }
 
         guard currentKeyboardType == .alphabetic,
-              let context = currentContext,
-              let suggestionContext = SuggestionContext.parse(context) else {
+            let context = currentContext,
+            let suggestionContext = SuggestionContext.parse(context)
+        else {
             clearSuggestions()
             return
         }
@@ -33,7 +33,8 @@ extension KeyboardActionHandler {
 
     private func refreshCurrentTokenSuggestions(for context: SuggestionContext) {
         guard let token = context.token,
-              let currentWordContext = context.suggestionContext else {
+            let currentWordContext = context.suggestionContext
+        else {
             clearSuggestions()
             return
         }
@@ -48,24 +49,28 @@ extension KeyboardActionHandler {
         // Phase 2 spatial: surface the spatially-decoded word first when the tap
         // buffer cleanly matches the typed token (otherwise this is inert).
         if let spatialText = spatialSuggestionText(for: token) {
-            suggestionCells.append(SuggestionBarCell(
-                text: spatialText,
-                source: .localLexicon,
-                role: .suggestion,
-                confidence: 0.9
-            ))
+            suggestionCells.append(
+                SuggestionBarCell(
+                    text: spatialText,
+                    source: .localLexicon,
+                    role: .suggestion,
+                    confidence: 0.9
+                ))
         }
 
         for suggestion in engineSet?.suggestions ?? [] {
-            if suggestionCells.contains(where: { $0.text.lowercased() == suggestion.text.lowercased() }) {
+            if suggestionCells.contains(where: {
+                $0.text.lowercased() == suggestion.text.lowercased()
+            }) {
                 continue
             }
-            suggestionCells.append(SuggestionBarCell(
-                text: suggestion.text,
-                source: suggestion.source,
-                role: .suggestion,
-                confidence: suggestion.confidence
-            ))
+            suggestionCells.append(
+                SuggestionBarCell(
+                    text: suggestion.text,
+                    source: suggestion.source,
+                    role: .suggestion,
+                    confidence: suggestion.confidence
+                ))
         }
 
         suggestionCells = Array(suggestionCells.prefix(2))
@@ -74,14 +79,15 @@ extension KeyboardActionHandler {
             return
         }
 
-        let cells = [
-            SuggestionBarCell(
-                text: token.original,
-                source: .userInput,
-                role: .original,
-                confidence: 1.0
-            )
-        ] + suggestionCells
+        let cells =
+            [
+                SuggestionBarCell(
+                    text: token.original,
+                    source: .userInput,
+                    role: .original,
+                    confidence: 1.0
+                )
+            ] + suggestionCells
 
         suggestionBarState = SuggestionBarState(
             mode: .currentToken,
@@ -96,8 +102,9 @@ extension KeyboardActionHandler {
     private func spatialSuggestionText(for token: CorrectionToken) -> String? {
         let target = token.correctionTarget
         guard currentTokenTaps.count == target.count,
-              target.count >= 3,
-              liveKeyCenters.count >= 15 else {
+            target.count >= 3,
+            liveKeyCenters.count >= 15
+        else {
             return nil
         }
         let pitch = estimatedKeyPitch()
@@ -110,8 +117,9 @@ extension KeyboardActionHandler {
             limit: 3
         )
         guard let best = candidates.first,
-              best.word.lowercased() != target.lowercased(),
-              best.confidence >= 0.5 else {
+            best.word.lowercased() != target.lowercased(),
+            best.confidence >= 0.5
+        else {
             return nil
         }
         return AutocorrectionEngine.applyCasePattern(from: target, to: best.word)
@@ -160,20 +168,24 @@ extension KeyboardActionHandler {
 
     private func refreshSupplementaryLexiconIfNeeded() {
         guard !hasRequestedSupplementaryLexicon,
-              let controller else {
+            let controller
+        else {
             return
         }
 
         hasRequestedSupplementaryLexicon = true
         controller.requestSupplementaryLexicon { [weak self] lexicon in
-            let normalizedTerms = Set(lexicon.entries.flatMap { entry in
-                [entry.userInput, entry.documentText].compactMap(KeyboardActionHandler.normalizedSuggestionTerm)
-            })
+            let normalizedTerms = Set(
+                lexicon.entries.flatMap { entry in
+                    [entry.userInput, entry.documentText].compactMap(
+                        KeyboardActionHandler.normalizedSuggestionTerm)
+                })
 
             DispatchQueue.main.async {
                 guard let self else { return }
                 self.supplementarySuggestionTerms = normalizedTerms
-                self.refreshSuggestions(for: self.controller?.textDocumentProxy.documentContextBeforeInput)
+                self.refreshSuggestions(
+                    for: self.controller?.textDocumentProxy.documentContextBeforeInput)
             }
         }
     }
@@ -183,7 +195,8 @@ extension KeyboardActionHandler {
     }
 
     func applyOriginalSuggestion() {
-        guard let originalCell = suggestionBarState?.cells.first(where: { $0.role == .original }) else { return }
+        guard let originalCell = suggestionBarState?.cells.first(where: { $0.role == .original })
+        else { return }
         applyCell(originalCell)
     }
 
@@ -213,10 +226,11 @@ extension KeyboardActionHandler {
     // keeps wrappers such as quotes or roleplay markers attached to the chosen word.
     private func applyCurrentTokenSuggestionText(_ replacement: String) {
         guard currentKeyboardType == .alphabetic,
-              let context = controller?.textDocumentProxy.documentContextBeforeInput,
-              let target = SuggestionContext.parse(context),
-              target.mode == .currentToken,
-              let token = target.token else {
+            let context = controller?.textDocumentProxy.documentContextBeforeInput,
+            let target = SuggestionContext.parse(context),
+            target.mode == .currentToken,
+            let token = target.token
+        else {
             clearSuggestions()
             return
         }
@@ -261,9 +275,10 @@ extension KeyboardActionHandler {
 
     private func applyPredictionText(_ prediction: String) {
         guard currentKeyboardType == .alphabetic,
-              let context = controller?.textDocumentProxy.documentContextBeforeInput,
-              let target = SuggestionContext.parse(context),
-              target.mode == .nextWord else {
+            let context = controller?.textDocumentProxy.documentContextBeforeInput,
+            let target = SuggestionContext.parse(context),
+            target.mode == .nextWord
+        else {
             clearSuggestions()
             return
         }
@@ -305,7 +320,8 @@ extension KeyboardActionHandler {
             pendingCorrectionRevert = nil
         }
 
-        let newContext = controller?.textDocumentProxy.documentContextBeforeInput
+        let newContext =
+            controller?.textDocumentProxy.documentContextBeforeInput
             ?? (String(originalContext.dropLast(oldWord.count)) + newWord + trailingInput)
         evaluateAutoCapitalization(contextBefore: newContext)
         refreshSuggestions(for: newContext)

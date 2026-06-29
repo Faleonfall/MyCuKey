@@ -1,12 +1,11 @@
 import Testing
+
 @testable import MyCuKey
 
 // MARK: - Keyboard Button Style Tests
-
 @MainActor
 struct KeyboardButtonStyleTests {
     // MARK: - Popup Preview Logic
-
     @Test func testDefaultPreviewShownForSingleLetterKey() async throws {
         let title = KeyboardButtonStyle.defaultPreviewTitle(
             title: "a",
@@ -87,7 +86,6 @@ struct KeyboardButtonStyleTests {
     }
 
     // MARK: - Popup Alignment Helpers
-
     @Test func testSplitTopRowPopupAlignmentsSplitsLeftAndRightHalves() async throws {
         let alignments = splitTopRowPopupAlignments(for: KeyboardLayout.alphabeticTopRow)
 

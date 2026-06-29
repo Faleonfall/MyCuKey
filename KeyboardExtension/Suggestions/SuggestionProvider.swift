@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Suggestion Provider
-
 protocol SuggestionProvider {
     func candidates(
         for prepared: PreparedCorrectionContext,
@@ -11,14 +10,12 @@ protocol SuggestionProvider {
 }
 
 // MARK: - Boost Terms
-
 struct SuggestionBoostTerm: Hashable {
     let word: String
     let source: CorrectionSource
 }
 
 // MARK: - Future Hybrid Provider
-
 struct HybridSuggestionProvider: SuggestionProvider {
     static let shared = HybridSuggestionProvider()
 

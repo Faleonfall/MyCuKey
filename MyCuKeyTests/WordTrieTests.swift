@@ -1,4 +1,5 @@
 import Testing
+
 @testable import MyCuKey
 
 @Test func trieInsertAndContains() {
@@ -7,7 +8,7 @@ import Testing
     trie.insert("then", score: 500)
     #expect(trie.contains("the"))
     #expect(trie.contains("then"))
-    #expect(!trie.contains("th"))      // prefix is not a stored word
+    #expect(!trie.contains("th"))  // prefix is not a stored word
     #expect(!trie.contains("them"))
     #expect(trie.score(for: "the") == 10000)
     #expect(trie.score(for: "th") == nil)
@@ -31,9 +32,11 @@ import Testing
     for (w, s) in [("the", 10000.0), ("then", 500.0), ("they", 600.0), ("cat", 900.0)] {
         trie.insert(w, score: s)
     }
-    #expect(trie.search("the", maxDistance: 2).contains(WordTrie.Match(word: "the", score: 10000, distance: 0)))
+    #expect(
+        trie.search("the", maxDistance: 2).contains(
+            WordTrie.Match(word: "the", score: 10000, distance: 0)))
     let teh = trie.search("teh", maxDistance: 2).first { $0.word == "the" }
-    #expect(teh?.distance == 1)   // transposition is one Damerau edit
+    #expect(teh?.distance == 1)  // transposition is one Damerau edit
     let words = Set(trie.search("thu", maxDistance: 2).map(\.word))
     #expect(words.contains("the"))
     #expect(!words.contains("cat"))

@@ -1,5 +1,6 @@
-import Testing
 import SwiftUI
+import Testing
+
 @testable import MyCuKey
 
 // In-process SwiftUI snapshot testing. ImageRenderer rasterizes a view so its
@@ -9,8 +10,8 @@ import SwiftUI
 // mask a regression.
 
 private enum Cfg {
-    static let pixelMismatchRatio = 0.02   // channels allowed to differ
-    static let channelTolerance = 12       // per-channel 0–255 delta treated as equal
+    static let pixelMismatchRatio = 0.02  // channels allowed to differ
+    static let channelTolerance = 12  // per-channel 0–255 delta treated as equal
     static let scale: CGFloat = 2
 }
 
@@ -34,8 +35,9 @@ func assertSnapshot(
         try? FileManager.default.createDirectory(
             at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
         try? data.write(to: url)
-        Issue.record("recorded reference '\(name)'; re-run without SNAPSHOT_RECORD",
-                     sourceLocation: sourceLocation)
+        Issue.record(
+            "recorded reference '\(name)'; re-run without SNAPSHOT_RECORD",
+            sourceLocation: sourceLocation)
         return
     }
 
@@ -76,12 +78,15 @@ private func pixelDiff(_ lhs: Data, _ rhs: Data) -> String? {
 
 private func decodeRGBA(_ data: Data) -> (bytes: [UInt8], w: Int, h: Int)? {
     guard let image = UIImage(data: data)?.cgImage else { return nil }
-    let w = image.width, h = image.height
+    let w = image.width
+    let h = image.height
     var bytes = [UInt8](repeating: 0, count: w * h * 4)
-    guard let ctx = CGContext(
-        data: &bytes, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
-        space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+    guard
+        let ctx = CGContext(
+            data: &bytes, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+    else { return nil }
     ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
     return (bytes, w, h)
 }

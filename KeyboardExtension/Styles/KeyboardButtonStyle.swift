@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Keyboard Button Style
-
 enum KeyPopupAlignment {
     case centered
     case insetFromLeft
@@ -40,7 +39,7 @@ struct KeyboardButtonStyle: ButtonStyle {
     let trackpadAction: ((Int) -> Void)?
     let popupAlignment: KeyPopupAlignment
     let action: () -> Void
-    
+
     @Environment(\.colorScheme) var colorScheme
     @State private var repeatTask: Task<Void, Never>?
     @State private var isLongPressing = false
@@ -90,7 +89,9 @@ struct KeyboardButtonStyle: ButtonStyle {
         )
     }
 
-    static func defaultPreviewTitle(title: String, systemImage: String?, isTrackpadEnabled: Bool) -> String? {
+    static func defaultPreviewTitle(title: String, systemImage: String?, isTrackpadEnabled: Bool)
+        -> String?
+    {
         guard systemImage == nil else { return nil }
         guard !title.isEmpty else { return nil }
         guard !isTrackpadEnabled else { return nil }
@@ -109,14 +110,13 @@ struct KeyboardButtonStyle: ButtonStyle {
     }
 
     // MARK: - Button Rendering
-
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .overlay(
                 ZStack {
                     RoundedRectangle(cornerRadius: Metrics.keyCornerRadius, style: .continuous)
                         .fill(keyFaceColor)
-                    
+
                     if let systemImage = systemImage {
                         Image(systemName: systemImage)
                             .font(.system(size: 20, weight: .regular))
@@ -126,12 +126,14 @@ struct KeyboardButtonStyle: ButtonStyle {
                         Text(title)
                             .font(.system(size: fontSize, weight: .regular))
                             // Shift lowercase letters up slightly for optical centering
-                            .baselineOffset(title.count == 1 && title == title.lowercased() ? 1.5 : 0)
+                            .baselineOffset(
+                                title.count == 1 && title == title.lowercased() ? 1.5 : 0
+                            )
                             .foregroundColor(.primary.opacity(0.85))
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                             .animation(nil, value: title)
                     }
-                    
+
                     // Highlight on press
                     if isVisuallyPressed || isTrackpadVisuallyActive {
                         RoundedRectangle(cornerRadius: Metrics.keyCornerRadius, style: .continuous)
@@ -149,31 +151,43 @@ struct KeyboardButtonStyle: ButtonStyle {
                         defaultPreviewTitle: defaultPreviewTitle,
                         pressedPreviewTitle: pressedPreviewTitle
                     ),
-                       (configuration.isPressed || isLongPressing) {
+                        configuration.isPressed || isLongPressing
+                    {
                         ZStack {
-                            RoundedRectangle(cornerRadius: Metrics.popupCornerRadius, style: .continuous)
-                                .fill(keyFaceColor)
-                                .shadow(color: Color.black.opacity(colorScheme == .light ? 0.14 : 0.3), radius: 2, x: 0, y: 1)
-                            
+                            RoundedRectangle(
+                                cornerRadius: Metrics.popupCornerRadius, style: .continuous
+                            )
+                            .fill(keyFaceColor)
+                            .shadow(
+                                color: Color.black.opacity(colorScheme == .light ? 0.14 : 0.3),
+                                radius: 2, x: 0, y: 1)
+
                             Text(popupTitle)
                                 .font(.system(size: 32, weight: .regular))
                                 .baselineOffset(
-                                    popupTitle.count == 1 && popupTitle == popupTitle.lowercased() ? 5 : 0
+                                    popupTitle.count == 1 && popupTitle == popupTitle.lowercased()
+                                        ? 5 : 0
                                 )
                                 .foregroundColor(.primary)
                         }
                         .frame(width: Metrics.popupWidth, height: Metrics.popupHeight)
                         .offset(x: popupHorizontalOffset, y: popupVerticalOffset)
-                        .transition(.asymmetric(
-                            insertion: .scale(scale: 0.95).combined(with: .opacity),
-                            removal: .scale(scale: 0.98).combined(with: .opacity)
-                        ))
+                        .transition(
+                            .asymmetric(
+                                insertion: .scale(scale: 0.95).combined(with: .opacity),
+                                removal: .scale(scale: 0.98).combined(with: .opacity)
+                            )
+                        )
                         .animation(
-                            .easeOut(duration: configuration.isPressed ? Self.popupAppearDuration : Self.popupDisappearDuration),
+                            .easeOut(
+                                duration: configuration.isPressed
+                                    ? Self.popupAppearDuration : Self.popupDisappearDuration),
                             value: isLongPressing
                         )
                         .animation(
-                            .easeOut(duration: configuration.isPressed ? Self.popupAppearDuration : Self.popupDisappearDuration),
+                            .easeOut(
+                                duration: configuration.isPressed
+                                    ? Self.popupAppearDuration : Self.popupDisappearDuration),
                             value: configuration.isPressed
                         )
                         .allowsHitTesting(false)
@@ -191,7 +205,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                 if newValue {
                     isVisuallyPressed = true
                     pressedPreviewTitle = defaultPreviewTitle
-                    
+
                     if isTrackpadEnabled {
                         // Trackpad mode executes primarily on touch UP, so do NOTHING on touch DOWN.
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -213,7 +227,7 @@ struct KeyboardButtonStyle: ButtonStyle {
                         // Fire immediately on touch down for standard keys
                         action()
                         HapticFeedback.playLight()
-                        
+
                         if isRepeatable {
                             repeatTask = Task {
                                 // Initial holding delay before rapid-fire starts (0.35s)
@@ -228,7 +242,8 @@ struct KeyboardButtonStyle: ButtonStyle {
                                         action()
                                     }
                                     if !suppressRepeatHaptic { HapticFeedback.playLight() }
-                                    try? await Task.sleep(nanoseconds: 100_000_000) // fire every 0.1s
+                                    // fire every 0.1s
+                                    try? await Task.sleep(nanoseconds: 100_000_000)
                                 }
                             }
                         }
@@ -237,13 +252,13 @@ struct KeyboardButtonStyle: ButtonStyle {
                     // Touch released
                     repeatTask?.cancel()
                     repeatTask = nil
-                    
+
                     // Guarantee visual press is visible for at least 80ms even on fastest taps
                     Task {
-                        try? await Task.sleep(nanoseconds: 35_000_000) // 35ms minimum flash
+                        try? await Task.sleep(nanoseconds: 35_000_000)  // 35ms minimum flash
                         await MainActor.run { isVisuallyPressed = false }
                     }
-                    
+
                     if isTrackpadEnabled {
                         // If we didn't drag, it was a short tap, so we commit the action
                         if !isDragging {

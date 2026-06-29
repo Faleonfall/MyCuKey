@@ -1,8 +1,7 @@
 import Foundation
 
 // MARK: - Short Token Entry
-
-fileprivate struct ShortTokenEntry: Equatable {
+private struct ShortTokenEntry: Equatable {
     let prefix: String
     let candidate: String
     let score: Double
@@ -10,7 +9,6 @@ fileprivate struct ShortTokenEntry: Equatable {
 }
 
 // MARK: - Short Token Lexicon
-
 final class ShortTokenLexicon {
     static let shared = ShortTokenLexicon()
 
@@ -39,14 +37,15 @@ final class ShortTokenLexicon {
     }
 
     // MARK: - Loading
-
     private func loadEntries() -> [ShortTokenEntry] {
         guard let url = lexiconURL(),
-              let content = try? String(contentsOf: url, encoding: .utf8) else {
+            let content = try? String(contentsOf: url, encoding: .utf8)
+        else {
             return fallbackEntries
         }
 
-        let entries = content
+        let entries =
+            content
             .split(whereSeparator: \.isNewline)
             .compactMap(Self.entry(from:))
 
@@ -54,7 +53,8 @@ final class ShortTokenLexicon {
     }
 
     private func lexiconURL() -> URL? {
-        let bundles = [Bundle.main, Bundle(for: BundleToken.self)] + Bundle.allBundles + Bundle.allFrameworks
+        let bundles =
+            [Bundle.main, Bundle(for: BundleToken.self)] + Bundle.allBundles + Bundle.allFrameworks
         for bundle in bundles {
             if let url = bundle.url(forResource: resourceName, withExtension: "tsv") {
                 return url
@@ -68,11 +68,13 @@ final class ShortTokenLexicon {
 
         let parts = line.split(separator: "\t", omittingEmptySubsequences: false)
         guard parts.count >= 3,
-              let score = Double(parts[2]) else {
+            let score = Double(parts[2])
+        else {
             return nil
         }
 
-        let tags = parts.count >= 4
+        let tags =
+            parts.count >= 4
             ? Set(parts[3].split(separator: ",").map { String($0).lowercased() })
             : []
         return ShortTokenEntry(
@@ -93,12 +95,11 @@ final class ShortTokenLexicon {
         ShortTokenEntry(prefix: "adn", candidate: "and", score: 10000, tags: ["repair"]),
         ShortTokenEntry(prefix: "yur", candidate: "your", score: 10000, tags: ["repair"]),
         ShortTokenEntry(prefix: "yo", candidate: "you", score: 10000, tags: ["start", "mid"]),
-        ShortTokenEntry(prefix: "yo", candidate: "your", score: 9800, tags: ["start", "mid"])
+        ShortTokenEntry(prefix: "yo", candidate: "your", score: 9800, tags: ["start", "mid"]),
     ]
 }
 
 // MARK: - Short Token Suggestion Provider
-
 struct ShortTokenSuggestionProvider: SuggestionProvider {
     static let shared = ShortTokenSuggestionProvider()
 
@@ -121,23 +122,25 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
         let input = prepared.token.correctionTargetLowercased
         guard (1...3).contains(input.count) else { return [] }
 
-        let candidates = (
-            curatedCandidates(for: prepared)
-            + boostedCandidates(for: prepared, boostedTerms: boostedTerms)
-        )
-        .sorted()
+        let candidates =
+            (curatedCandidates(for: prepared)
+            + boostedCandidates(for: prepared, boostedTerms: boostedTerms))
+            .sorted()
 
         var seen = Set<String>()
-        return candidates
+        return
+            candidates
             .filter { seen.insert($0.text).inserted }
             .prefix(8)
             .compactMap { candidate in
-                guard let result = engine.makeResult(
-                    for: prepared.token,
-                    correctedLowercased: candidate.text,
-                    confidence: candidate.confidence,
-                    source: candidate.source
-                ) else {
+                guard
+                    let result = engine.makeResult(
+                        for: prepared.token,
+                        correctedLowercased: candidate.text,
+                        confidence: candidate.confidence,
+                        source: candidate.source
+                    )
+                else {
                     return nil
                 }
                 return (result: result, strength: candidate.strength)
@@ -145,8 +148,8 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
     }
 
     // MARK: - Candidate Sources
-
-    private func curatedCandidates(for prepared: PreparedCorrectionContext) -> [ShortTokenCandidate] {
+    private func curatedCandidates(for prepared: PreparedCorrectionContext) -> [ShortTokenCandidate]
+    {
         let input = prepared.token.correctionTargetLowercased
         return lexicon.entries(for: input).compactMap { entry in
             guard contextAllows(entry, context: prepared.patternContext) else { return nil }
@@ -155,7 +158,9 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
                 for: entry.candidate,
                 previousToken: prepared.patternContext.previousTokenLowercased
             )
-            let sentenceBoost = prepared.patternContext.isAtSentenceStart && entry.tags.contains("start") ? 700.0 : 0
+            let sentenceBoost =
+                prepared.patternContext.isAtSentenceStart && entry.tags.contains("start")
+                ? 700.0 : 0
             let repairBoost = entry.tags.contains("repair") ? 1_200.0 : 0
             let finalScore = entry.score + contextBoost + sentenceBoost + repairBoost
 
@@ -192,8 +197,8 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
     }
 
     // MARK: - Ranking Helpers
-
-    private func contextAllows(_ entry: ShortTokenEntry, context: PatternEvaluationContext) -> Bool {
+    private func contextAllows(_ entry: ShortTokenEntry, context: PatternEvaluationContext) -> Bool
+    {
         if entry.tags.contains("repair") {
             return true
         }
@@ -208,10 +213,13 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
     private func nextWordBoost(for candidate: String, previousToken: String?) -> Double {
         guard let previousToken else { return 0 }
 
-        guard let score = nextWordLexicon
-            .entries(for: previousToken)
-            .first(where: { $0.candidate.lowercased() == candidate })?
-            .score else {
+        guard
+            let score =
+                nextWordLexicon
+                .entries(for: previousToken)
+                .first(where: { $0.candidate.lowercased() == candidate })?
+                .score
+        else {
             return 0
         }
 
@@ -225,7 +233,6 @@ struct ShortTokenSuggestionProvider: SuggestionProvider {
 }
 
 // MARK: - Short Token Candidate
-
 private struct ShortTokenCandidate: Comparable {
     let text: String
     let source: CorrectionSource

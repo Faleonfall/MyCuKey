@@ -1,7 +1,6 @@
 import UIKit
 
 // MARK: - Core Types
-
 enum CorrectionSource: Equatable {
     case userInput
     case contraction
@@ -52,7 +51,6 @@ struct PreparedCorrectionContext {
 }
 
 // MARK: - Autocorrection Engine
-
 // Hybrid engine: deterministic typo fixes first, UITextChecker fallback second.
 struct AutocorrectionEngine {
     let textChecker = UITextChecker()
@@ -109,15 +107,18 @@ struct AutocorrectionEngine {
         "untill": "until",
         "enviroment": "environment",
         "tommorow": "tomorrow",
-        "surprized": "surprised"
+        "surprized": "surprised",
     ]
 
     func evaluate(context: String) -> AutocorrectionResult? {
         autoApplyCandidateResults(for: context)?.results.first
     }
 
-    func suggestions(context: String, boostedTerms: [SuggestionBoostTerm] = []) -> AutocorrectionSuggestionSet? {
-        guard let ranked = suggestionCandidateResults(for: context, boostedTerms: boostedTerms) else { return nil }
+    func suggestions(context: String, boostedTerms: [SuggestionBoostTerm] = [])
+        -> AutocorrectionSuggestionSet?
+    {
+        guard let ranked = suggestionCandidateResults(for: context, boostedTerms: boostedTerms)
+        else { return nil }
 
         let suggestions = ranked.results.prefix(2).map { result in
             AutocorrectionSuggestion(
@@ -132,7 +133,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Tokenization
-
     static func lastToken(in context: String) -> CorrectionToken? {
         var token = ""
         for character in context.reversed() {
@@ -175,7 +175,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Deterministic Fixes
-
     private func deterministicResult(for token: CorrectionToken) -> AutocorrectionResult? {
         if let exact = deterministicCorrections[token.correctionTargetLowercased] {
             return makeResult(
@@ -189,9 +188,10 @@ struct AutocorrectionEngine {
         guard token.correctionTargetLowercased.count > 3 else { return nil }
 
         if let repeatedLetterFix = collapseRepeatedLetters(in: token.correctionTargetLowercased),
-           repeatedLetterFix != token.correctionTargetLowercased,
-           !hasExpressiveTrailingRepeat(token.correctionTargetLowercased),
-           isDictionaryWord(repeatedLetterFix) {
+            repeatedLetterFix != token.correctionTargetLowercased,
+            !hasExpressiveTrailingRepeat(token.correctionTargetLowercased),
+            isDictionaryWord(repeatedLetterFix)
+        {
             return makeResult(
                 for: token,
                 correctedLowercased: repeatedLetterFix,
@@ -204,7 +204,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Token Gating
-
     private func shouldSkipStylizedToken(_ token: String) -> Bool {
         if hasExpressiveTrailingRepeat(token.lowercased()) {
             return true
@@ -221,12 +220,15 @@ struct AutocorrectionEngine {
         return interior.contains { markerSet.contains($0) }
     }
 
-    private static func unwrapRoleplayDecoratedToken(_ token: String) -> (core: String, leadingDecoration: String, trailingDecoration: String) {
+    private static func unwrapRoleplayDecoratedToken(_ token: String) -> (
+        core: String, leadingDecoration: String, trailingDecoration: String
+    ) {
         guard token.count >= 3,
-              let first = token.first,
-              let last = token.last,
-              first == last,
-              ["*", "_", "~"].contains(first) else {
+            let first = token.first,
+            let last = token.last,
+            first == last,
+            ["*", "_", "~"].contains(first)
+        else {
             return (token, "", "")
         }
 
@@ -239,7 +241,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Context Preparation
-
     private func makePatternContext(
         for token: CorrectionToken,
         in fullContext: String,
@@ -250,7 +251,8 @@ struct AutocorrectionEngine {
         return PatternEvaluationContext(
             token: token,
             guesses: guesses,
-            previousTokenLowercased: Self.lastToken(in: previousContext)?.correctionTargetLowercased,
+            previousTokenLowercased: Self.lastToken(in: previousContext)?
+                .correctionTargetLowercased,
             isAtSentenceStart: Self.isSentenceStartPrefix(prefix)
         )
     }
@@ -261,8 +263,11 @@ struct AutocorrectionEngine {
         return last == "." || last == "!" || last == "?" || last == "\n"
     }
 
-    func preparedContext(for context: String, minimumTokenLength: Int = 2) -> PreparedCorrectionContext? {
-        guard let token = Self.lastToken(in: context), token.original.count >= minimumTokenLength else { return nil }
+    func preparedContext(for context: String, minimumTokenLength: Int = 2)
+        -> PreparedCorrectionContext?
+    {
+        guard let token = Self.lastToken(in: context), token.original.count >= minimumTokenLength
+        else { return nil }
         guard token.correctionTarget.count >= minimumTokenLength else { return nil }
         guard !shouldSkipStylizedToken(token.original) else { return nil }
 
@@ -277,33 +282,41 @@ struct AutocorrectionEngine {
     func baseCandidateResults(for prepared: PreparedCorrectionContext) -> [AutocorrectionResult] {
         [
             deterministicResult(for: prepared.token),
-            patternResult(for: prepared.patternContext)
+            patternResult(for: prepared.patternContext),
         ]
         .compactMap { $0 }
     }
 
     // MARK: - Result Construction
-
     func textCheckerResult(for token: CorrectionToken, guesses: [String]) -> AutocorrectionResult? {
-        guard !shouldBlockTrailingDuplicateCorrection(input: token.correctionTargetLowercased, guesses: guesses) else {
+        guard
+            !shouldBlockTrailingDuplicateCorrection(
+                input: token.correctionTargetLowercased, guesses: guesses)
+        else {
             return nil
         }
 
-        let acceptedGuesses = guesses
+        let acceptedGuesses =
+            guesses
             .filter { candidate in
-                shouldAcceptTextCheckerCandidate(input: token.correctionTargetLowercased, candidate: candidate)
+                shouldAcceptTextCheckerCandidate(
+                    input: token.correctionTargetLowercased, candidate: candidate)
             }
 
-        guard let acceptedGuess = acceptedGuesses.min(by: { lhs, rhs in
-            rank(lhs, against: token.correctionTargetLowercased) < rank(rhs, against: token.correctionTargetLowercased)
-        }) else {
+        guard
+            let acceptedGuess = acceptedGuesses.min(by: { lhs, rhs in
+                rank(lhs, against: token.correctionTargetLowercased)
+                    < rank(rhs, against: token.correctionTargetLowercased)
+            })
+        else {
             return nil
         }
 
         return makeResult(
             for: token,
             correctedLowercased: acceptedGuess,
-            confidence: confidenceScore(input: token.correctionTargetLowercased, candidate: acceptedGuess),
+            confidence: confidenceScore(
+                input: token.correctionTargetLowercased, candidate: acceptedGuess),
             source: .textChecker
         )
     }
@@ -316,7 +329,8 @@ struct AutocorrectionEngine {
     ) -> AutocorrectionResult? {
         guard correctedLowercased != token.correctionTargetLowercased else { return nil }
 
-        let correctedCore = Self.applyCasePattern(from: token.correctionTarget, to: correctedLowercased)
+        let correctedCore = Self.applyCasePattern(
+            from: token.correctionTarget, to: correctedLowercased)
 
         return AutocorrectionResult(
             charsToDelete: token.original.count,
@@ -327,24 +341,28 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Auto-Apply Pipeline
-
-    private func autoApplyCandidateResults(for context: String) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
+    private func autoApplyCandidateResults(for context: String) -> (
+        token: CorrectionToken, results: [AutocorrectionResult]
+    )? {
         guard let prepared = preparedContext(for: context) else { return nil }
         let baseCandidates = baseCandidateResults(for: prepared)
 
-        let candidates: [AutocorrectionResult?] = baseCandidates.map { $0 } + [
-            textCheckerResult(for: prepared.token, guesses: prepared.guesses).flatMap { result in
-                result.confidence >= minimumTextCheckerAutoApplyConfidence ? result : nil
-            },
-            decoderAutoApplyResult(
-                for: prepared.token,
-                previousWord: prepared.patternContext.previousTokenLowercased,
-                systemGuesses: prepared.guesses
-            )
-        ]
+        let candidates: [AutocorrectionResult?] =
+            baseCandidates.map { $0 } + [
+                textCheckerResult(for: prepared.token, guesses: prepared.guesses).flatMap {
+                    result in
+                    result.confidence >= minimumTextCheckerAutoApplyConfidence ? result : nil
+                },
+                decoderAutoApplyResult(
+                    for: prepared.token,
+                    previousWord: prepared.patternContext.previousTokenLowercased,
+                    systemGuesses: prepared.guesses
+                ),
+            ]
 
         var seen = Set<String>()
-        let uniqueResults = candidates
+        let uniqueResults =
+            candidates
             .compactMap { $0 }
             .filter { result in
                 let key = result.corrected.lowercased()
@@ -365,7 +383,9 @@ struct AutocorrectionEngine {
     //     the unigram regime is too cautious to touch (ny -> my after "spent").
     // Curated and textChecker results above take priority; this fills the gap
     // where nothing else fires. The trust guards keep both regimes safe.
-    private func decoderAutoApplyResult(for token: CorrectionToken, previousWord: String?, systemGuesses: [String]) -> AutocorrectionResult? {
+    private func decoderAutoApplyResult(
+        for token: CorrectionToken, previousWord: String?, systemGuesses: [String]
+    ) -> AutocorrectionResult? {
         let typed = token.correctionTargetLowercased
         guard typed.count >= minimumContextAutoApplyLength else { return nil }
 
@@ -385,7 +405,10 @@ struct AutocorrectionEngine {
         // stay correctable.
         guard !hasStrayDoubledLetterFormingWord(typed) else { return nil }
 
-        guard let chosen = chooseDecoderCandidate(for: typed, previousWord: previousWord, systemGuesses: systemGuesses) else {
+        guard
+            let chosen = chooseDecoderCandidate(
+                for: typed, previousWord: previousWord, systemGuesses: systemGuesses)
+        else {
             return nil
         }
 
@@ -397,8 +420,11 @@ struct AutocorrectionEngine {
         )
     }
 
-    private func chooseDecoderCandidate(for typed: String, previousWord: String?, systemGuesses: [String]) -> UnifiedDecoder.Candidate? {
-        let trieCandidates = decoder.candidates(for: typed, limit: 24, includePrefixCompletions: false)
+    private func chooseDecoderCandidate(
+        for typed: String, previousWord: String?, systemGuesses: [String]
+    ) -> UnifiedDecoder.Candidate? {
+        let trieCandidates = decoder.candidates(
+            for: typed, limit: 24, includePrefixCompletions: false)
         let isShort = typed.count < minimumDecoderAutoApplyLength
 
         // No-context commit is reserved for our frequency-vetted trie vocabulary:
@@ -418,7 +444,8 @@ struct AutocorrectionEngine {
         let pool = mergeSystemGuesses(systemGuesses, into: trieCandidates, typed: typed)
         guard let leader = pool.first, leader.distance > 0 else { return nil }
         let winners = pool.filter { $0.distance == leader.distance }
-        return contextResolvedCandidate(winners: winners, previousWord: previousWord, isShort: isShort)
+        return contextResolvedCandidate(
+            winners: winners, previousWord: previousWord, isShort: isShort)
     }
 
     // Fold UITextChecker guesses into the trie candidate list as scored
@@ -440,7 +467,8 @@ struct AutocorrectionEngine {
             let distance = damerauLevenshteinDistance(typed, word)
             guard distance >= 1, distance <= decoder.maxEditDistance else { continue }
             let score = decoder.trie.score(for: word) ?? systemGuessDefaultScore
-            byWord[word] = decoder.scored(WordTrie.Match(word: word, score: score, distance: distance))
+            byWord[word] = decoder.scored(
+                WordTrie.Match(word: word, score: score, distance: distance))
         }
 
         return byWord.values.sorted { lhs, rhs in
@@ -460,8 +488,11 @@ struct AutocorrectionEngine {
     ) -> UnifiedDecoder.Candidate? {
         guard let previousWord, !previousWord.isEmpty else { return nil }
 
-        let ranked = winners
-            .map { (candidate: $0, association: bigram.association(prev: previousWord, next: $0.word)) }
+        let ranked =
+            winners
+            .map {
+                (candidate: $0, association: bigram.association(prev: previousWord, next: $0.word))
+            }
             .sorted { $0.association > $1.association }
 
         guard let best = ranked.first else { return nil }
@@ -469,7 +500,8 @@ struct AutocorrectionEngine {
         let minimumAssociation = isShort ? shortTokenMinAssociation : contextMinAssociation
 
         guard best.association >= minimumAssociation,
-              best.association - runnerUp >= contextMinMargin else {
+            best.association - runnerUp >= contextMinMargin
+        else {
             return nil
         }
 
@@ -502,7 +534,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Suggestion Pipeline
-
     func shouldAcceptTextCheckerCandidate(input: String, candidate: String) -> Bool {
         guard input.count >= 2, candidate != input else { return false }
 
@@ -531,7 +562,6 @@ struct AutocorrectionEngine {
     }
 
     // MARK: - Scoring
-
     func confidenceScore(input: String, candidate: String) -> Double {
         if isLikelyApostropheVariant(input: input, candidate: candidate) {
             return 0.98

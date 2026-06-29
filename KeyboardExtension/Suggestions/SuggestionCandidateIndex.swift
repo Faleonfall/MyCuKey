@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Suggestion Candidate Index
-
 // Backed by a WordTrie so prefix completion and bounded edit-distance lookup
 // have uniform, complete coverage at every token length. This replaces the old
 // length-bucket scan that capped each bucket and silently dropped the right
@@ -24,7 +23,6 @@ final class SuggestionCandidateIndex {
     }
 
     // MARK: - Lookup
-
     func prefixCandidates(for prefix: String, limit: Int) -> [WordFrequencyEntry] {
         guard !prefix.isEmpty else { return [] }
         return trie.prefixCompletions(for: prefix.lowercased(), limit: limit)
@@ -54,7 +52,6 @@ final class SuggestionCandidateIndex {
     }
 
     // MARK: - Cache
-
     private func store(_ candidates: [WordFrequencyEntry], for key: String) {
         editCandidateCache[key] = candidates
         cacheOrder.append(key)

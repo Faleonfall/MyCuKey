@@ -1,14 +1,13 @@
-import Testing
 import Foundation
+import Testing
+
 @testable import MyCuKey
 
 // MARK: - Personal Dictionary Service Tests
-
 @MainActor
 struct PersonalDictionaryServiceTests {
 
     // MARK: - Learned Words
-
     @Test func testAddWordIsPersistedAndNormalized() async throws {
         let service = makeIsolatedDictionaryService()
 
@@ -74,7 +73,6 @@ struct PersonalDictionaryServiceTests {
     }
 
     // MARK: - Cache and Merge Behavior
-
     @Test func testRepeatedLookupsUseCachedStateUntilExplicitRefresh() async throws {
         let suiteName = "test.personal-dictionary.cache.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -120,7 +118,6 @@ struct PersonalDictionaryServiceTests {
 }
 
 // MARK: - Test Support
-
 private func makeIsolatedDictionaryService() -> PersonalDictionaryService {
     let suiteName = "test.personal-dictionary.service.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suiteName)!

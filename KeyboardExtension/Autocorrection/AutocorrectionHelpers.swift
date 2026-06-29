@@ -1,7 +1,6 @@
 import UIKit
 
 // MARK: - Spellchecker Access
-
 extension AutocorrectionEngine {
     func textCheckerGuesses(for word: String) -> [String] {
         let range = NSRange(0..<word.utf16.count)
@@ -28,7 +27,6 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Candidate Ranking
-
     func isLikelyApostropheVariant(input: String, candidate: String) -> Bool {
         candidate.contains("'") && candidate.replacingOccurrences(of: "'", with: "") == input
     }
@@ -36,20 +34,23 @@ extension AutocorrectionEngine {
     func rank(_ candidate: String, against input: String) -> (Int, Int, Int, Int, Int) {
         let distance = damerauLevenshteinDistance(input, candidate)
         let lexiconBonus = CommonWordLexicon.contains(candidate) ? 0 : 1
-        let subsequenceBonus = isSubsequence(input, of: candidate) || isSubsequence(candidate, of: input) ? 0 : 1
+        let subsequenceBonus =
+            isSubsequence(input, of: candidate) || isSubsequence(candidate, of: input) ? 0 : 1
         let outerLetterPenalty = hasSameOuterLetters(input, candidate) ? 0 : 1
         let prefixScore = commonPrefixLength(input, candidate)
         let lengthDelta = abs(input.count - candidate.count)
-        return (distance, lexiconBonus, outerLetterPenalty, subsequenceBonus, -prefixScore + lengthDelta)
+        return (
+            distance, lexiconBonus, outerLetterPenalty, subsequenceBonus, -prefixScore + lengthDelta
+        )
     }
 
     // MARK: - Shape Checks
-
     func hasSameOuterLetters(_ input: String, _ candidate: String) -> Bool {
         guard let inputFirst = input.first,
-              let inputLast = input.last,
-              let candidateFirst = candidate.first,
-              let candidateLast = candidate.last else {
+            let inputLast = input.last,
+            let candidateFirst = candidate.first,
+            let candidateLast = candidate.last
+        else {
             return false
         }
         return inputFirst == candidateFirst && inputLast == candidateLast
@@ -116,7 +117,6 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Normalization
-
     func collapseRepeatedLetters(in word: String) -> String? {
         var result = ""
         var previous: Character?
@@ -152,7 +152,6 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Distance Metrics
-
     // Standard Levenshtein retained for comparison/unit coverage.
     func editDistance(_ a: String, _ b: String) -> Int {
         let a = Array(a)
@@ -198,8 +197,9 @@ extension AutocorrectionEngine {
                 )
 
                 if i > 1, j > 1,
-                   aChars[i - 1] == bChars[j - 2],
-                   aChars[i - 2] == bChars[j - 1] {
+                    aChars[i - 1] == bChars[j - 2],
+                    aChars[i - 2] == bChars[j - 1]
+                {
                     table[i][j] = min(table[i][j], table[i - 2][j - 2] + 1)
                 }
             }

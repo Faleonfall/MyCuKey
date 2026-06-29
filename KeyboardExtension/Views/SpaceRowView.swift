@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Space Row
-
 struct SpaceRowView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -11,7 +10,6 @@ struct SpaceRowView: View {
     var actionKeyBg: Color
 
     // MARK: - Layout
-
     var body: some View {
         HStack(spacing: 0) {
             if needsInputModeSwitchKey {

@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Learned Word Entry
-
 struct LearnedWordEntry: Codable, Equatable, Identifiable {
     let normalizedWord: String
     let createdAt: Date
@@ -10,7 +9,6 @@ struct LearnedWordEntry: Codable, Equatable, Identifiable {
 }
 
 // MARK: - Personal Dictionary Configuration
-
 enum PersonalDictionaryConfiguration {
     static let appGroupSuiteName = "group.com.kvolodymyr.MyCuKey"
     static let learnedWordsKey = "personal_dictionary.learned_words"
@@ -20,7 +18,6 @@ enum PersonalDictionaryConfiguration {
 }
 
 // MARK: - Personal Dictionary Service
-
 final class PersonalDictionaryService {
     static let shared = PersonalDictionaryService()
 
@@ -35,7 +32,9 @@ final class PersonalDictionaryService {
     init(defaults: UserDefaults? = nil) {
         if let defaults {
             self.defaults = defaults
-        } else if let sharedDefaults = UserDefaults(suiteName: PersonalDictionaryConfiguration.appGroupSuiteName) {
+        } else if let sharedDefaults = UserDefaults(
+            suiteName: PersonalDictionaryConfiguration.appGroupSuiteName)
+        {
             self.defaults = sharedDefaults
         } else {
             // Falling back to .standard keeps tests and previews working, but the real app
@@ -46,14 +45,14 @@ final class PersonalDictionaryService {
     }
 
     // MARK: - Public API
-
     func containsLearnedWord(_ word: String) -> Bool {
         guard let normalized = Self.normalizeLearnableWord(word) else { return false }
         return learnedWordSetCache.contains(normalized)
     }
 
     func allWords() -> [LearnedWordEntry] {
-        return learnedWordsCache
+        return
+            learnedWordsCache
             .sorted { lhs, rhs in
                 if lhs.normalizedWord == rhs.normalizedWord {
                     return lhs.createdAt < rhs.createdAt
@@ -72,7 +71,8 @@ final class PersonalDictionaryService {
         refreshFromStorage()
 
         if learnedWordSetCache.contains(normalized),
-           let existing = learnedWordsCache.first(where: { $0.normalizedWord == normalized }) {
+            let existing = learnedWordsCache.first(where: { $0.normalizedWord == normalized })
+        {
             clearRevertCount(forNormalizedWord: normalized)
             return existing
         }
@@ -148,10 +148,10 @@ final class PersonalDictionaryService {
     }
 
     // MARK: - Storage
-
     private func loadLearnedWordsFromStorage() -> [LearnedWordEntry] {
         guard let data = defaults.data(forKey: PersonalDictionaryConfiguration.learnedWordsKey),
-              let words = try? decoder.decode([LearnedWordEntry].self, from: data) else {
+            let words = try? decoder.decode([LearnedWordEntry].self, from: data)
+        else {
             return []
         }
         return words
@@ -170,9 +170,9 @@ final class PersonalDictionaryService {
     }
 
     // MARK: - Revert Counts
-
     private func loadRevertCounts() -> [String: Int] {
-        defaults.dictionary(forKey: PersonalDictionaryConfiguration.revertCountsKey) as? [String: Int] ?? [:]
+        defaults.dictionary(forKey: PersonalDictionaryConfiguration.revertCountsKey)
+            as? [String: Int] ?? [:]
     }
 
     private func saveRevertCounts(_ counts: [String: Int]) {

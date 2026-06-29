@@ -1,23 +1,27 @@
 import UIKit
 
 // MARK: - Suggestion Pipeline
-
 extension AutocorrectionEngine {
     func suggestionCandidateResults(
         for context: String,
         boostedTerms: [SuggestionBoostTerm] = []
     ) -> (token: CorrectionToken, results: [AutocorrectionResult])? {
-        guard let prepared = preparedContext(for: context, minimumTokenLength: 1) else { return nil }
+        guard let prepared = preparedContext(for: context, minimumTokenLength: 1) else {
+            return nil
+        }
 
         var rankedCandidates = baseCandidateResults(for: prepared).map { result in
             (result: result, strength: SuggestionStrength.strongRepair)
         }
-        rankedCandidates.append(contentsOf: suggestionTextCheckerResults(for: prepared.token, guesses: prepared.guesses))
-        rankedCandidates.append(contentsOf: suggestionProvider.candidates(
-            for: prepared,
-            engine: self,
-            boostedTerms: boostedTerms
-        ))
+        rankedCandidates.append(
+            contentsOf: suggestionTextCheckerResults(for: prepared.token, guesses: prepared.guesses)
+        )
+        rankedCandidates.append(
+            contentsOf: suggestionProvider.candidates(
+                for: prepared,
+                engine: self,
+                boostedTerms: boostedTerms
+            ))
 
         // Sort BEFORE de-duplicating so that when the same word arrives from
         // multiple sources (e.g. localLexicon and textChecker) the highest
@@ -25,7 +29,8 @@ extension AutocorrectionEngine {
         // intent. De-duplicating first kept whichever source was appended
         // earliest, which let low-priority copies bury a strong correction.
         var seen = Set<String>()
-        let uniqueResults = rankedCandidates
+        let uniqueResults =
+            rankedCandidates
             .sorted { lhs, rhs in
                 if lhs.strength != rhs.strength {
                     return lhs.strength < rhs.strength
@@ -38,8 +43,12 @@ extension AutocorrectionEngine {
                 if lhs.result.confidence != rhs.result.confidence {
                     return lhs.result.confidence > rhs.result.confidence
                 }
-                return rank(lhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
-                    < rank(rhs.result.corrected.lowercased(), against: prepared.token.correctionTargetLowercased)
+                return rank(
+                    lhs.result.corrected.lowercased(),
+                    against: prepared.token.correctionTargetLowercased)
+                    < rank(
+                        rhs.result.corrected.lowercased(),
+                        against: prepared.token.correctionTargetLowercased)
             }
             .filter { candidate in
                 let key = candidate.result.corrected.lowercased()
@@ -54,7 +63,9 @@ extension AutocorrectionEngine {
         return (prepared.token, Array(uniqueResults.prefix(2)))
     }
 
-    private func displayResult(_ result: AutocorrectionResult, for prepared: PreparedCorrectionContext) -> AutocorrectionResult {
+    private func displayResult(
+        _ result: AutocorrectionResult, for prepared: PreparedCorrectionContext
+    ) -> AutocorrectionResult {
         guard prepared.patternContext.isAtSentenceStart else { return result }
         return AutocorrectionResult(
             charsToDelete: result.charsToDelete,
@@ -99,8 +110,13 @@ extension AutocorrectionEngine {
         }
     }
 
-    func suggestionTextCheckerResults(for token: CorrectionToken, guesses: [String]) -> [(result: AutocorrectionResult, strength: SuggestionStrength)] {
-        guard !shouldBlockTrailingDuplicateCorrection(input: token.correctionTargetLowercased, guesses: guesses) else {
+    func suggestionTextCheckerResults(for token: CorrectionToken, guesses: [String]) -> [(
+        result: AutocorrectionResult, strength: SuggestionStrength
+    )] {
+        guard
+            !shouldBlockTrailingDuplicateCorrection(
+                input: token.correctionTargetLowercased, guesses: guesses)
+        else {
             return []
         }
 
@@ -110,16 +126,23 @@ extension AutocorrectionEngine {
         )
 
         return orderedGuesses.compactMap { guess in
-            guard let result = makeResult(
-                for: token,
-                correctedLowercased: guess,
-                confidence: confidenceScore(input: token.correctionTargetLowercased, candidate: guess),
-                source: .textChecker
-            ) else {
+            guard
+                let result = makeResult(
+                    for: token,
+                    correctedLowercased: guess,
+                    confidence: confidenceScore(
+                        input: token.correctionTargetLowercased, candidate: guess),
+                    source: .textChecker
+                )
+            else {
                 return nil
             }
 
-            return (result: result, strength: suggestionStrength(input: token.correctionTargetLowercased, candidate: guess))
+            return (
+                result: result,
+                strength: suggestionStrength(
+                    input: token.correctionTargetLowercased, candidate: guess)
+            )
         }
     }
 
@@ -174,11 +197,9 @@ extension AutocorrectionEngine {
         }
 
         return input.count >= 6
-            && (
-                hasSameOuterLetters(input, candidate)
+            && (hasSameOuterLetters(input, candidate)
                 || commonPrefixLength(input, candidate) >= 2
-                || strongSuggestionShapeMatch(input: input, candidate: candidate)
-            )
+                || strongSuggestionShapeMatch(input: input, candidate: candidate))
     }
 
     func maximumSuggestionDistance(for input: String) -> Int {
@@ -202,7 +223,9 @@ extension AutocorrectionEngine {
         }
 
         let distance = damerauLevenshteinDistance(input, candidate)
-        if distance <= 1 || isSingleTransposition(input, candidate) || isLikelyApostropheVariant(input: input, candidate: candidate) {
+        if distance <= 1 || isSingleTransposition(input, candidate)
+            || isLikelyApostropheVariant(input: input, candidate: candidate)
+        {
             return .strongRepair
         }
 

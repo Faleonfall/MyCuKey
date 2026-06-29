@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Suggestion Bar Models
-
 enum SuggestionMode: Equatable {
     case currentToken
     case nextWord
@@ -47,7 +46,6 @@ struct SuggestionBarState: Equatable {
 }
 
 // MARK: - Suggestion Context
-
 struct SuggestionContext: Equatable {
     let mode: SuggestionMode
     let rawContext: String
@@ -82,8 +80,9 @@ struct SuggestionContext: Equatable {
         }
 
         guard let token = suggestionToken(in: context),
-              token.correctionTarget.count >= 1,
-              token.correctionTarget.last?.isLetter == true else {
+            token.correctionTarget.count >= 1,
+            token.correctionTarget.last?.isLetter == true
+        else {
             return nil
         }
 
@@ -104,14 +103,14 @@ struct SuggestionContext: Equatable {
     }
 
     // MARK: - Context Construction
-
     private static func nextWordContext(
         rawContext: String,
         activeContext: String,
         trailingBoundary: String,
         predictionInsertionPrefix: String
     ) -> SuggestionContext {
-        let sentenceStart = isSentenceStart(after: activeContext, trailingBoundary: trailingBoundary)
+        let sentenceStart = isSentenceStart(
+            after: activeContext, trailingBoundary: trailingBoundary)
         return SuggestionContext(
             mode: .nextWord,
             rawContext: rawContext,
@@ -127,7 +126,6 @@ struct SuggestionContext: Equatable {
     }
 
     // MARK: - Tokenization
-
     private static func suggestionToken(in context: String) -> CorrectionToken? {
         var rawToken = ""
         for character in context.reversed() {
@@ -187,8 +185,9 @@ struct SuggestionContext: Equatable {
     }
 
     // MARK: - Boundary Helpers
-
-    private static func isSentenceStart(after activeContext: String, trailingBoundary: String) -> Bool {
+    private static func isSentenceStart(after activeContext: String, trailingBoundary: String)
+        -> Bool
+    {
         if trailingBoundary.contains("\n") {
             return true
         }

@@ -1,10 +1,13 @@
 import Testing
+
 @testable import MyCuKey
 
 private func makeDecoder() -> UnifiedDecoder {
     let trie = WordTrie()
-    for (w, s) in [("the", 10000.0), ("they", 600.0), ("then", 500.0),
-                   ("there", 800.0), ("cat", 900.0)] {
+    for (w, s) in [
+        ("the", 10000.0), ("they", 600.0), ("then", 500.0),
+        ("there", 800.0), ("cat", 900.0),
+    ] {
         trie.insert(w, score: s)
     }
     return UnifiedDecoder(trie: trie, personalDictionary: .shared)

@@ -1,5 +1,6 @@
 import Testing
 import UIKit
+
 @testable import MyCuKey
 
 // Roadmap #1: decoder-driven silent auto-apply. The trie noisy-channel decoder
@@ -38,7 +39,6 @@ struct DecoderAutoApplyTests {
     }
 
     // MARK: - Roadmap #2: context disambiguation
-
     @Test func previousWordBreaksEditDistanceTies() {
         let engine = AutocorrectionEngine()
         #expect(engine.evaluate(context: "fifty fivd")?.corrected == "five")

@@ -1,16 +1,15 @@
 import UIKit
 
 // MARK: - Pattern Buckets
-
 extension AutocorrectionEngine {
     private static let trustedMediumCorrections: [String: String] = [
         "yur": "your",
-        "okey": "okay"
+        "okey": "okay",
     ]
 
     private static let mergedTokenCorrections: [String: String] = [
         "noone": "no one",
-        "alot": "a lot"
+        "alot": "a lot",
     ]
 
     private static let apostropheRepairCandidates: [String] = [
@@ -20,7 +19,7 @@ extension AutocorrectionEngine {
         "where's",
         "there's",
         "who's",
-        "it's"
+        "it's",
     ]
 
     static let keyboardNeighborMap: [Character: Set<Character>] = [
@@ -49,11 +48,13 @@ extension AutocorrectionEngine {
         "w": ["q", "a", "s", "e"],
         "x": ["z", "s", "d", "c"],
         "y": ["t", "g", "h", "u"],
-        "z": ["a", "s", "x"]
+        "z": ["a", "s", "x"],
     ]
 
     func patternResult(for context: PatternEvaluationContext) -> AutocorrectionResult? {
-        if let trustedMediumCandidate = trustedMediumCandidate(input: context.token.correctionTargetLowercased) {
+        if let trustedMediumCandidate = trustedMediumCandidate(
+            input: context.token.correctionTargetLowercased)
+        {
             return makeResult(
                 for: context.token,
                 correctedLowercased: trustedMediumCandidate,
@@ -62,7 +63,9 @@ extension AutocorrectionEngine {
             )
         }
 
-        if let mergedTokenCandidate = mergedTokenCandidate(input: context.token.correctionTargetLowercased) {
+        if let mergedTokenCandidate = mergedTokenCandidate(
+            input: context.token.correctionTargetLowercased)
+        {
             return makeResult(
                 for: context.token,
                 correctedLowercased: mergedTokenCandidate,
@@ -80,7 +83,9 @@ extension AutocorrectionEngine {
             )
         }
 
-        if let generatedNearbyKeyCandidate = generatedNearbyKeyCandidate(input: context.token.correctionTargetLowercased) {
+        if let generatedNearbyKeyCandidate = generatedNearbyKeyCandidate(
+            input: context.token.correctionTargetLowercased)
+        {
             return makeResult(
                 for: context.token,
                 correctedLowercased: generatedNearbyKeyCandidate,
@@ -98,7 +103,9 @@ extension AutocorrectionEngine {
             )
         }
 
-        if let trailingDuplicateCandidate = unambiguousTrailingDuplicateCandidate(input: context.token.correctionTargetLowercased, guesses: context.guesses) {
+        if let trailingDuplicateCandidate = unambiguousTrailingDuplicateCandidate(
+            input: context.token.correctionTargetLowercased, guesses: context.guesses)
+        {
             return makeResult(
                 for: context.token,
                 correctedLowercased: trailingDuplicateCandidate,
@@ -111,7 +118,6 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Curated Safe Repairs
-
     func trustedMediumCandidate(input: String) -> String? {
         Self.trustedMediumCorrections[input]
     }
@@ -121,11 +127,12 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Contextual Repairs
-
     func apostropheRepairCandidate(for context: PatternEvaluationContext) -> String? {
         let input = context.token.correctionTargetLowercased
         guard !CommonWordLexicon.contains(input) else { return nil }
-        guard context.isAtSentenceStart || context.previousTokenLowercased == "you" else { return nil }
+        guard context.isAtSentenceStart || context.previousTokenLowercased == "you" else {
+            return nil
+        }
 
         let candidates = Self.apostropheRepairCandidates.filter { candidate in
             let unwrapped = candidate.replacingOccurrences(of: "'", with: "")
@@ -138,12 +145,12 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Nearby-Key Repairs
-
     func generatedNearbyKeyCandidate(input: String) -> String? {
         guard input.count == 3 else { return nil }
         guard !CommonWordLexicon.contains(input) else { return nil }
 
-        let ranked = CommonWordLexicon.words.compactMap { candidate -> (String, (Int, Int, Int, Int, Int))? in
+        let ranked = CommonWordLexicon.words.compactMap {
+            candidate -> (String, (Int, Int, Int, Int, Int))? in
             guard candidate.count == input.count else { return nil }
             guard isSafeMediumLengthRescue(input: input, candidate: candidate) else { return nil }
             return (candidate, rank(candidate, against: input))
@@ -181,7 +188,9 @@ extension AutocorrectionEngine {
         let inputChars = Array(input)
         let candidateChars = Array(candidate)
         let mismatchedIndexes = inputChars.indices.filter { inputChars[$0] != candidateChars[$0] }
-        guard mismatchedIndexes.count == 1, mismatchedIndexes.first == inputChars.startIndex else { return false }
+        guard mismatchedIndexes.count == 1, mismatchedIndexes.first == inputChars.startIndex else {
+            return false
+        }
 
         let typed = inputChars[inputChars.startIndex]
         let corrected = candidateChars[candidateChars.startIndex]
@@ -219,12 +228,13 @@ extension AutocorrectionEngine {
     }
 
     // MARK: - Duplicate Handling
-
     func unambiguousTrailingDuplicateCandidate(input: String, guesses: [String]) -> String? {
         guard input.count >= 5 else { return nil }
         guard let last = input.last else { return nil }
         guard input.suffix(2).allSatisfy({ $0 == last }) else { return nil }
-        guard !shouldBlockTrailingDuplicateCorrection(input: input, guesses: guesses) else { return nil }
+        guard !shouldBlockTrailingDuplicateCorrection(input: input, guesses: guesses) else {
+            return nil
+        }
 
         let collapsed = String(input.dropLast())
         guard collapsed.count >= 5 else { return nil }
@@ -237,7 +247,9 @@ extension AutocorrectionEngine {
 
     func shouldBlockTrailingDuplicateCorrection(input: String, guesses: [String]) -> Bool {
         guard input.count >= 5 else { return false }
-        guard let last = input.last, input.suffix(2).allSatisfy({ $0 == last }) else { return false }
+        guard let last = input.last, input.suffix(2).allSatisfy({ $0 == last }) else {
+            return false
+        }
 
         let collapsed = String(input.dropLast())
         let plausibleAlternatives = Set(

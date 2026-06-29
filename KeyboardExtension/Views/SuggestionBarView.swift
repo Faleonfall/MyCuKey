@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Suggestion Bar
-
 struct SuggestionBarView: View {
     private enum Metrics {
         static let horizontalPadding: CGFloat = 10
@@ -90,7 +89,6 @@ struct SuggestionBarView: View {
 }
 
 // MARK: - Press Feedback
-
 private struct SuggestionCellButtonStyle: ButtonStyle {
     let isEnabled: Bool
 
@@ -110,9 +108,12 @@ private struct SuggestionCellButtonStyle: ButtonStyle {
         state: SuggestionBarState(
             mode: .currentToken,
             cells: [
-                SuggestionBarCell(text: "Teh", source: .userInput, role: .original, confidence: 1.0),
-                SuggestionBarCell(text: "The", source: .deterministicRule, role: .suggestion, confidence: 0.99),
-                SuggestionBarCell(text: "Ten", source: .textChecker, role: .suggestion, confidence: 0.96)
+                SuggestionBarCell(
+                    text: "Teh", source: .userInput, role: .original, confidence: 1.0),
+                SuggestionBarCell(
+                    text: "The", source: .deterministicRule, role: .suggestion, confidence: 0.99),
+                SuggestionBarCell(
+                    text: "Ten", source: .textChecker, role: .suggestion, confidence: 0.96),
             ],
             context: SuggestionContext.parse("Teh")!
         ),

@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Numeric Keyboard
-
 struct NumericKeyboardView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -9,12 +8,12 @@ struct NumericKeyboardView: View {
     var letterKeyBg: Color
     var actionKeyBg: Color
 
-    private let topRowPopupAlignments = splitTopRowPopupAlignments(for: KeyboardLayout.numericTopRow)
+    private let topRowPopupAlignments = splitTopRowPopupAlignments(
+        for: KeyboardLayout.numericTopRow)
 
     private let middleRowPopupAlignments = edgePopupAlignments(leftKey: "-", rightKey: "'")
 
     // MARK: - Layout
-
     var body: some View {
         VStack(spacing: 0) {
             KeyboardRow(

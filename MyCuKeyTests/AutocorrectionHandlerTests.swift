@@ -1,14 +1,13 @@
 import Testing
 import UIKit
+
 @testable import MyCuKey
 
 // MARK: - Handler Correction Tests
-
 @MainActor
 struct AutocorrectionHandlerTests {
 
     // MARK: - Correction Triggers
-
     @Test func testHandlerPreservesQuestionMarkAfterAutocorrection() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
@@ -130,7 +129,6 @@ struct AutocorrectionHandlerTests {
     }
 
     // MARK: - Standalone I
-
     @Test func testStandaloneLowercaseIBecomesCapitalIWhenFollowedBySpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: " i")
@@ -192,7 +190,6 @@ struct AutocorrectionHandlerTests {
     }
 
     // MARK: - Delete and Revert
-
     @Test func testDeleteRevertsLastAutocorrectionWithSpace() async throws {
         let handler = KeyboardActionHandler(personalDictionaryService: makeIsolatedService())
         let controller = MockKeyboardController(beforeInput: "teh")
@@ -243,7 +240,6 @@ struct AutocorrectionHandlerTests {
     }
 
     // MARK: - Learned Words
-
     @Test func testLearnedWordSuppressesFutureAutocorrection() async throws {
         let service = makeIsolatedService()
         _ = service.addWord("teh")

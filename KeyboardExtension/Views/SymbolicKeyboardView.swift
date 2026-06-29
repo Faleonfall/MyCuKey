@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Symbolic Keyboard
-
 struct SymbolicKeyboardView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -9,12 +8,12 @@ struct SymbolicKeyboardView: View {
     var letterKeyBg: Color
     var actionKeyBg: Color
 
-    private let topRowPopupAlignments = splitTopRowPopupAlignments(for: KeyboardLayout.symbolicTopRow)
+    private let topRowPopupAlignments = splitTopRowPopupAlignments(
+        for: KeyboardLayout.symbolicTopRow)
 
     private let middleRowPopupAlignments = edgePopupAlignments(leftKey: "_", rightKey: "•")
 
     // MARK: - Layout
-
     var body: some View {
         VStack(spacing: 0) {
             KeyboardRow(

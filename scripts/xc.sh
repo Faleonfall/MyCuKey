@@ -14,6 +14,8 @@
 # Usage:
 #   scripts/xc.sh build        # build the app for the pinned simulator
 #   scripts/xc.sh test         # run the MyCuKeyTests unit suite
+#   scripts/xc.sh format       # swift-format all sources in place
+#   scripts/xc.sh format-check # fail if any source is unformatted (CI gate)
 #   scripts/xc.sh boot         # boot the pinned simulator
 #   scripts/xc.sh clean        # remove the isolated DerivedData
 #   scripts/xc.sh which        # print the resolved simulator + paths
@@ -121,6 +123,20 @@ case "$cmd" in
     echo ">> test $TEST_SCHEME on $DEVICE_NAME ($udid)"
     run_xcodebuild test "${COMMON_ARGS[@]}" -scheme "$TEST_SCHEME" test
     ;;
+  format)
+    echo ">> swift-format all sources in place"
+    find "$ROOT/KeyboardExtension" "$ROOT/MyCuKey" "$ROOT/MyCuKeyTests" "$ROOT/MyCuKeyUITests" \
+      -name '*.swift' -print0 \
+      | xargs -0 xcrun swift-format format --in-place --
+    echo "formatted"
+    ;;
+  format-check)
+    echo ">> swift-format lint (strict)"
+    find "$ROOT/KeyboardExtension" "$ROOT/MyCuKey" "$ROOT/MyCuKeyTests" "$ROOT/MyCuKeyUITests" \
+      -name '*.swift' -print0 \
+      | xargs -0 xcrun swift-format lint --strict --
+    echo "clean"
+    ;;
   uitest)
     # End-to-end test of the live keyboard extension. Make MyCuKey the only
     # software keyboard so focusing a field presents it directly (no globe
@@ -151,7 +167,7 @@ case "$cmd" in
     echo "project: $ROOT/$PROJECT"
     ;;
   *)
-    echo "usage: scripts/xc.sh {build|test|boot|clean|which}" >&2
+    echo "usage: scripts/xc.sh {build|test|format|format-check|boot|clean|which}" >&2
     exit 2
     ;;
 esac

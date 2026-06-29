@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Alphabetic Keyboard
-
 struct AlphabeticKeyboardView: View {
     @ObservedObject var actionHandler: KeyboardActionHandler
     var needsInputModeSwitchKey: Bool
@@ -9,10 +8,10 @@ struct AlphabeticKeyboardView: View {
     var letterKeyBg: Color
     var actionKeyBg: Color
 
-    private let topRowPopupAlignments = splitTopRowPopupAlignments(for: KeyboardLayout.alphabeticTopRow)
+    private let topRowPopupAlignments = splitTopRowPopupAlignments(
+        for: KeyboardLayout.alphabeticTopRow)
 
     // MARK: - Layout
-
     var body: some View {
         VStack(spacing: 0) {
             KeyboardRow(
@@ -42,7 +41,9 @@ struct AlphabeticKeyboardView: View {
 
             HStack(spacing: 0) {
                 let shiftBg = actionHandler.isShiftEnabled ? letterKeyBg : actionKeyBg
-                let shiftIcon = actionHandler.isCapsLocked ? "capslock.fill" : (actionHandler.isShiftEnabled ? "shift.fill" : "shift")
+                let shiftIcon =
+                    actionHandler.isCapsLocked
+                    ? "capslock.fill" : (actionHandler.isShiftEnabled ? "shift.fill" : "shift")
 
                 ActionKeyView(title: "Shift", systemImage: shiftIcon, backgroundColor: shiftBg) {
                     actionHandler.handleShiftPress()
@@ -79,7 +80,6 @@ struct AlphabeticKeyboardView: View {
     }
 
     // MARK: - Display
-
     private func displayedLetter(for key: String) -> String {
         actionHandler.isShiftEnabled ? key : key.lowercased()
     }

@@ -1,7 +1,6 @@
 import SwiftUI
 
 // MARK: - Phase 2 Spatial Capture
-
 let keyboardCoordinateSpaceName = "keyboardSpatial"
 
 // Reports a key's center and the landing point of each tap, both in the shared
@@ -19,19 +18,22 @@ struct SpatialCaptureModifier: ViewModifier {
                 GeometryReader { proxy in
                     Color.clear
                         .onAppear { onCenter(character, Self.center(proxy)) }
-                        .onChange(of: proxy.frame(in: .named(keyboardCoordinateSpaceName)).minX) { _, _ in
+                        .onChange(of: proxy.frame(in: .named(keyboardCoordinateSpaceName)).minX) {
+                            _, _ in
                             onCenter(character, Self.center(proxy))
                         }
                 }
             )
             .simultaneousGesture(
-                DragGesture(minimumDistance: 0, coordinateSpace: .named(keyboardCoordinateSpaceName))
-                    .onChanged { value in
-                        guard !reportedThisPress else { return }
-                        reportedThisPress = true
-                        onTap(value.startLocation)
-                    }
-                    .onEnded { _ in reportedThisPress = false }
+                DragGesture(
+                    minimumDistance: 0, coordinateSpace: .named(keyboardCoordinateSpaceName)
+                )
+                .onChanged { value in
+                    guard !reportedThisPress else { return }
+                    reportedThisPress = true
+                    onTap(value.startLocation)
+                }
+                .onEnded { _ in reportedThisPress = false }
             )
     }
 
@@ -58,7 +60,6 @@ extension View {
 }
 
 // MARK: - Keyboard Layout
-
 enum KeyboardLayout {
     static let alphabeticTopRow = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"]
     static let alphabeticMiddleRow = ["A", "S", "D", "F", "G", "H", "J", "K", "L"]
@@ -73,7 +74,6 @@ enum KeyboardLayout {
 }
 
 // MARK: - Shared Metrics
-
 enum KeyboardMetrics {
     static let rowHeight: CGFloat = 53
     static let sideKeyWidth: CGFloat = 44
@@ -82,19 +82,20 @@ enum KeyboardMetrics {
 }
 
 // MARK: - Popup Alignment Helpers
-
 func splitTopRowPopupAlignments(for keys: [String]) -> [String: KeyPopupAlignment] {
     let midpoint = keys.count / 2
-    return Dictionary(uniqueKeysWithValues: keys.enumerated().map { index, key in
-        let alignment: KeyPopupAlignment = index < midpoint ? .diagonalFromLeft : .diagonalFromRight
-        return (key, alignment)
-    })
+    return Dictionary(
+        uniqueKeysWithValues: keys.enumerated().map { index, key in
+            let alignment: KeyPopupAlignment =
+                index < midpoint ? .diagonalFromLeft : .diagonalFromRight
+            return (key, alignment)
+        })
 }
 
 func edgePopupAlignments(leftKey: String, rightKey: String) -> [String: KeyPopupAlignment] {
     [
         leftKey: .insetFromLeft,
-        rightKey: .insetFromRight
+        rightKey: .insetFromRight,
     ]
 }
 
@@ -112,7 +113,6 @@ private func popupZIndex(for alignment: KeyPopupAlignment, index: Int, count: In
 }
 
 // MARK: - Shared Row Views
-
 struct KeyboardRow: View {
     let keys: [String]
     let backgroundColor: Color
@@ -226,13 +226,15 @@ struct KeyboardCenteredBottomRow: View {
 // MARK: - Next Keyboard Button Wrapper
 struct NextKeyboardButton: UIViewRepresentable {
     var controller: UIInputViewController
-    
+
     func makeUIView(context: Context) -> UIButton {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .light)
         button.setImage(UIImage(systemName: "globe", withConfiguration: config), for: .normal)
         button.tintColor = .label
-        button.addTarget(controller, action: #selector(UIInputViewController.handleInputModeList(from:with:)), for: .allTouchEvents)
+        button.addTarget(
+            controller, action: #selector(UIInputViewController.handleInputModeList(from:with:)),
+            for: .allTouchEvents)
         return button
     }
     func updateUIView(_ uiView: UIButton, context: Context) {}
@@ -245,9 +247,13 @@ struct KeyboardView: View {
     var controller: UIInputViewController
 
     @Environment(\.colorScheme) var colorScheme
-    
-    var letterKeyBg: Color { colorScheme == .dark ? Color(UIColor.systemGray2) : Color(UIColor.systemBackground) }
-    var actionKeyBg: Color { colorScheme == .dark ? Color(UIColor.systemGray4) : Color(UIColor.systemBackground) }
+
+    var letterKeyBg: Color {
+        colorScheme == .dark ? Color(UIColor.systemGray2) : Color(UIColor.systemBackground)
+    }
+    var actionKeyBg: Color {
+        colorScheme == .dark ? Color(UIColor.systemGray4) : Color(UIColor.systemBackground)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -256,38 +262,40 @@ struct KeyboardView: View {
             // Keep a stable top strip across all keyboard modes so switching
             // layouts does not change the extension height and cause a jump.
             SuggestionBarView(
-                state: actionHandler.currentKeyboardType == .alphabetic ? actionHandler.suggestionBarState : nil,
+                state: actionHandler.currentKeyboardType == .alphabetic
+                    ? actionHandler.suggestionBarState : nil,
                 actionHandler: actionHandler
             )
 
             switch actionHandler.currentKeyboardType {
             case .alphabetic:
                 AlphabeticKeyboardView(
-                    actionHandler: actionHandler, 
-                    needsInputModeSwitchKey: needsInputModeSwitchKey, 
-                    controller: controller, 
-                    letterKeyBg: letterKeyBg, 
+                    actionHandler: actionHandler,
+                    needsInputModeSwitchKey: needsInputModeSwitchKey,
+                    controller: controller,
+                    letterKeyBg: letterKeyBg,
                     actionKeyBg: actionKeyBg
                 )
             case .numeric:
                 NumericKeyboardView(
-                    actionHandler: actionHandler, 
-                    needsInputModeSwitchKey: needsInputModeSwitchKey, 
-                    controller: controller, 
-                    letterKeyBg: letterKeyBg, 
+                    actionHandler: actionHandler,
+                    needsInputModeSwitchKey: needsInputModeSwitchKey,
+                    controller: controller,
+                    letterKeyBg: letterKeyBg,
                     actionKeyBg: actionKeyBg
                 )
             case .symbolic:
                 SymbolicKeyboardView(
-                    actionHandler: actionHandler, 
-                    needsInputModeSwitchKey: needsInputModeSwitchKey, 
-                    controller: controller, 
-                    letterKeyBg: letterKeyBg, 
+                    actionHandler: actionHandler,
+                    needsInputModeSwitchKey: needsInputModeSwitchKey,
+                    controller: controller,
+                    letterKeyBg: letterKeyBg,
                     actionKeyBg: actionKeyBg
                 )
             }
         }
         .padding(.horizontal, 3)
-        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: actionHandler.currentKeyboardType)
+        .animation(
+            .spring(response: 0.3, dampingFraction: 0.8), value: actionHandler.currentKeyboardType)
     }
 }

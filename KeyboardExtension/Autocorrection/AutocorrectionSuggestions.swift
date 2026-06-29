@@ -1,5 +1,4 @@
 // MARK: - Suggestion Models
-
 struct AutocorrectionSuggestion: Equatable {
     let text: String
     let source: CorrectionSource

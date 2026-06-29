@@ -1,7 +1,6 @@
 import Foundation
 
 // MARK: - Unified Decoder
-
 // Noisy-channel decoder over the WordTrie: unigram log-frequency minus edit
 // cost, with protect-in-vocab and an F0.5-favoring auto-apply gate. Used as the
 // robust correction backbone alongside the engine's curated fast-paths.
@@ -33,13 +32,16 @@ struct UnifiedDecoder {
     // (good for in-progress suggestions). Auto-apply runs on a completed token,
     // where those completions are noise that injects spurious distance-0 entries,
     // so it asks for edit-distance corrections only.
-    func candidates(for token: String, limit: Int? = nil, includePrefixCompletions: Bool = true) -> [Candidate] {
+    func candidates(for token: String, limit: Int? = nil, includePrefixCompletions: Bool = true)
+        -> [Candidate]
+    {
         let typed = token.lowercased()
         guard !typed.isEmpty else { return [] }
 
         var matches = trie.search(typed, maxDistance: maxEditDistance)
         if includePrefixCompletions {
-            matches.append(contentsOf: trie.prefixCompletions(for: typed, limit: prefixCandidateLimit))
+            matches.append(
+                contentsOf: trie.prefixCompletions(for: typed, limit: prefixCandidateLimit))
         }
 
         var best: [String: WordTrie.Match] = [:]
@@ -68,10 +70,12 @@ extension UnifiedDecoder {
         let lm = Foundation.log(max(match.score, 1)) / logMaxScore
         let editPenalty = Double(match.distance) * editWeight
         let rawScore = lm - editPenalty
-        let base = distanceConfidence[match.distance] ?? max(0, 0.62 - Double(match.distance - 2) * 0.2)
+        let base =
+            distanceConfidence[match.distance] ?? max(0, 0.62 - Double(match.distance - 2) * 0.2)
         let freqBoost = (lm - 0.5) * 0.06
         let confidence = max(0, min(1, base + freqBoost))
-        return Candidate(word: match.word, score: rawScore, distance: match.distance, confidence: confidence)
+        return Candidate(
+            word: match.word, score: rawScore, distance: match.distance, confidence: confidence)
     }
 }
 
@@ -91,7 +95,8 @@ extension UnifiedDecoder {
         let suggestions = candidates(for: token)
         guard !isProtected(token) else { return (nil, suggestions) }
         guard let top = suggestions.first, top.distance > 0,
-              top.confidence >= autoApplyConfidence else {
+            top.confidence >= autoApplyConfidence
+        else {
             return (nil, suggestions)
         }
         if suggestions.count >= 2, suggestions[1].confidence >= top.confidence - autoApplyMargin {
