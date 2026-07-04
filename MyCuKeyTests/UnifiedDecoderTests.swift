@@ -31,7 +31,9 @@ private func makeDecoder() -> UnifiedDecoder {
     let repair = decoder.candidates(for: "teh").first { $0.word == "the" }
     #expect(repair != nil)
     #expect(repair!.distance == 1)
-    #expect(repair!.confidence >= 0.80 && repair!.confidence < 0.95)
+    // teh -> the is a transposition: mechanically the likeliest slip, so the
+    // adjacency-weighted channel trusts it well above a generic edit.
+    #expect(repair!.confidence >= 0.80 && repair!.confidence < 0.99)
 }
 
 @Test func decoderProtectsValidWordsAndGatesAutoApply() {

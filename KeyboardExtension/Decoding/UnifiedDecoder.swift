@@ -21,6 +21,9 @@ struct UnifiedDecoder {
         let word: String
         let score: Double
         let distance: Int
+        // Adjacency-weighted edit cost (see KeyAdjacency / EditCost). Lower is
+        // a mechanically likelier slip; equals the distance when unweighted.
+        let cost: Double
         let confidence: Double
     }
 
@@ -38,7 +41,7 @@ struct UnifiedDecoder {
         let typed = token.lowercased()
         guard !typed.isEmpty else { return [] }
 
-        var matches = trie.search(typed, maxDistance: maxEditDistance)
+        var matches = trie.searchWeighted(typed, maxDistance: maxEditDistance)
         if includePrefixCompletions {
             matches.append(
                 contentsOf: trie.prefixCompletions(for: typed, limit: prefixCandidateLimit))
@@ -46,7 +49,7 @@ struct UnifiedDecoder {
 
         var best: [String: WordTrie.Match] = [:]
         for match in matches {
-            if let existing = best[match.word], existing.distance <= match.distance { continue }
+            if let existing = best[match.word], existing.cost <= match.cost { continue }
             best[match.word] = match
         }
 
@@ -64,18 +67,21 @@ struct UnifiedDecoder {
 extension UnifiedDecoder {
     private var logMaxScore: Double { Foundation.log(10000) }
     private var editWeight: Double { 0.30 }
-    private var distanceConfidence: [Int: Double] { [0: 0.99, 1: 0.86, 2: 0.62] }
 
     func scored(_ match: WordTrie.Match) -> Candidate {
         let lm = Foundation.log(max(match.score, 1)) / logMaxScore
-        let editPenalty = Double(match.distance) * editWeight
+        let editPenalty = match.cost * editWeight
         let rawScore = lm - editPenalty
-        let base =
-            distanceConfidence[match.distance] ?? max(0, 0.62 - Double(match.distance - 2) * 0.2)
+        // Continuous confidence over the weighted cost, anchored to the old
+        // per-distance table: cost 0 -> 0.99, 1 -> 0.86, 2 -> ~0.62. A single
+        // adjacent-key slip (cost 0.5) lands near 0.94 — mechanically plausible
+        // repairs are trusted more than arbitrary same-distance edits.
+        let base = max(0, 0.99 - 0.07 * match.cost - 0.06 * match.cost * match.cost)
         let freqBoost = (lm - 0.5) * 0.06
         let confidence = max(0, min(1, base + freqBoost))
         return Candidate(
-            word: match.word, score: rawScore, distance: match.distance, confidence: confidence)
+            word: match.word, score: rawScore, distance: match.distance, cost: match.cost,
+            confidence: confidence)
     }
 }
 

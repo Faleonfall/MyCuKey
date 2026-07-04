@@ -91,6 +91,8 @@
 		CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
 		CBBG10012FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
 		CBBG10022FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
+		CBKA10012FA9000000000001 /* KeyAdjacency.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBKA00002FA9000000000001 /* KeyAdjacency.swift */; };
+		CBKA10022FA9000000000001 /* KeyAdjacency.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBKA00002FA9000000000001 /* KeyAdjacency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -182,6 +184,7 @@
 		CBUD00002FA9000000000001 /* UnifiedDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedDecoder.swift; sourceTree = "<group>"; };
 		CBSD00002FA9000000000001 /* SpatialDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialDecoder.swift; sourceTree = "<group>"; };
 		CBBG00002FA9000000000001 /* BigramModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigramModel.swift; sourceTree = "<group>"; };
+		CBKA00002FA9000000000001 /* KeyAdjacency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyAdjacency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -341,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				CBWT00002FA9000000000001 /* WordTrie.swift */,
+				CBKA00002FA9000000000001 /* KeyAdjacency.swift */,
 				CBUD00002FA9000000000001 /* UnifiedDecoder.swift */,
 				CBSD00002FA9000000000001 /* SpatialDecoder.swift */,
 			);
@@ -620,6 +624,7 @@
 				CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */,
 				CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */,
 				CBBG10012FA9000000000001 /* BigramModel.swift in Sources */,
+				CBKA10012FA9000000000001 /* KeyAdjacency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,6 +671,7 @@
 				CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */,
 				CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */,
 				CBBG10022FA9000000000001 /* BigramModel.swift in Sources */,
+				CBKA10022FA9000000000001 /* KeyAdjacency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

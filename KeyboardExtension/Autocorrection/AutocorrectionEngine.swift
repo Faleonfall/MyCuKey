@@ -71,6 +71,9 @@ struct AutocorrectionEngine {
     // Short tokens demand a near-certain context signal before any silent commit.
     private let shortTokenMinAssociation = 0.50
     private let contextAppliedConfidence = 0.90
+    // Candidates within this band of the cheapest weighted repair are treated
+    // as channel-indistinguishable and must be separated by context instead.
+    private let costClusterWidth = 0.15
     // Frequency assumed for a UITextChecker word that our lexicon does not list
     // (e.g. inflections like "spent"). Modest, so it never out-ranks a known
     // common word on frequency alone — it only competes via context.
@@ -103,6 +106,10 @@ struct AutocorrectionEngine {
         // Stable long-word misspellings
         "seperate": "separate",
         "definately": "definitely",
+        "definatly": "definitely",
+        "definitly": "definitely",
+        "definetly": "definitely",
+        "definitley": "definitely",
         "goverment": "government",
         "untill": "until",
         "enviroment": "environment",
@@ -428,11 +435,16 @@ struct AutocorrectionEngine {
         let isShort = typed.count < minimumDecoderAutoApplyLength
 
         // No-context commit is reserved for our frequency-vetted trie vocabulary:
-        // exactly one known word at the winning distance, on a confident token.
+        // exactly one known word in the winning cost cluster, on a confident
+        // token. The cluster is built over the adjacency-weighted cost, so a
+        // transposition or adjacent-key slip separates cleanly from arbitrary
+        // same-distance edits — cases the old integer distance called a tie.
         // System-dictionary words (below) never commit this way; they are only
         // trustworthy when context backs them.
-        if let leader = trieCandidates.first, leader.distance > 0, !isShort {
-            let winners = trieCandidates.filter { $0.distance == leader.distance }
+        if let leader = trieCandidates.min(by: { $0.cost < $1.cost }), leader.distance > 0,
+            !isShort
+        {
+            let winners = costCluster(of: trieCandidates, around: leader)
             if winners.count == 1, leader.confidence >= 0.80 {
                 return leader
             }
@@ -440,12 +452,23 @@ struct AutocorrectionEngine {
 
         // Context path: widen the pool with UITextChecker's guesses so common
         // inflections our lexicon omits ("spent", "things") become reachable, and
-        // let the previous word pick among everything at the winning distance.
+        // let the previous word pick among everything in the winning cost cluster.
         let pool = mergeSystemGuesses(systemGuesses, into: trieCandidates, typed: typed)
-        guard let leader = pool.first, leader.distance > 0 else { return nil }
-        let winners = pool.filter { $0.distance == leader.distance }
+        guard let leader = pool.min(by: { $0.cost < $1.cost }), leader.distance > 0 else {
+            return nil
+        }
+        let winners = costCluster(of: pool, around: leader)
         return contextResolvedCandidate(
             winners: winners, previousWord: previousWord, isShort: isShort)
+    }
+
+    // Candidates whose weighted cost is close enough to the leader's that the
+    // channel model alone cannot separate them. Anything outside the band is a
+    // mechanically less plausible repair and drops out of contention.
+    private func costCluster(
+        of candidates: [UnifiedDecoder.Candidate], around leader: UnifiedDecoder.Candidate
+    ) -> [UnifiedDecoder.Candidate] {
+        candidates.filter { $0.distance > 0 && $0.cost <= leader.cost + costClusterWidth }
     }
 
     // Fold UITextChecker guesses into the trie candidate list as scored
@@ -509,6 +532,7 @@ struct AutocorrectionEngine {
             word: best.candidate.word,
             score: best.candidate.score,
             distance: best.candidate.distance,
+            cost: best.candidate.cost,
             confidence: contextAppliedConfidence
         )
     }

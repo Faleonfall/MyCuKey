@@ -135,5 +135,85 @@ extension BigramModel {
             "will": 60, "were": 64, "like": 62, "do": 58, "and": 56,
         ],
         "time": ["to": 85, "for": 80, "is": 78, "of": 70, "and": 66, "the": 60, "we": 58, "i": 56],
+
+        // High-frequency function words — these appear before most tokens, so
+        // rows here fire far more often than any content-word row.
+        "a": [
+            "lot": 90, "few": 80, "little": 78, "good": 76, "great": 72, "new": 74,
+            "bit": 70, "long": 64, "big": 66, "very": 56, "couple": 62, "day": 58,
+        ],
+        "and": [
+            "the": 90, "i": 88, "then": 76, "it": 74, "a": 72, "we": 70, "you": 68,
+            "that": 66, "he": 60, "she": 58, "they": 62, "now": 56,
+        ],
+        "that": [
+            "is": 90, "was": 86, "the": 78, "it": 74, "i": 76, "you": 70, "we": 66,
+            "would": 60, "will": 62, "they": 58, "he": 56,
+        ],
+        "this": [
+            "is": 100, "was": 80, "one": 66, "time": 64, "year": 62, "week": 60,
+            "morning": 58, "will": 56, "would": 54,
+        ],
+        "is": [
+            "the": 90, "a": 86, "not": 82, "that": 70, "it": 68, "going": 72, "very": 64,
+            "just": 62, "so": 60, "what": 58, "really": 56,
+        ],
+        "was": [
+            "the": 88, "a": 86, "not": 80, "just": 66, "going": 70, "so": 64, "very": 62,
+            "really": 58, "there": 56, "it": 60,
+        ],
+        "have": [
+            "a": 90, "to": 100, "been": 88, "the": 74, "no": 66, "some": 62, "any": 60,
+            "not": 58, "done": 56, "time": 54,
+        ],
+        "has": ["been": 100, "a": 80, "to": 78, "the": 70, "no": 60, "not": 58, "made": 54],
+        "had": [
+            "a": 90, "to": 100, "been": 84, "the": 74, "no": 66, "some": 60, "not": 58,
+            "never": 56,
+        ],
+        "will": ["be": 100, "not": 78, "have": 72, "get": 64, "take": 60, "make": 58, "do": 56],
+        "would": ["be": 100, "have": 84, "not": 74, "like": 78, "love": 60, "make": 56],
+        "can": ["be": 90, "do": 80, "get": 74, "see": 70, "make": 66, "help": 64, "take": 58],
+        "could": ["be": 100, "have": 80, "not": 72, "do": 64, "see": 60, "get": 58],
+        "on": [
+            "the": 100, "a": 76, "my": 70, "this": 66, "that": 62, "it": 60, "your": 58,
+            "top": 56, "his": 54,
+        ],
+        "at": [
+            "the": 100, "least": 76, "a": 70, "all": 68, "this": 62, "my": 60, "home": 64,
+            "work": 62, "night": 58,
+        ],
+        "from": ["the": 100, "a": 74, "my": 68, "his": 58, "her": 56, "this": 60, "you": 54],
+        "about": ["the": 90, "it": 84, "a": 74, "this": 70, "that": 72, "my": 62, "you": 60],
+        "be": [
+            "a": 88, "the": 80, "able": 74, "there": 66, "done": 62, "good": 58, "more": 56,
+            "very": 54,
+        ],
+        "been": ["a": 80, "the": 70, "there": 62, "so": 58, "very": 56, "doing": 54],
+        "but": ["i": 90, "the": 76, "it": 80, "not": 66, "we": 64, "he": 58, "you": 62],
+        "so": ["i": 84, "much": 90, "many": 76, "far": 68, "the": 60, "that": 62, "we": 58],
+        "not": [
+            "the": 70, "a": 66, "sure": 74, "going": 68, "be": 60, "really": 62, "very": 56,
+            "that": 58,
+        ],
+        "just": [
+            "a": 80, "the": 70, "want": 62, "like": 68, "got": 60, "need": 58, "one": 56,
+            "as": 54,
+        ],
+        "very": ["good": 80, "much": 84, "well": 70, "nice": 62, "happy": 58, "long": 56],
+        "there": ["is": 100, "are": 90, "was": 84, "were": 70, "will": 62, "would": 56],
+        "what": ["is": 90, "the": 80, "a": 70, "you": 74, "i": 72, "we": 62, "do": 60],
+        "when": ["the": 80, "i": 88, "you": 82, "we": 74, "it": 70, "he": 58, "they": 60],
+        "going": ["to": 100, "on": 60, "back": 54, "out": 52, "through": 50],
+        "want": ["to": 100, "a": 60, "the": 54, "it": 52, "you": 50, "more": 48],
+        "need": ["to": 100, "a": 62, "the": 56, "some": 52, "more": 54, "it": 50, "help": 48],
+        "like": ["the": 76, "a": 80, "to": 84, "this": 70, "that": 72, "it": 66, "you": 60],
+        "one": ["of": 100, "day": 62, "more": 58, "thing": 60, "who": 52, "is": 54],
+        "out": ["of": 100, "the": 70, "there": 62, "to": 58, "a": 52, "and": 50],
+        "all": ["the": 100, "of": 84, "my": 60, "day": 58, "that": 62, "over": 52, "in": 54],
+        "as": ["a": 84, "the": 80, "well": 76, "much": 60, "long": 58, "soon": 62, "it": 54],
+        "our": ["own": 70, "house": 58, "time": 60, "team": 56, "way": 54, "family": 62],
+        "his": ["own": 70, "life": 64, "way": 60, "name": 58, "head": 54, "wife": 52],
+        "her": ["own": 70, "life": 64, "way": 58, "name": 56, "head": 52, "mom": 50],
     ]
 }

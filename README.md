@@ -116,47 +116,43 @@ The personal dictionary is meant to protect typing trust: names, slang, intentio
 
 ## Request Flow
 
-Simplified view of the main keyboard loop.
+High-altitude view of the main keyboard loop.
 
 ```mermaid
 flowchart TD
-    U[User key gesture] --> V[KeyboardView]
-    V --> S[ActionKeyView / KeyboardButtonStyle]
-    S --> H[KeyboardActionHandler]
+    U[Key gesture] --> V[KeyboardView]
+    V --> H[KeyboardActionHandler]
 
     H --> D{Action}
     D -->|shift or layout| T[Update keyboard state]
-    D -->|delete| R{Pending correction revert}
-    D -->|space or trigger punctuation| Q{Learned word suppresses correction}
-    D -->|regular character| P[textDocumentProxy]
+    D -->|delete| R[Revert correction or delete]
+    D -->|character or trigger| C[Correction pipeline]
 
-    Q -->|yes| N[Normal insert]
-    Q -->|no| C{Contraction or autocorrect match}
-    C -->|yes| A[Apply replacement and store revert]
-    C -->|no| N
-
-    R -->|yes| O[Restore original word]
-    R -->|no| B[deleteBackward]
-
-    A --> P
-    N --> P
-    O --> PD[PersonalDictionaryService]
-    O --> P
-    B --> P
-
-    P --> I[iOS text context]
-    I --> X[textDidChange]
-    X --> AC[Refresh auto-capitalization]
-    AC --> T
+    C --> P[textDocumentProxy]
+    R --> P
+    P --> S[Refresh capitalization and suggestions]
+    S --> BAR[Suggestion bar]
+    BAR -->|tap| P
+    S --> T
     T --> V
 
-    APP[Host app] --> M[Dictionary manager]
-    M --> PD
+    APP[Host app] --> PD[PersonalDictionaryService]
+    R --> PD
     PD --> G[Shared App Group defaults]
 ```
+
+On a character or trigger key the correction pipeline runs these stages in
+order, and the first one that fires wins:
+
+1. Pending suggestion follow-up (punctuation after a committed suggestion, double-space → period)
+2. Standalone lowercase `i` → `I`
+3. Learned-word suppression (personal dictionary blocks the rest)
+4. Contraction repair (`dont` → `don't`)
+5. Autocorrection engine — curated pairs, then UITextChecker single typos, then the adjacency-weighted decoder (silent commit only when the repair is alone in its cost cluster, with bigram context breaking ties)
+6. Plain insert
 
 ## Requirements
 
 - iOS 26.0+
 - Recent Xcode version with iOS 26 SDK support
-- Swift 5
+- Swift 6 toolchain, Swift 5 language mode

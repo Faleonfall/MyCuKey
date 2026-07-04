@@ -117,7 +117,7 @@ extension UnifiedDecoder {
             let total = spatial + lm
             let perTap = spatial / Double(taps.count)
             let confidence = min(1, max(0, 1 + perTap / 3))
-            return Candidate(word: word, score: total, distance: 0, confidence: confidence)
+            return Candidate(word: word, score: total, distance: 0, cost: 0, confidence: confidence)
         }
         .sorted { $0.score > $1.score }
         return Array(scored.prefix(limit))

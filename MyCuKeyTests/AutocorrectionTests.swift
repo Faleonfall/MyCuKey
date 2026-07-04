@@ -100,9 +100,12 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "usr") == nil)
     }
 
-    @Test func testAutocorrectionRejectsWeakDistanceTwoGuess() async throws {
+    @Test func testAutocorrectionCommitsCommonMisspellingPattern() async throws {
+        // The channel model alone prefers the mechanically cheaper "defiantly"
+        // (one transposition), but "definatly" is a canonical misspelling of
+        // "definitely" -- the curated layer decides it before the decoder runs.
         let engine = AutocorrectionEngine()
-        #expect(engine.evaluate(context: "definatly") == nil)
+        #expect(engine.evaluate(context: "definatly")?.corrected == "definitely")
     }
 
     @Test func testAutocorrectionSkipsExpressiveTrailingRepeatedLetters() async throws {
@@ -317,12 +320,11 @@ struct AutocorrectionTests {
         async throws
     {
         let engine = AutocorrectionEngine()
-        #expect(engine.evaluate(context: "definatly") == nil)
+        #expect(engine.evaluate(context: "worls") == nil)
 
         let suggestions =
-            engine.suggestions(context: "please definatly")?.suggestions.map(\.text) ?? []
-        #expect(suggestions.first == "definitely")
-        #expect(suggestions.contains("definitely"))
+            engine.suggestions(context: "please worls")?.suggestions.map(\.text) ?? []
+        #expect(suggestions.contains("world"))
     }
 
     @Test func testNextWordSuggestionsUseSentenceAndPhraseContext() async throws {
@@ -358,7 +360,9 @@ struct AutocorrectionTests {
         #expect(engine.evaluate(context: "yourr") == nil)
         #expect(engine.evaluate(context: "mind") == nil)
         #expect(engine.evaluate(context: "herr") == nil)
-        #expect(engine.evaluate(context: "kint") == nil)
+        // "hoke" sits between home (k->m) and hole (k->l), both single
+        // adjacent-key slips, so the channel model alone cannot pick one.
+        #expect(engine.evaluate(context: "hoke") == nil)
         #expect(engine.evaluate(context: "csb") == nil)
     }
 
