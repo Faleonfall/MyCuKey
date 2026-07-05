@@ -9,7 +9,8 @@ The goal is not feature count. The goal is to make the keyboard feel stable, tru
 ### 1. Correction trust can still break on edge cases
 - **User impact:** good corrections most of the time, but occasional wrong replacements, odd revert flows, or over-learning can damage trust quickly
 - **Goal:** obvious typos correct cleanly, learned words suppress future fights, and revert never creates a second surprise
-- **Status:** fix now
+- **Shipped:** adjacency-weighted noisy-channel decoding, a real ~42k-word frequency lexicon, a bigram context model, and a `UITextChecker` bridge now drive silent auto-apply, gated on a single winner in the weighted cost cluster
+- **Status:** ongoing, tighten remaining ambiguous cases
 
 ### 2. Fallback behavior is as important as feature behavior
 - **User impact:** when the platform blocks the ideal path, the keyboard still needs to fail gently instead of pretending it can do more than it can
@@ -24,7 +25,8 @@ The goal is not feature count. The goal is to make the keyboard feel stable, tru
 ### 4. Suggestion bar usefulness now needs steady expansion
 - **User impact:** the suggestion bar is useful, but it can still feel sparse, stale, or wrapper-sensitive if current-word targeting drifts
 - **Goal:** the bar stays current, survives the right post-space cases, and surfaces helpful visible alternatives more often than silent autocorrection would allow
-- **Status:** fix now
+- **Shipped:** the trie-backed candidate index gives uniform coverage at every token length, and the same frequency plus bigram ranking now feeds both the bar and silent auto-apply
+- **Status:** ongoing, keep broadening visible alternatives without weakening auto-apply
 
 ### 5. Personal dictionary safety needs to stay conservative
 - **User impact:** the keyboard feels smarter when it remembers custom words, but it feels worse instantly if it learns the wrong thing or becomes too eager
@@ -56,7 +58,7 @@ These limits shape what “good enough” means for a public custom keyboard. Th
 - **Good enough:** focus effort on safe, reliable public-API behavior instead of imitating private keyboard capabilities that are not available
 
 ### UI automation reliability
-- **Resolved:** `scripts/xc.sh uitest` drives the live extension via XCUITest; a state-gated retry absorbs the cold-launch race
+- **Partial:** `scripts/xc.sh uitest` can drive the live extension via XCUITest, but keyboard-extension registration in the simulator is flaky and the run may fail to present the keyboard on cold launch; the unit and snapshot suite (`scripts/xc.sh test`) is the reliable gate
 
 ### Tooling divergence outside Xcode
 - **Resolved:** `scripts/xc.sh` disables signing, pins one simulator, and isolates DerivedData, so CLI runs are deterministic

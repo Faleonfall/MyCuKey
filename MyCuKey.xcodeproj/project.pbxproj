@@ -7,92 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		63902BD20916A6A8254A07AB /* KeyboardE2EUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */; };
 		9AD2FEF68ADD78048E099467 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE805995CA931AD63BB709D /* Foundation.framework */; };
 		CB1143892F896DDF009F9FA2 /* KeyboardExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
-		CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */; };
-		CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
-		CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
-		CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
-		CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
-		CB5EB5DE2F8A6DB100EA32EB /* AutocorrectionSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */; };
-		CB5EB5DF2F8A6DB100EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */; };
-		CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */; };
-		CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */; };
-		CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */; };
-		CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */; };
-		CB5EB5E42F8A6E5200EA32EB /* AutocorrectionSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */; };
-		CB5EB5E52F8A6E5200EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */; };
-		CB9BF33B2F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */; };
-		CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
-		CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
-		CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
-		CB9BF33F2F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */; };
-		CB9BF3402F8A1567001FCAA8 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */; };
-		CB9BF3412F8A1567001FCAA8 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */; };
-		CB9BF3422F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */; };
-		CB9BF3432F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */; };
-		CB9BF3442F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33C2F8A1567001FCAA7 /* SuggestionBarView.swift */; };
-		CB9BF3452F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
-		CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */; };
-		CB9BF3472F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */; };
-		CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */; };
-		CB9BF3482F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */; };
-		CB9BF3492F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */; };
-		CB9BF34A2F8A1567001FCAA8 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */; };
-		CB9BF34B2F8A1567001FCAA8 /* ActionKeyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */; };
-		CB9BF34C2F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */; };
-		CB9BF34D2F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */; };
-		CB9BF34E2F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF33C2F8A1567001FCAA7 /* SuggestionBarView.swift */; };
-		CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */; };
-		CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
-		CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */; };
-		CBA65D532F94D83D006F8164 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CBA65D522F94D83D006F8164 /* Localizable.xcstrings */; };
-		CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBA8E2C12F9355CD009869A4 /* Assets.xcassets */; };
-		CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C22F9355CD009869A4 /* ContentView.swift */; };
-		CBA8E2C92F9355CD009869A4 /* MyCuKeyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */; };
-		CBA8E2CA2F9355CD009869A4 /* PersonalDictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA8E2C52F9355CD009869A4 /* PersonalDictionaryView.swift */; };
-		CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
-		CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */; };
-		CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
-		CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */; };
-		CBFA10012FA9000000000001 /* WordFrequencyLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */; };
-		CBFA10022FA9000000000001 /* WordFrequencyLexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */; };
-		CBFA10032FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */; };
-		CBFA10042FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */; };
-		CBFA10052FA9000000000001 /* SuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00032FA9000000000001 /* SuggestionProvider.swift */; };
-		CBFA10062FA9000000000001 /* SuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00032FA9000000000001 /* SuggestionProvider.swift */; };
-		CBFA10072FA9000000000001 /* LocalSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */; };
-		CBFA10082FA9000000000001 /* LocalSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */; };
-		CBFA10092FA9000000000001 /* SuggestionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00052FA9000000000001 /* SuggestionContext.swift */; };
-		CBFA100A2FA9000000000001 /* SuggestionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00052FA9000000000001 /* SuggestionContext.swift */; };
-		CBFA100B2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */; };
-		CBFA100C2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */; };
-		CBFA100D2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */; };
-		CBFA100E2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */; };
-		CBFA10112FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
-		CBFA10122FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
-		CBFA10132FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */; };
-		CBFA10142FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
-		CBFA10152FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
-		CBFA10162FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */; };
-		CBFA10172FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
-		CBFA10182FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
-		CBFA10192FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */; };
-		CBFA101A2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
-		CBFA101B2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
-		CBFA101C2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */ = {isa = PBXBuildFile; fileRef = CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */; };
-		CBWT10012FA9000000000001 /* WordTrie.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBWT00002FA9000000000001 /* WordTrie.swift */; };
-		CBWT10022FA9000000000001 /* WordTrie.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBWT00002FA9000000000001 /* WordTrie.swift */; };
-		CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBUD00002FA9000000000001 /* UnifiedDecoder.swift */; };
-		CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBUD00002FA9000000000001 /* UnifiedDecoder.swift */; };
-		CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
-		CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBSD00002FA9000000000001 /* SpatialDecoder.swift */; };
-		CBBG10012FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
-		CBBG10022FA9000000000001 /* BigramModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBG00002FA9000000000001 /* BigramModel.swift */; };
-		CBKA10012FA9000000000001 /* KeyAdjacency.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBKA00002FA9000000000001 /* KeyAdjacency.swift */; };
-		CBKA10022FA9000000000001 /* KeyAdjacency.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBKA00002FA9000000000001 /* KeyAdjacency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,59 +54,60 @@
 		CB1143542F896A0B009F9FA2 /* MyCuKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCuKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143612F896A0D009F9FA2 /* MyCuKeyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyCuKeyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = KeyboardExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB1143A82F89A672009F9FA2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
-		CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionEngine.swift; sourceTree = "<group>"; };
-		CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractionEngine.swift; sourceTree = "<group>"; };
-		CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionHelpers.swift; sourceTree = "<group>"; };
-		CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionPatterns.swift; sourceTree = "<group>"; };
-		CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionSuggestions.swift; sourceTree = "<group>"; };
-		CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutocorrectionSuggestionPipeline.swift; sourceTree = "<group>"; };
-		CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardSuggestions.swift; sourceTree = "<group>"; };
-		CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardActionHandler.swift; sourceTree = "<group>"; };
-		CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButtonStyle.swift; sourceTree = "<group>"; };
-		CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
-		CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionKeyView.swift; sourceTree = "<group>"; };
-		CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlphabeticKeyboardView.swift; sourceTree = "<group>"; };
-		CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardView.swift; sourceTree = "<group>"; };
-		CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericKeyboardView.swift; sourceTree = "<group>"; };
-		CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceRowView.swift; sourceTree = "<group>"; };
-		CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicKeyboardView.swift; sourceTree = "<group>"; };
-		CB9BF33C2F8A1567001FCAA7 /* SuggestionBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBarView.swift; sourceTree = "<group>"; };
-		CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadGesture.swift; sourceTree = "<group>"; };
-		CBA65D4E2F94D645006F8164 /* MyCuKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyCuKey.entitlements; sourceTree = "<group>"; };
-		CBA65D522F94D83D006F8164 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyboardExtension.entitlements; sourceTree = "<group>"; };
-		CBA8E2C12F9355CD009869A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CBA8E2C22F9355CD009869A4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCuKeyApp.swift; sourceTree = "<group>"; };
-		CBA8E2C52F9355CD009869A4 /* PersonalDictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryView.swift; sourceTree = "<group>"; };
-		CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWordLexicon.swift; sourceTree = "<group>"; };
-		CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalDictionaryService.swift; sourceTree = "<group>"; };
-		CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordFrequencyLexicon.swift; sourceTree = "<group>"; };
-		CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCandidateIndex.swift; sourceTree = "<group>"; };
-		CBFA00032FA9000000000001 /* SuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionProvider.swift; sourceTree = "<group>"; };
-		CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalSuggestionProvider.swift; sourceTree = "<group>"; };
-		CBFA00052FA9000000000001 /* SuggestionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionContext.swift; sourceTree = "<group>"; };
-		CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextWordSuggestionProvider.swift; sourceTree = "<group>"; };
-		CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortTokenSuggestionProvider.swift; sourceTree = "<group>"; };
-		CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishSuggestionLexicon.tsv; sourceTree = "<group>"; };
-		CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "EnglishSuggestionLexicon-LICENSE.md"; sourceTree = "<group>"; };
-		CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishNextWordLexicon.tsv; sourceTree = "<group>"; };
-		CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */ = {isa = PBXFileReference; lastKnownFileType = text; path = EnglishShortTokenLexicon.tsv; sourceTree = "<group>"; };
 		CEE805995CA931AD63BB709D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = KeyboardE2EUITests.swift; sourceTree = "<group>"; };
-		CBWT00002FA9000000000001 /* WordTrie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordTrie.swift; sourceTree = "<group>"; };
-		CBUD00002FA9000000000001 /* UnifiedDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedDecoder.swift; sourceTree = "<group>"; };
-		CBSD00002FA9000000000001 /* SpatialDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialDecoder.swift; sourceTree = "<group>"; };
-		CBBG00002FA9000000000001 /* BigramModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigramModel.swift; sourceTree = "<group>"; };
-		CBKA00002FA9000000000001 /* KeyAdjacency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyAdjacency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CB501FB42FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CB1143532F896A0B009F9FA2 /* MyCuKey */;
+		};
+		CB501FB52FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CB1143812F896DDF009F9FA2 /* KeyboardExtension */;
+		};
+		CB501FB62FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "MyCuKeyTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/EnglishNextWordLexicon.tsv,
+				Resources/EnglishShortTokenLexicon.tsv,
+				"Resources/EnglishSuggestionLexicon-LICENSE.md",
+				Resources/EnglishSuggestionLexicon.tsv,
+			);
+			target = CB1143602F896A0D009F9FA2 /* MyCuKeyTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CB1143642F896A0D009F9FA2 /* MyCuKeyTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MyCuKeyTests;
+			sourceTree = "<group>";
+		};
+		CB501F2A2FFAD85000C17721 /* MyCuKey */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyCuKey;
+			sourceTree = "<group>";
+		};
+		CB501F602FFAD85300C17721 /* KeyboardExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CB501FB42FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "MyCuKey" target */,
+				CB501FB52FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "KeyboardExtension" target */,
+				CB501FB62FFAD85500C17721 /* Exceptions for "KeyboardExtension" folder in "MyCuKeyTests" target */,
+			);
+			path = KeyboardExtension;
+			sourceTree = "<group>";
+		};
+		CB501FB22FFAD85500C17721 /* MyCuKeyUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyCuKeyUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -228,14 +145,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		86C2A86D8C47C22226733200 /* MyCuKeyUITests */ = {
-			isa = PBXGroup;
-			children = (
-				E49B7A2A3622348BF668D2EB /* KeyboardE2EUITests.swift */,
-			);
-			path = MyCuKeyUITests;
-			sourceTree = "<group>";
-		};
 		8A5D7791791E31BA96EC4034 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -255,10 +164,10 @@
 		CB11434B2F896A0B009F9FA2 = {
 			isa = PBXGroup;
 			children = (
-				CBA8E2C62F9355CD009869A4 /* MyCuKey */,
-				CB1143AC2F89A672009F9FA2 /* KeyboardExtension */,
+				CB501F2A2FFAD85000C17721 /* MyCuKey */,
+				CB501F602FFAD85300C17721 /* KeyboardExtension */,
 				CB1143642F896A0D009F9FA2 /* MyCuKeyTests */,
-				86C2A86D8C47C22226733200 /* MyCuKeyUITests */,
+				CB501FB22FFAD85500C17721 /* MyCuKeyUITests */,
 				CB1143552F896A0B009F9FA2 /* Products */,
 				8A5D7791791E31BA96EC4034 /* Frameworks */,
 			);
@@ -273,137 +182,6 @@
 				BA2F646E655ECCDBD5033E0F /* MyCuKeyUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		CB1143AC2F89A672009F9FA2 /* KeyboardExtension */ = {
-			isa = PBXGroup;
-			children = (
-				CB1143AB2F89A672009F9FA2 /* KeyboardViewController.swift */,
-				CB9BF33B2F8A1567001FCAA8 /* Views */,
-				CB9BF3312F8A1567001FCAA8 /* Styles */,
-				CB9BF3342F8A1567001FCAA8 /* Utilities */,
-				CB9BF32E0F8A1567001FCAA8 /* Input */,
-				CB5EB5E60F8A6DB100EA32EB /* Autocorrection */,
-				CBFA00200FA9000000000001 /* Suggestions */,
-				CBF200100F8A6DB100EA32EB /* Lexicon */,
-				CBDE00000FA9000000000001 /* Decoding */,
-				CBFA00102FA9000000000001 /* Resources */,
-				CBA65D542F94D89A006F8164 /* KeyboardExtension.entitlements */,
-				CB1143A82F89A672009F9FA2 /* Info.plist */,
-			);
-			path = KeyboardExtension;
-			sourceTree = "<group>";
-		};
-		CB9BF32E0F8A1567001FCAA8 /* Input */ = {
-			isa = PBXGroup;
-			children = (
-				CB9BF32E2F8A1567001FCAA8 /* KeyboardActionHandler.swift */,
-				CB9BF32D2F8A1567001FCAA7 /* KeyboardSuggestions.swift */,
-			);
-			path = Input;
-			sourceTree = "<group>";
-		};
-		CB5EB5E60F8A6DB100EA32EB /* Autocorrection */ = {
-			isa = PBXGroup;
-			children = (
-				CB5EB5D42F8A6CD400EA32EB /* AutocorrectionEngine.swift */,
-				CB5EB5D62F8A6CD400EA32EB /* AutocorrectionHelpers.swift */,
-				CB5EB5D72F8A6CD400EA32EB /* AutocorrectionPatterns.swift */,
-				CB5EB5D82F8A6CD400EA32EB /* AutocorrectionSuggestions.swift */,
-				CB5EB5D92F8A6CD400EA32EB /* AutocorrectionSuggestionPipeline.swift */,
-				CB5EB5D52F8A6CD400EA32EB /* ContractionEngine.swift */,
-			);
-			path = Autocorrection;
-			sourceTree = "<group>";
-		};
-		CBFA00200FA9000000000001 /* Suggestions */ = {
-			isa = PBXGroup;
-			children = (
-				CBFA00052FA9000000000001 /* SuggestionContext.swift */,
-				CBFA00032FA9000000000001 /* SuggestionProvider.swift */,
-				CBFA00042FA9000000000001 /* LocalSuggestionProvider.swift */,
-				CBFA00062FA9000000000001 /* NextWordSuggestionProvider.swift */,
-				CBFA00072FA9000000000001 /* ShortTokenSuggestionProvider.swift */,
-				CBFA00022FA9000000000001 /* SuggestionCandidateIndex.swift */,
-			);
-			path = Suggestions;
-			sourceTree = "<group>";
-		};
-		CBF200100F8A6DB100EA32EB /* Lexicon */ = {
-			isa = PBXGroup;
-			children = (
-				CBFA00012FA9000000000001 /* WordFrequencyLexicon.swift */,
-				CBF200002F8A6DB100EA32EB /* CommonWordLexicon.swift */,
-				CBBG00002FA9000000000001 /* BigramModel.swift */,
-				CBF300002F8A6DB100EA32EB /* PersonalDictionaryService.swift */,
-			);
-			path = Lexicon;
-			sourceTree = "<group>";
-		};
-		CBDE00000FA9000000000001 /* Decoding */ = {
-			isa = PBXGroup;
-			children = (
-				CBWT00002FA9000000000001 /* WordTrie.swift */,
-				CBKA00002FA9000000000001 /* KeyAdjacency.swift */,
-				CBUD00002FA9000000000001 /* UnifiedDecoder.swift */,
-				CBSD00002FA9000000000001 /* SpatialDecoder.swift */,
-			);
-			path = Decoding;
-			sourceTree = "<group>";
-		};
-		CB9BF3312F8A1567001FCAA8 /* Styles */ = {
-			isa = PBXGroup;
-			children = (
-				CB9BF3302F8A1567001FCAA8 /* KeyboardButtonStyle.swift */,
-			);
-			path = Styles;
-			sourceTree = "<group>";
-		};
-		CB9BF3342F8A1567001FCAA8 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				CB9BF3322F8A1567001FCAA8 /* HapticFeedback.swift */,
-				CB9BF3502F8A1F2E001FCAA8 /* TrackpadGesture.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		CB9BF33B2F8A1567001FCAA8 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				CB9BF3352F8A1567001FCAA8 /* ActionKeyView.swift */,
-				CB9BF3362F8A1567001FCAA8 /* AlphabeticKeyboardView.swift */,
-				CB9BF3372F8A1567001FCAA8 /* KeyboardView.swift */,
-				CB9BF3382F8A1567001FCAA8 /* NumericKeyboardView.swift */,
-				CB9BF3392F8A1567001FCAA8 /* SpaceRowView.swift */,
-				CB9BF33C2F8A1567001FCAA7 /* SuggestionBarView.swift */,
-				CB9BF33A2F8A1567001FCAA8 /* SymbolicKeyboardView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		CBA8E2C62F9355CD009869A4 /* MyCuKey */ = {
-			isa = PBXGroup;
-			children = (
-				CBA8E2C22F9355CD009869A4 /* ContentView.swift */,
-				CBA8E2C42F9355CD009869A4 /* MyCuKeyApp.swift */,
-				CBA8E2C52F9355CD009869A4 /* PersonalDictionaryView.swift */,
-				CBA8E2C12F9355CD009869A4 /* Assets.xcassets */,
-				CBA65D4E2F94D645006F8164 /* MyCuKey.entitlements */,
-				CBA65D522F94D83D006F8164 /* Localizable.xcstrings */,
-			);
-			path = MyCuKey;
-			sourceTree = "<group>";
-		};
-		CBFA00102FA9000000000001 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				CBFA00112FA9000000000001 /* EnglishSuggestionLexicon.tsv */,
-				CBFA00132FA9000000000001 /* EnglishNextWordLexicon.tsv */,
-				CBFA00142FA9000000000001 /* EnglishShortTokenLexicon.tsv */,
-				CBFA00122FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -421,6 +199,9 @@
 			);
 			dependencies = (
 				78479B6E0D2BFBF3E7EFEA38 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CB501FB22FFAD85500C17721 /* MyCuKeyUITests */,
 			);
 			name = MyCuKeyUITests;
 			productName = MyCuKeyUITests;
@@ -440,6 +221,10 @@
 			);
 			dependencies = (
 				CB1143882F896DDF009F9FA2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CB501F2A2FFAD85000C17721 /* MyCuKey */,
+				CB501F602FFAD85300C17721 /* KeyboardExtension */,
 			);
 			name = MyCuKey;
 			productName = MyCuKey;
@@ -479,6 +264,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				CB501F602FFAD85300C17721 /* KeyboardExtension */,
+			);
 			name = KeyboardExtension;
 			productName = KeyboardExtension;
 			productReference = CB1143822F896DDF009F9FA2 /* KeyboardExtension.appex */;
@@ -515,6 +303,7 @@
 			knownRegions = (
 				en,
 				de,
+				Base,
 			);
 			mainGroup = CB11434B2F896A0B009F9FA2;
 			minimizedProjectReferenceProxies = 1;
@@ -536,12 +325,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBA65D532F94D83D006F8164 /* Localizable.xcstrings in Resources */,
-				CBFA10112FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
-				CBFA10172FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
-				CBFA101A2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
-				CBFA10142FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
-				CBA8E2C72F9355CD009869A4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,10 +332,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBFA10122FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
-				CBFA10182FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
-				CBFA101B2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
-				CBFA10152FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,10 +339,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBFA10132FA9000000000001 /* EnglishSuggestionLexicon.tsv in Resources */,
-				CBFA10192FA9000000000001 /* EnglishNextWordLexicon.tsv in Resources */,
-				CBFA101C2FA9000000000001 /* EnglishShortTokenLexicon.tsv in Resources */,
-				CBFA10162FA9000000000001 /* EnglishSuggestionLexicon-LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,7 +356,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63902BD20916A6A8254A07AB /* KeyboardE2EUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,42 +363,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB1143B22F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
-				CBF200022F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
-				CBFA10012FA9000000000001 /* WordFrequencyLexicon.swift in Sources */,
-				CBFA10032FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */,
-				CBFA10052FA9000000000001 /* SuggestionProvider.swift in Sources */,
-				CBFA10072FA9000000000001 /* LocalSuggestionProvider.swift in Sources */,
-				CBFA10092FA9000000000001 /* SuggestionContext.swift in Sources */,
-				CBFA100B2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */,
-				CBFA100D2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */,
-				CB5EB5E12F8A6E5200EA32EB /* ContractionEngine.swift in Sources */,
-				CB5EB5E22F8A6E5200EA32EB /* AutocorrectionHelpers.swift in Sources */,
-				CB5EB5E32F8A6E5200EA32EB /* AutocorrectionPatterns.swift in Sources */,
-				CB5EB5E42F8A6E5200EA32EB /* AutocorrectionSuggestions.swift in Sources */,
-				CB5EB5E52F8A6E5200EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */,
-				CBF300022F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
-				CB9BF3512F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
-				CBA8E2C82F9355CD009869A4 /* ContentView.swift in Sources */,
-				CBA8E2C92F9355CD009869A4 /* MyCuKeyApp.swift in Sources */,
-				CBA8E2CA2F9355CD009869A4 /* PersonalDictionaryView.swift in Sources */,
-				CB9BF3472F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */,
-				CB9BF3462F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
-				CB9BF3472F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
-				CB5EB5E02F8A6E4E00EA32EB /* AutocorrectionEngine.swift in Sources */,
-				CB9BF3482F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */,
-				CB9BF3492F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */,
-				CB9BF34A2F8A1567001FCAA8 /* HapticFeedback.swift in Sources */,
-				CB9BF34B2F8A1567001FCAA8 /* ActionKeyView.swift in Sources */,
-				CB9BF34C2F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */,
-				CB9BF34D2F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */,
-				CB9BF34E2F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */,
-				CB9BF34F2F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
-				CBWT10012FA9000000000001 /* WordTrie.swift in Sources */,
-				CBUD10012FA9000000000001 /* UnifiedDecoder.swift in Sources */,
-				CBSD10012FA9000000000001 /* SpatialDecoder.swift in Sources */,
-				CBBG10012FA9000000000001 /* BigramModel.swift in Sources */,
-				CBKA10012FA9000000000001 /* KeyAdjacency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -639,39 +377,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBF200012F8A6DB100EA32EB /* CommonWordLexicon.swift in Sources */,
-				CBFA10022FA9000000000001 /* WordFrequencyLexicon.swift in Sources */,
-				CBFA10042FA9000000000001 /* SuggestionCandidateIndex.swift in Sources */,
-				CBFA10062FA9000000000001 /* SuggestionProvider.swift in Sources */,
-				CBFA10082FA9000000000001 /* LocalSuggestionProvider.swift in Sources */,
-				CBFA100A2FA9000000000001 /* SuggestionContext.swift in Sources */,
-				CBFA100C2FA9000000000001 /* NextWordSuggestionProvider.swift in Sources */,
-				CBFA100E2FA9000000000001 /* ShortTokenSuggestionProvider.swift in Sources */,
-				CB5EB5DA2F8A6DB100EA32EB /* ContractionEngine.swift in Sources */,
-				CB5EB5DB2F8A6DB100EA32EB /* AutocorrectionEngine.swift in Sources */,
-				CB5EB5DC2F8A6DB100EA32EB /* AutocorrectionHelpers.swift in Sources */,
-				CB5EB5DD2F8A6DB100EA32EB /* AutocorrectionPatterns.swift in Sources */,
-				CB5EB5DE2F8A6DB100EA32EB /* AutocorrectionSuggestions.swift in Sources */,
-				CB5EB5DF2F8A6DB100EA32EB /* AutocorrectionSuggestionPipeline.swift in Sources */,
-				CBF300012F8A6DB100EA32EB /* PersonalDictionaryService.swift in Sources */,
-				CB9BF33B2F8A1567001FCAA7 /* KeyboardSuggestions.swift in Sources */,
-				CB9BF33C2F8A1567001FCAA8 /* KeyboardActionHandler.swift in Sources */,
-				CB9BF33D2F8A1567001FCAA8 /* SpaceRowView.swift in Sources */,
-				CB9BF33E2F8A1567001FCAA8 /* SymbolicKeyboardView.swift in Sources */,
-				CB9BF33F2F8A1567001FCAA8 /* KeyboardButtonStyle.swift in Sources */,
-				CB9BF3402F8A1567001FCAA8 /* HapticFeedback.swift in Sources */,
-				CB9BF3522F8A1F2E001FCAA8 /* TrackpadGesture.swift in Sources */,
-				CB9BF3412F8A1567001FCAA8 /* ActionKeyView.swift in Sources */,
-				CB9BF3422F8A1567001FCAA8 /* AlphabeticKeyboardView.swift in Sources */,
-				CB9BF3432F8A1567001FCAA8 /* NumericKeyboardView.swift in Sources */,
-				CB9BF3442F8A1567001FCAA8 /* SuggestionBarView.swift in Sources */,
-				CB9BF3452F8A1567001FCAA8 /* KeyboardView.swift in Sources */,
-				CB1143B02F89A672009F9FA2 /* KeyboardViewController.swift in Sources */,
-				CBWT10022FA9000000000001 /* WordTrie.swift in Sources */,
-				CBUD10022FA9000000000001 /* UnifiedDecoder.swift in Sources */,
-				CBSD10022FA9000000000001 /* SpatialDecoder.swift in Sources */,
-				CBBG10022FA9000000000001 /* BigramModel.swift in Sources */,
-				CBKA10022FA9000000000001 /* KeyAdjacency.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,7 +409,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -712,7 +417,9 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MyCuKey;
 				VALIDATE_PRODUCT = YES;
@@ -773,7 +480,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -834,7 +541,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -854,7 +561,7 @@
 				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -868,7 +575,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -881,7 +588,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -894,7 +601,7 @@
 				CODE_SIGN_ENTITLEMENTS = MyCuKey/MyCuKey.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -908,7 +615,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -921,7 +628,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -934,7 +641,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -944,9 +651,10 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyCuKey.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyCuKey";
 			};
@@ -960,7 +668,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -970,9 +678,10 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyCuKey.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyCuKey";
 			};
@@ -983,7 +692,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KeyboardExtension/Info.plist;
@@ -994,7 +703,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey.KeyboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1004,9 +713,10 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1016,7 +726,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = KeyboardExtension/KeyboardExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = KeyboardExtension/Info.plist;
@@ -1027,7 +737,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKey.KeyboardExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1037,9 +747,10 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1051,7 +762,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q8T2W5DK59;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kvolodymyr.MyCuKeyUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1059,7 +770,9 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MyCuKey;
 			};

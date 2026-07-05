@@ -174,14 +174,18 @@ extension KeyboardActionHandler {
         }
 
         hasRequestedSupplementaryLexicon = true
-        controller.requestSupplementaryLexicon { [weak self] lexicon in
+        // UIKit delivers this completion on a background queue. The closure must
+        // stay nonisolated: under default main-actor isolation an unannotated
+        // closure would assert the main thread on entry and trap when UIKit
+        // calls it off-main. Compute here, then hop on to touch handler state.
+        controller.requestSupplementaryLexicon { @Sendable [weak self] lexicon in
             let normalizedTerms = Set(
                 lexicon.entries.flatMap { entry in
                     [entry.userInput, entry.documentText].compactMap(
                         KeyboardActionHandler.normalizedSuggestionTerm)
                 })
 
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 guard let self else { return }
                 self.supplementarySuggestionTerms = normalizedTerms
                 self.refreshSuggestions(

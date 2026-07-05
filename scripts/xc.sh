@@ -37,10 +37,11 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DERIVED="$ROOT/.build-cli/DerivedData"
 
 # Signing off + no Xcode-session contention. Applied to every xcodebuild call.
+# Destination is appended per-command using the resolved UDID (name matching is
+# ambiguous when the runtime exposes arm64 and x86_64 entries for one device).
 COMMON_ARGS=(
   -project "$PROJECT"
   -derivedDataPath "$DERIVED"
-  -destination "platform=iOS Simulator,name=$DEVICE_NAME"
   CODE_SIGNING_ALLOWED=NO
   CODE_SIGNING_REQUIRED=NO
   CODE_SIGN_IDENTITY=""
@@ -116,12 +117,12 @@ case "$cmd" in
   build)
     udid="$(ensure_booted)"
     echo ">> build $APP_SCHEME on $DEVICE_NAME ($udid)"
-    run_xcodebuild build "${COMMON_ARGS[@]}" -scheme "$APP_SCHEME" build
+    run_xcodebuild build "${COMMON_ARGS[@]}" -destination "platform=iOS Simulator,id=$udid" -scheme "$APP_SCHEME" build
     ;;
   test)
     udid="$(ensure_booted)"
     echo ">> test $TEST_SCHEME on $DEVICE_NAME ($udid)"
-    run_xcodebuild test "${COMMON_ARGS[@]}" -scheme "$TEST_SCHEME" test
+    run_xcodebuild test "${COMMON_ARGS[@]}" -destination "platform=iOS Simulator,id=$udid" -scheme "$TEST_SCHEME" test
     ;;
   format)
     echo ">> swift-format all sources in place"
@@ -151,7 +152,7 @@ case "$cmd" in
     xcrun simctl bootstatus "$udid" >/dev/null 2>&1 || true
     sleep 5
     echo ">> uitest $UITEST_SCHEME on $DEVICE_NAME ($udid)"
-    run_xcodebuild uitest "${COMMON_ARGS[@]}" -scheme "$UITEST_SCHEME" test
+    run_xcodebuild uitest "${COMMON_ARGS[@]}" -destination "platform=iOS Simulator,id=$udid" -scheme "$UITEST_SCHEME" test
     ;;
   boot)
     udid="$(ensure_booted)"

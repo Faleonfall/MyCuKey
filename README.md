@@ -1,14 +1,20 @@
-# MyCuKey
+# MyCuKey ⌨️
 
-MyCuKey is a custom iOS keyboard extension built with SwiftUI and UIKit.
+A custom iOS keyboard extension built with SwiftUI and UIKit. The focus is practical typing reliability: predictable correction, fast feedback, and a clear line between what the keyboard fixes silently and what it only suggests. Priorities and platform ceilings are tracked in [docs/ReliabilityRoadmap.md](docs/ReliabilityRoadmap.md).
 
-## Overview
+---
 
-The project focuses on practical keyboard reliability: predictable typing, conservative correction, fast interaction feedback, and a clear separation between what the keyboard can confidently fix on its own and what it should surface as a suggestion instead.
+## 🛠️ Tech Stack
 
-Current reliability priorities and known platform ceilings are tracked in [docs/ReliabilityRoadmap.md](docs/ReliabilityRoadmap.md).
+* **Language:** Swift 6
+* **UI:** SwiftUI and UIKit
+* **Platform:** iOS 18.0+
+* **Architecture:** MV app plus a responsibility-grouped keyboard extension with shared App Group storage
+* **Correction:** noisy-channel `WordTrie` decoder over a ~42k-word frequency lexicon, adjacency-weighted edit costs, bigram context, `UITextChecker` bridge
 
-## Scope
+---
+
+## 📐 Scope
 
 - **Typing language today:** English-first keyboard behavior
 - **App localization:** English and German
@@ -16,7 +22,9 @@ Current reliability priorities and known platform ceilings are tracked in [docs/
 
 MyCuKey currently treats English as the main typing language for autocorrection, suggestions, and dictionary heuristics. German support currently applies to the companion app UI, not to a separate German keyboard layout or German correction engine.
 
-## Setup
+---
+
+## 🚀 Setup
 
 1. Open `MyCuKey.xcodeproj` in Xcode.
 2. Ensure both targets have the **App Group** capability with `group.com.kvolodymyr.MyCuKey`.
@@ -26,47 +34,34 @@ MyCuKey currently treats English as the main typing language for autocorrection,
 6. Toggle **Allow Full Access** on the keyboard entry.
 7. Switch to MyCuKey via the globe key in any text field.
 
-For deterministic command-line builds and tests, run `scripts/xc.sh test` (see header comment in the script for options).
-
-### Formatting
-
-Sources are formatted with Apple `swift-format` against the repo `.swift-format` config (4-space indent, 100-column lines). Enable the pre-commit hook once to auto-format staged Swift files on commit:
+Deterministic CLI build and test, plus the `swift-format` pre-commit hook:
 
 ```bash
-git config core.hooksPath .githooks
+scripts/xc.sh build                  # build for the pinned simulator
+scripts/xc.sh test                   # run the unit and snapshot suite
+scripts/xc.sh format                 # format all sources in place
+git config core.hooksPath .githooks  # auto-format staged Swift on commit
 ```
 
-Format or lint the whole tree on demand:
+---
 
-```bash
-scripts/xc.sh format        # rewrite all sources in place
-scripts/xc.sh format-check  # strict lint, non-zero exit if anything is off
-```
+## ✨ Features
 
-## Features
-
-- **QWERTY / Numeric / Symbolic** layout switching
-- **Auto-capitalization** — sentence-aware capitalization with local context handling
-- **Autocorrection** — conservative, trust-first correction with deterministic typo fixes, immediate revert on delete, and support for wrapped plain-word fixes such as `*teh* → *the*`
-- **Unified decoder** — a `WordTrie` over the 50k-word frequency lexicon answers prefix completion and bounded Damerau-Levenshtein repair from one structure, giving uniform suggestion coverage at every token length (no length cliff); protect-in-vocab stops valid words being changed
-- **Spatial decoder** (in progress) — per-tap `(x,y)` capture plus a Gaussian key model feed a beam search that decodes sloppy taps into the intended word; live path wired, pending on-device tuning
-- **Suggestion bar** — ranked current-word suggestions with the original token on the left, the strongest repair in the center, and a secondary alternative on the right
-- **Caps Lock** — double-tap shift within 0.35s to lock
-- **Correction triggers** — correction pass runs on `space`, `.`, `,`, `!`, `?`, `*`, and newline
-- **Double-space → period** — fast double-space inserts `. ` and triggers capitalization
-- **Spacebar trackpad** — drag to move cursor with 3-zone acceleration (precise / medium / fast)
-- **Accelerated delete** — character-by-character for first ~1s, then word-by-word
-- **Key popups** — character preview popups with long-press alternates such as `, → ?` and `* → "`
-- **Return key** — inserts newline
-- **Haptics** — light on key press, soft on autocorrection apply, rigid on correction revert, medium on word delete and long-press popup activation, silent on empty field
-- **Personal dictionary memory**
-  - Learned words suppress future contraction and autocorrection passes for matching normalized token
-  - Reverting the same correction twice promotes the original word (promotion threshold = `2`)
-  - Manual dictionary management in the app (add, search, delete, clear)
-- **Revert on delete** — immediate backspace after correction restores original typed word + trigger suffix
+- **QWERTY / Numeric / Symbolic** layout switching with sentence-aware auto-capitalization
+- **Autocorrection** — conservative trust-first fixes, wrapped plain words (`*teh* → *the*`), and immediate revert on the next backspace
+- **Unified decoder** — one `WordTrie` over the ~42k lexicon answers prefix completion and bounded Damerau-Levenshtein repair at every token length; protect-in-vocab leaves valid words alone
+- **Spatial decoder** (in progress) — per-tap `(x,y)` capture and a Gaussian key model feed a beam search over sloppy taps; wired, pending on-device tuning
+- **Suggestion bar** — original token, strongest repair, and a secondary alternative
+- **Correction triggers** — pass runs on `space` `.` `,` `!` `?` `*` and newline; double-space inserts `. `
+- **Caps Lock** (double-tap shift), **key popups** with long-press alternates, and **spacebar trackpad** cursor drag with 3-zone acceleration
+- **Accelerated delete** — character-by-character for ~1s, then word-by-word
+- **Haptics** — distinct feedback per action, silent on empty field
+- **Personal dictionary** — learns reverted corrections and suppresses future passes (see rules below)
 - **Dark/Light mode** — follows system appearance
 
-## Architecture
+---
+
+## 🏗️ Architecture
 
 MyCuKey follows the standard hybrid custom-keyboard structure used by many serious iOS keyboard projects:
 
@@ -78,24 +73,30 @@ This keeps latency-sensitive behavior local to the extension while still allowin
 
 The keyboard extension is grouped by responsibility: `Input/` (key handling and the suggestion-bar flow), `Decoding/` (`WordTrie`, the unified noisy-channel `UnifiedDecoder`, and the `SpatialDecoder` tap decoder), `Autocorrection/` (the engine plus its ranking and gating pipeline), `Suggestions/` (candidate providers and the trie-backed `SuggestionCandidateIndex`), `Lexicon/` (frequency and personal-dictionary sources), and `Views/`, `Styles/`, `Utilities/`, `Resources/` for the UI layer.
 
-## Typing Engine Roadmap
+---
 
-The bar is Apple-grade "type sloppily, get the right words" on English. Against a heavy fat-finger sentence, native silently repairs almost everything while MyCuKey leaves most words wrong. The gap is three capabilities, in priority order:
+## 🗺️ Typing Engine Roadmap
 
-1. **Decoder-driven auto-apply** — let the trie noisy-channel decoder silently commit a fix, not just suggest it. *Shipped (safe slice):* it commits only when the winning repair is unambiguous (alone at its edit distance) and the token is neither a real word (even one missing from the lexicon, via `UITextChecker`) nor an intentional spelling (stray doubled letter, expressive repeat). This closes clear cases like `peoole → people` and `dobe → done` with zero over-correction; ambiguous cases are deliberately deferred to #2.
-2. **Bigram / context language model** — *Shipped:* `BigramModel` scores candidates by the previous word, so an edit-distance tie is broken by context (`fifty fivd → five`) and short tokens the unigram regime is too cautious to touch are rescued when the previous word is decisive (`spent ny → my`). When no candidate is predicted by the previous word it still defers. v1 ships an in-code curated collocation seed, swappable for a corpus table without touching call sites. To reach common inflections our 50k list omits (`spent`, `things`), the context path also folds in `UITextChecker`'s guesses — the full system dictionary — for free, ranked by the same frequency + bigram model; system-only words commit only when context backs them, so precision is unchanged (`i slent → spent`).
-3. **Word split / merge** — retokenize across spaces for `firme → for me` and `ibt he → in the`. Hardest, smallest payoff, done last.
+Target: Apple-grade "type sloppily, get the right words" on English. Three levers, in priority order:
 
-## Platform Ceilings
+1. **Decoder auto-apply** *(shipped)* — the noisy-channel decoder silently commits a repair, but only when it is alone in its adjacency-weighted cost cluster and the token is neither a real word (checked via `UITextChecker`) nor an intentional spelling. Fixes `peoole → people`, `dobe → done`; defers ambiguous cases to #2.
+2. **Bigram context** *(shipped)* — `BigramModel` breaks edit-distance ties by the previous word (`fifty fivd → five`) and rescues short tokens when it is decisive (`spent ny → my`). The context path also folds in `UITextChecker` guesses to reach inflections the lexicon omits (`i slent → spent`), committing them only when context backs them.
+3. **Word split / merge** *(not started)* — retokenize across spaces for `firme → for me`, `ibt he → in the`. Hardest, smallest payoff.
 
-These are limits of the public iOS custom-keyboard API surface, not just local bugs in MyCuKey:
+---
 
-- **Host presentation artifacts** — a brief flash or jump can still happen when the keyboard appears or switches. MyCuKey can avoid adding extra instability, but it does not fully control the system keyboard host.
-- **Background coverage ceiling** — the keyboard does not own every visible region around it. In practice, a background image or visual treatment can fill MyCuKey’s content area, but not the full system-managed space around the custom keyboard.
-- **Cursor/navigation ceiling** — reliable character-by-character movement is possible, but advanced multiline cursor behavior depends on limited `UITextDocumentProxy` context, especially after the insertion point. Vertical movement and selection behavior are therefore less dependable than Apple’s own keyboard.
-- **Document-model ceiling** — custom keyboards do not get a rich editable text model, robust selection mutation APIs, or Apple’s private autocorrection stack. Some “Apple-grade” behavior is simply outside the public extension surface.
+## 🧱 Platform Ceilings
 
-## Testing
+Limits of the public iOS custom-keyboard API, not local bugs:
+
+- **Host presentation** — a brief flash or jump on keyboard appear/switch; the system host is not fully controllable.
+- **Background coverage** — the keyboard owns its content area but not the full system-managed space around it.
+- **Cursor/navigation** — character-by-character movement is reliable, but multiline cursor and selection depend on limited `UITextDocumentProxy` context after the insertion point.
+- **Document model** — no rich editable text model, selection-mutation APIs, or Apple's private autocorrection stack.
+
+---
+
+## 🧪 Testing
 
 Three layers, all runnable headless via `scripts/xc.sh`:
 
@@ -103,18 +104,19 @@ Three layers, all runnable headless via `scripts/xc.sh`:
 - **Snapshot** (`test`) — in-process SwiftUI view rendering pinned against committed references
 - **End-to-end** (`uitest`) — XCUITest typing on the **live** keyboard extension and asserting autocorrection fires
 
-## Personal Dictionary Rules
+---
 
-The personal dictionary is meant to protect typing trust: names, slang, intentional spellings, and custom words should stop being "fixed" once the user has clearly shown that the keyboard was wrong.
+## 📖 Personal Dictionary Rules
 
-- Storage: shared App Group `UserDefaults` suite `group.com.kvolodymyr.MyCuKey`
-- Sync: app and extension both refresh from shared storage
-- Normalization: lowercase
-- Token rules: length `2...40`, at least one letter, letters/digits/apostrophe/hyphen allowed
-- Promotion: the same reverted correction must happen twice before the original word is learned
-- Manual dictionary changes also clear any pending revert count for that word
+Protects typing trust: names, slang, and intentional spellings stop being "fixed" once the user shows the keyboard was wrong.
 
-## Request Flow
+- Storage: shared App Group `UserDefaults` (`group.com.kvolodymyr.MyCuKey`), refreshed by app and extension
+- Token rules: lowercased, length `2...40`, at least one letter, letters/digits/apostrophe/hyphen
+- Promotion: a correction reverted twice learns the original word; manual edits clear its revert count
+
+---
+
+## 🔁 Request Flow
 
 High-altitude view of the main keyboard loop.
 
@@ -141,18 +143,11 @@ flowchart TD
     PD --> G[Shared App Group defaults]
 ```
 
-On a character or trigger key the correction pipeline runs these stages in
-order, and the first one that fires wins:
+On a character or trigger key the correction pipeline runs in order, first match wins:
 
 1. Pending suggestion follow-up (punctuation after a committed suggestion, double-space → period)
 2. Standalone lowercase `i` → `I`
 3. Learned-word suppression (personal dictionary blocks the rest)
 4. Contraction repair (`dont` → `don't`)
-5. Autocorrection engine — curated pairs, then UITextChecker single typos, then the adjacency-weighted decoder (silent commit only when the repair is alone in its cost cluster, with bigram context breaking ties)
+5. Autocorrection engine — curated pairs, then UITextChecker typos, then the adjacency-weighted decoder (commits only when the repair is alone in its cost cluster; bigram context breaks ties)
 6. Plain insert
-
-## Requirements
-
-- iOS 26.0+
-- Recent Xcode version with iOS 26 SDK support
-- Swift 6 toolchain, Swift 5 language mode
