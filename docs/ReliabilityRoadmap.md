@@ -117,3 +117,4 @@ Prioritize only the risks that are both user-visible and realistically fixable:
 - Prefer a simpler reliable behavior over a richer inconsistent behavior.
 - When a limitation is platform-driven, document it internally and move roadmap energy to controllable areas.
 - Do not grow autocorrection by endlessly appending one-off typo pairs. Extract mistake patterns from real examples, keep representative regression cases per pattern, and add dictionary-style one-offs only when they are both common and very safe.
+- Keep off-main UIKit completion handlers nonisolated under Swift 6 default main-actor isolation. UIKit delivers callbacks like the supplementary lexicon request on a background queue, so an unannotated closure inherits main-actor isolation and traps its isolation check on entry, which crashes the extension and drops the user back to the system keyboard. Mark such closures `@Sendable`, then hop to a `MainActor` task only to touch handler state.

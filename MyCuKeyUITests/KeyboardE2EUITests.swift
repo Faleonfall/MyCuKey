@@ -4,11 +4,12 @@ import XCTest
 // MyCuKey as the only keyboard first, so focusing a field presents it directly.
 // (XCUITest has no Swift Testing equivalent, so this stays XCTest.)
 
-final class KeyboardE2EUITests: XCTestCase {
+nonisolated final class KeyboardE2EUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
     }
 
+    @MainActor
     func testTypingTehAutocorrectsToThe() {
         let app = XCUIApplication()
         // Force English UI so localized labels are predictable on any sim.
@@ -58,6 +59,7 @@ final class KeyboardE2EUITests: XCTestCase {
     // queryable yet. Gate the (potentially hanging) UI query behind `.state`,
     // which reads process status without a snapshot, then re-tap the field each
     // round to nudge the host into (re)presenting the keyboard.
+    @MainActor
     private func waitForKeyboard(_ keyboard: XCUIApplication, refocus field: XCUIElement) -> Bool {
         for attempt in 0..<8 {
             if keyboard.state == .runningForeground,
@@ -72,6 +74,7 @@ final class KeyboardE2EUITests: XCTestCase {
 
     // Letter keys carry their glyph as the label; case follows the shift state
     // (autocap makes the first letter uppercase), so accept either.
+    @MainActor
     private func tapLetter(_ keyboard: XCUIApplication, _ letter: String) {
         let upper = keyboard.buttons[letter.uppercased()]
         let lower = keyboard.buttons[letter.lowercased()]
@@ -82,6 +85,7 @@ final class KeyboardE2EUITests: XCTestCase {
         key.tap()
     }
 
+    @MainActor
     private func tapButton(_ keyboard: XCUIApplication, _ identifier: String) {
         let key = keyboard.buttons[identifier]
         XCTAssertTrue(
@@ -90,6 +94,7 @@ final class KeyboardE2EUITests: XCTestCase {
         key.tap()
     }
 
+    @MainActor
     private func dismissKeyboardIntroIfPresent(_ app: XCUIApplication) {
         for label in ["Continue", "Weiter"] {
             let button = app.buttons[label]

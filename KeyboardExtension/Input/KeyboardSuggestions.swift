@@ -174,19 +174,19 @@ extension KeyboardActionHandler {
         }
 
         hasRequestedSupplementaryLexicon = true
-        // UIKit delivers this completion on a background queue. The closure must
-        // stay nonisolated: under default main-actor isolation an unannotated
-        // closure would assert the main thread on entry and trap when UIKit
-        // calls it off-main. Compute here, then hop on to touch handler state.
+        // UIKit delivers this completion on a background queue, so the closure
+        // must stay @Sendable/nonisolated: an unannotated closure inherits the
+        // default main-actor isolation and traps the isolation check on entry
+        // when UIKit calls it off-main. UILexicon is NS_SWIFT_UI_ACTOR (hence
+        // Sendable), so hand it to a main-actor Task and read its entries there.
         controller.requestSupplementaryLexicon { @Sendable [weak self] lexicon in
-            let normalizedTerms = Set(
-                lexicon.entries.flatMap { entry in
-                    [entry.userInput, entry.documentText].compactMap(
-                        KeyboardActionHandler.normalizedSuggestionTerm)
-                })
-
             Task { @MainActor in
                 guard let self else { return }
+                let normalizedTerms = Set(
+                    lexicon.entries.flatMap { entry in
+                        [entry.userInput, entry.documentText].compactMap(
+                            KeyboardActionHandler.normalizedSuggestionTerm)
+                    })
                 self.supplementarySuggestionTerms = normalizedTerms
                 self.refreshSuggestions(
                     for: self.controller?.textDocumentProxy.documentContextBeforeInput)

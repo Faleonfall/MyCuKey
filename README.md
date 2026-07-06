@@ -2,6 +2,10 @@
 
 A custom iOS keyboard extension built with SwiftUI and UIKit. The focus is practical typing reliability: predictable correction, fast feedback, and a clear line between what the keyboard fixes silently and what it only suggests. Priorities and platform ceilings are tracked in [docs/ReliabilityRoadmap.md](docs/ReliabilityRoadmap.md).
 
+<p align="center">
+  <img src="docs/preview.webp" alt="MyCuKey keyboard running on iPhone" width="300">
+</p>
+
 ---
 
 ## 🛠️ Tech Stack
